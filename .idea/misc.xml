@@ -3,16 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Ithogskolan/Projekt/Smultron/Smultronstallen/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2625" />
-        <entry key="..\:/Ithogskolan/Projekt/Smultron/Smultronstallen/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2625" />
-        <entry key="..\:/Ithogskolan/Projekt/Smultron/Smultronstallen/app/src/main/res/drawable/ic_logo_text.xml" value="0.2625" />
-        <entry key="..\:/Ithogskolan/Projekt/Smultron/Smultronstallen/app/src/main/res/drawable/ic_logo_with_text.xml" value="0.215625" />
-        <entry key="..\:/Ithogskolan/Projekt/Smultron/Smultronstallen/app/src/main/res/layout/activity_login.xml" value="0.25" />
-        <entry key="..\:/Ithogskolan/Projekt/Smultron/Smultronstallen/app/src/main/res/layout/activity_main.xml" value="0.43226600985221675" />
-        <entry key="..\:/Ithogskolan/Projekt/Smultron/Smultronstallen/app/src/main/res/layout/activity_map.xml" value="0.32741116751269034" />
-        <entry key="..\:/Ithogskolan/Projekt/Smultron/Smultronstallen/app/src/main/res/layout/fragment_list.xml" value="0.22" />
-        <entry key="..\:/Ithogskolan/Projekt/Smultron/Smultronstallen/app/src/main/res/layout/fragment_menu.xml" value="0.36666666666666664" />
-        <entry key="..\:/Ithogskolan/Projekt/Smultron/Smultronstallen/app/src/main/res/layout/fragment_scrolling.xml" value="0.36666666666666664" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.23802083333333332" />
       </map>
     </option>
   </component>

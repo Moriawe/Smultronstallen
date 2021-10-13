@@ -45,4 +45,7 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(goToMapActivityIntent);
     }
 
+    public void signIn(View view) {
+
+    }
 }
