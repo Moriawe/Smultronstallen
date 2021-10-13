@@ -1,14 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/pink_primary"
     tools:context=".ListFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <TextView
+                android:id="@+id/listeItem1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@color/white"
+                android:padding="20dp"
+                android:text="Kartobjekt1" />
+
+            <TextView
+                android:id="@+id/listeItem2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@color/white"
+                android:padding="20dp"
+                android:text="Kartobjekt2" />
+
+            <TextView
+                android:id="@+id/listeItem3"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="12dp"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:gravity="top"
+                android:padding="20dp"
+                android:text="Kartobjekt2" />
+
+            <TextView
+                android:id="@+id/testTextList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TESTTEXTLIST"
+                android:textSize="40dp"
+                app:layout_constraintBottom_toBottomOf="@+id/background_image_view"
+                app:layout_constraintEnd_toEndOf="@+id/background_image_view"
+                app:layout_constraintStart_toStartOf="@+id/background_image_view"
+                app:layout_constraintTop_toTopOf="@+id/background_image_view" />
+
+            <TextView
+                android:id="@+id/scrolltext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/scrolltext"
+                android:textColor="@color/black" />
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

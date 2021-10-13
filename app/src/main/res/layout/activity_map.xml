@@ -6,4 +6,74 @@
     android:layout_height="match_parent"
     tools:context=".MapActivity">
 
+    <ImageView
+        android:id="@+id/background_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/fakemap"/>
+
+    <TextView
+        android:id="@+id/showSentUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:text="Username:"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/userName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.033"
+        app:layout_constraintStart_toEndOf="@+id/showSentUserName"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.011" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/listFragment"
+        android:name="com.moriawe.smultronstallen.ListFragment"
+        app:layout_constrainedHeight="true"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menuFragment"
+        app:layout_constraintVertical_bias="0.38"
+        tools:layout_editor_absoluteX="-35dp" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/menuFragment"
+        android:name="com.moriawe.smultronstallen.MenuFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/background_image_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.055"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout="@layout/fragment_menu"
+        />
+
+    <TextView
+        android:id="@+id/testTextMap"
+        android:textSize="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TESTTEXT"
+        app:layout_constraintBottom_toBottomOf="@+id/background_image_view"
+        app:layout_constraintEnd_toEndOf="@+id/background_image_view"
+        app:layout_constraintStart_toStartOf="@+id/background_image_view"
+        app:layout_constraintTop_toTopOf="@+id/background_image_view" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--    tools:layout="@layout/fragment_list"-->
