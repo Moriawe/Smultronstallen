@@ -1,14 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".MenuFragment">
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" >
+    </View>
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <Button
+        android:id="@+id/completeListBtn"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="ALLA"
+        android:textSize="10dp" />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" >
+    </View>
 
-</FrameLayout>
+    <Button
+        android:id="@+id/friendsListBtn"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="VÄNNER"
+        android:textSize="10dp"
+/>
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" >
+    </View>
+
+    <Button
+        android:id="@+id/personalListBtn"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="EGNA"
+        android:textSize="10dp" />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" >
+    </View>
+
+    <Button
+        android:id="@+id/showHideBtnn"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:text="OPEN"
+        android:textSize="10dp" />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_weight="1" >
+    </View>
+</LinearLayout>
