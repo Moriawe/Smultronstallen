@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "710161999966",
-    "project_id": "smultronstallen-232e6",
-    "storage_bucket": "smultronstallen-232e6.appspot.com"
+    "project_number": "110098094939",
+    "project_id": "smultronstallen-9c1fe",
+    "storage_bucket": "smultronstallen-9c1fe.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:710161999966:android:8184d1f331e7da0e00eccf",
+        "mobilesdk_app_id": "1:110098094939:android:29cb3cfaa0d4c5f359187e",
         "android_client_info": {
           "package_name": "com.moriawe.smultronstallen"
         }
       },
       "oauth_client": [
         {
-          "client_id": "710161999966-3ipprlc76voni15ja7t95s8bf34ov8s8.apps.googleusercontent.com",
+          "client_id": "110098094939-k3aafpr3h75gatvp1curokhd8v9esmrv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.moriawe.smultronstallen",
+            "certificate_hash": "6ad489c4a06d51e72fd61c256ea5499632b1ea48"
+          }
+        },
+        {
+          "client_id": "110098094939-q9s7kad3j1b4eg6g7k1n482jc6g2gui8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBYo3WzNga1uFkJa8b1_kNknTaCK4TGeYw"
+          "current_key": "AIzaSyBNbsw8HA-3coeM-rmd4sCoAu69jpe8RFo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "710161999966-3ipprlc76voni15ja7t95s8bf34ov8s8.apps.googleusercontent.com",
+              "client_id": "110098094939-q9s7kad3j1b4eg6g7k1n482jc6g2gui8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
