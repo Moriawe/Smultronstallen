@@ -12,6 +12,7 @@ public class AppUser {
 
     }
 
+
     public String getFirstName() {
         return firstName;
     }
