@@ -66,7 +66,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                                 updateUI(null);
                             }
 
-                            // ...
                         }
                     });
         }
