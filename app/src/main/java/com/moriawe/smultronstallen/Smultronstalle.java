@@ -12,6 +12,7 @@ public class Smultronstalle {
 
     }
 
+
     public String getName() {
         return name;
     }
