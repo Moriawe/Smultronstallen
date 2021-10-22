@@ -3,9 +3,10 @@ package com.moriawe.smultronstallen;
 public class Smultronstalle {
 
     private String name;
-    private String added;
     private String comment;
     private String picture;
+    private String adress;
+    private String lastUpdated;
     private boolean share;
 
     public Smultronstalle() {
@@ -19,14 +20,6 @@ public class Smultronstalle {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getAdded() {
-        return added;
-    }
-
-    public void setAdded(String added) {
-        this.added = added;
     }
 
     public String getComment() {
@@ -51,5 +44,21 @@ public class Smultronstalle {
 
     public void setShare(boolean share) {
         this.share = share;
+    }
+
+    public String getAdress() {
+        return adress;
+    }
+
+    public void setAdress(String adress) {
+        this.adress = adress;
+    }
+
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }
