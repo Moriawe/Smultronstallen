@@ -1,29 +1,61 @@
 package com.moriawe.smultronstallen;
 
+import static android.content.ContentValues.TAG;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.moriawe.smultronstallen.databinding.ActivityMapBinding;
 
 import java.util.List;
 
-public class MapActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
     FragmentManager fragmentManager = getSupportFragmentManager();
     TextView fragmentText;
     private MenuViewModel viewModel;
+    private ActivityMapBinding binding;
+
+    //Map vars
+    private GoogleMap mMap;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private static final int LOCATION_PERMISSION_CODE = 101;
+    private Boolean locationPermissionsGranted = false;
+    private final float DEFAULT_ZOOM = 15f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
+        binding = ActivityMapBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        getLocationPermission();
 
         //Get the intent that started this activity(LoginActivity) and extract the username(from editText in LoginActivity)
         Intent intent = getIntent();
@@ -60,8 +92,127 @@ public class MapActivity extends AppCompatActivity {
         fragTransaction.commit();
     }//end addShowHideListener
 
+    public void onMapReady(GoogleMap googleMap) {
+        Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
+        mMap = googleMap;
 
+        if (locationPermissionsGranted) {
+            getDeviceLocation();
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            mMap.setMyLocationEnabled(true); //this default "myLocationButton" can't be manually positioned
+            // mMap.getUiSettings().setMyLocationButtonEnabled(false); //TO DO: Can make one manually later and hide the default with this command
 
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);//Type of map. Can be changed to satellite etc.
+        }
 
+    }
+
+    //Sets camera to current location. Runs method to ask for permission.
+    private void getDeviceLocation() {
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        try{
+            if(locationPermissionsGranted){
+
+                Task location = mFusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "onComplet: found location!");
+                            Location currentLocation = (Location) task.getResult();
+                            moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
+                                    DEFAULT_ZOOM);
+
+                        } else {
+                            Log.d(TAG, "Oncomplete: current location is null");
+                            Toast.makeText(MapActivity.this, "Can't get current location", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        }catch (SecurityException e) {
+            Log.e(TAG, "getDeviceLocation: SecurityExeption: " + e.getMessage());
+        }
+       if (locationPermissionsGranted) {
+            @SuppressLint("MissingPermission") //Permission Check is done!
+            Task location = mFusedLocationProviderClient.getLastLocation();
+            location.addOnCompleteListener(new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "onComplete: found location");
+                        Location currentLocation = (Location) task.getResult();
+                        moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
+                                15f);
+                    } else {
+                        Log.d(TAG, "onComplete: found location");
+                        Toast.makeText(MapActivity.this, "Unable to find location", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        }
+    }
+
+    //Initialize the map
+    private void initMap() {
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
+
+    //Move camera
+    private void moveCamera(LatLng latLng, float zoom) {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+    }
+
+    //Checks permission to use gps and runs map if permission is granted.
+    //If not, call onRequestPermissionResult o ask for permission.
+    private void getLocationPermission() {
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                    Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationPermissionsGranted = true;
+                initMap();
+
+            }else {
+                ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_CODE);
+            }
+
+        } else {
+            ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_CODE);
+        }
+    }
+
+    //Asks for permission to use gps and runs initialize map if permission is granted
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        locationPermissionsGranted = false;
+
+        switch (requestCode) {
+            case LOCATION_PERMISSION_CODE: {
+                if (grantResults.length > 0) {
+                    for (int i = 0; i < grantResults.length; i++) {
+                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                            locationPermissionsGranted = false;
+                            return;
+                        }
+                    }
+                    locationPermissionsGranted = true;
+                    initMap();
+                }
+            }
+        }
+    }
 
 }
