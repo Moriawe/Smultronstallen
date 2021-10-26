@@ -3,6 +3,7 @@ package com.moriawe.smultronstallen;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -15,14 +16,19 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
+import android.view.KeyEvent;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+//Google Maps
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,39 +36,77 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.moriawe.smultronstallen.databinding.ActivityMapBinding;
 
+//Search in map
+import android.location.Address;
+import android.location.Geocoder;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.FragmentActivity;
+
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
     FragmentManager fragmentManager = getSupportFragmentManager();
     TextView fragmentText;
     private MenuViewModel viewModel;
-    private ActivityMapBinding binding;
 
     //Map vars
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    private static final int LOCATION_PERMISSION_CODE = 101;
     private Boolean locationPermissionsGranted = false;
+    private static final int LOCATION_PERMISSION_CODE = 101;
     private final float DEFAULT_ZOOM = 15f;
+    SearchView searchView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMapBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
 
+        setContentView(R.layout.activity_map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        searchView = findViewById(R.id.map_search_bar);
+
+        //Asking for permission to use gps and initializing map
         getLocationPermission();
+
+        //Search in map and move camera to searched location
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String location = searchView.getQuery().toString();
+                List<Address> addressList = null;
+                if(location != null || location.equals("")) {
+                    Geocoder geocoder = new Geocoder(MapActivity.this);
+                    try {
+                        addressList = geocoder.getFromLocationName(location, 1);
+                    }catch(IOException e) {
+                        e.printStackTrace();
+                    }
+                    Address address = addressList.get(0);
+                    moveCamera(new LatLng(address.getLatitude(), address.getLongitude()), 15f);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
 
         //Get the intent that started this activity(LoginActivity) and extract the username(from editText in LoginActivity)
         Intent intent = getIntent();
         String userNameFromLoginActivity = intent.getStringExtra(LoginActivity.USERNAME);
         //Capture LoginActivity's(this activity) TextView and set the string from MainActivity into the TextView in LoginActivity(this activity)
-        TextView textView = (TextView) findViewById(R.id.userName);
-        textView.setText(userNameFromLoginActivity);
+        /*TextView textView = (TextView) findViewById(R.id.userName);
+        textView.setText(userNameFromLoginActivity);*/
 
         //Set ListFragment to hide from start
         ListFragment menuFragment = (ListFragment) fragmentManager.findFragmentById(R.id.listFragment);
@@ -71,7 +115,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         fragTransaction.commit();
 
         //Set textview, string from fragment, (viewmodel, observe)
-        fragmentText = findViewById(R.id.testTextMap);
+        //fragmentText = findViewById(R.id.testTextMap);
         viewModel = new ViewModelProvider(this).get(MenuViewModel.class);
         viewModel.getSelectedItem().observe(this, item ->{
             fragmentText.setText(item);
@@ -123,7 +167,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
-                            Log.d(TAG, "onComplet: found location!");
+                            Log.d(TAG, "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
                             moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
                                     DEFAULT_ZOOM);
@@ -163,6 +207,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
     //Move camera
