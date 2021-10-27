@@ -74,6 +74,7 @@
                  the emp_name so initializer block uses
                  the default values and
                  print to the standard output.</string>
+
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
@@ -177,4 +178,9 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="title_activity_maps">MapsActivity</string>
+
+    <!-- Map -->
+    <string name="map_search_hint">Sök gata, Adress,Område</string>
+
 </resources>
