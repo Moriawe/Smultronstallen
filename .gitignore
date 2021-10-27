@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Tobias gitignorefiles:
+.idea/deploymentTargetDropDown.xml
+
