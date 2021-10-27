@@ -74,6 +74,7 @@
                  the emp_name so initializer block uses
                  the default values and
                  print to the standard output.</string>
+
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
@@ -178,4 +179,8 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="title_activity_maps">MapsActivity</string>
+
+    <!-- Map -->
+    <string name="map_search_hint">Sök gata, Adress,Område</string>
+
 </resources>
