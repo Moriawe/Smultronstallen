@@ -50,7 +50,7 @@ import androidx.fragment.app.FragmentActivity;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
+//create getlocations branch tobias
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
     FragmentManager fragmentManager = getSupportFragmentManager();
     TextView fragmentText;
