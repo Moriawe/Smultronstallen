@@ -119,6 +119,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         // Add a new document named with the AuthUser ID AppUsers collection
         db.collection("AppUsers").document(userID)
+                //Tobias kommentar, ändrat till .set(appUser) istället för .update(appUser)
                 .set(appUser)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override

@@ -50,7 +50,7 @@ import androidx.fragment.app.FragmentActivity;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-//Create branch test
+
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
     FragmentManager fragmentManager = getSupportFragmentManager();
     TextView fragmentText;
@@ -101,25 +101,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        //Get the intent that started this activity(LoginActivity) and extract the username(from editText in LoginActivity)
-        Intent intent = getIntent();
-        String userNameFromLoginActivity = intent.getStringExtra(LoginActivity.USERNAME);
-        //Capture LoginActivity's(this activity) TextView and set the string from MainActivity into the TextView in LoginActivity(this activity)
-        /*TextView textView = (TextView) findViewById(R.id.userName);
-        textView.setText(userNameFromLoginActivity);*/
-
         //Set ListFragment to hide from start
         ListFragment menuFragment = (ListFragment) fragmentManager.findFragmentById(R.id.listFragment);
         FragmentTransaction fragTransaction = fragmentManager.beginTransaction();
         fragTransaction.hide(menuFragment);
         fragTransaction.commit();
-
-        //Set textview, string from fragment, (viewmodel, observe)
-        //fragmentText = findViewById(R.id.testTextMap);
-        viewModel = new ViewModelProvider(this).get(MenuViewModel.class);
-        viewModel.getSelectedItem().observe(this, item ->{
-            fragmentText.setText(item);
-        });
 
     }//end onCreate
 
@@ -182,24 +168,25 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }catch (SecurityException e) {
             Log.e(TAG, "getDeviceLocation: SecurityExeption: " + e.getMessage());
         }
-       if (locationPermissionsGranted) {
-            @SuppressLint("MissingPermission") //Permission Check is done!
-            Task location = mFusedLocationProviderClient.getLastLocation();
-            location.addOnCompleteListener(new OnCompleteListener() {
-                @Override
-                public void onComplete(@NonNull Task task) {
-                    if (task.isSuccessful()) {
-                        Log.d(TAG, "onComplete: found location");
-                        Location currentLocation = (Location) task.getResult();
-                        moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
-                                15f);
-                    } else {
-                        Log.d(TAG, "onComplete: found location");
-                        Toast.makeText(MapActivity.this, "Unable to find location", Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-        }
+        //Tobias Kommenterat ut för att kunna köra appen, samma vilkor i try/cath som i if: om (locationPermissionsGranted) är true körs båda eller?
+//       if (locationPermissionsGranted) {
+//            @SuppressLint("MissingPermission") //Permission Check is done!
+//            Task location = mFusedLocationProviderClient.getLastLocation();
+//            location.addOnCompleteListener(new OnCompleteListener() {
+//                @Override
+//                public void onComplete(@NonNull Task task) {
+//                    if (task.isSuccessful()) {
+//                        Log.d(TAG, "onComplete: found location");
+//                        Location currentLocation = (Location) task.getResult();
+//                        moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
+//                                15f);
+//                    } else {
+//                        Log.d(TAG, "onComplete: found location");
+//                        Toast.makeText(MapActivity.this, "Unable to find location", Toast.LENGTH_LONG).show();
+//                    }
+//                }
+//            });
+//        }
     }
 
     //Initialize the map

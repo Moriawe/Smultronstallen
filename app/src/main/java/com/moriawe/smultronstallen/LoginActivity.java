@@ -46,15 +46,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //Get the intent that started this activity(MainActivity) and extract the teststring(from editText in MainActivity)
-        Intent intent = getIntent();
-        String messageFromMainActivity = intent.getStringExtra(MainActivity.EXTRA_MESSAGE_KEY_FROM_MAIN_ACTIVITY);
-
-        //Capture LoginActivity's(this activity) TextView and set the string from MainActivity into the TextView in LoginActivity(this activity)
-        TextView textView = findViewById(R.id.textView);
-        textView.setText(messageFromMainActivity);
-
-
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -67,7 +58,6 @@ public class LoginActivity extends AppCompatActivity {
         userEmailET = findViewById(R.id.userEmailET);
         userPasswordET = findViewById(R.id.newPasswordET);
         CreateNewAccountTV = findViewById(R.id.CreateNewAccountTV);
-
 
     }
 
@@ -141,7 +131,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Add a new document named with the AuthUser ID AppUsers collection
         db.collection("AppUsers").document(userID)
-                .update(appUser)
+                .set(appUser)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {

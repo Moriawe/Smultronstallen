@@ -5,56 +5,73 @@
     android:layout_height="wrap_content"
     tools:context=".MenuFragment">
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_weight="1"></View>
-
-    <Button
-        android:id="@+id/completeListBtn"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:text="ALLA"
-        android:textSize="10dp" />
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_weight="1"></View>
-
-    <Button
-        android:id="@+id/friendsListBtn"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:text="VÄNNER"
-        android:textSize="10dp" />
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_weight="1"></View>
-
-    <Button
-        android:id="@+id/personalListBtn"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:text="EGNA"
-        android:textSize="10dp" />
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_weight="1"></View>
-
-    <Button
-        android:id="@+id/showHideBtnn"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:text="OPEN"
-        android:textSize="10dp" />
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_weight="1"></View>
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" >
+        </View>
+        <RadioButton android:id="@+id/completeListBtn"
+            android:text="@string/all_locations"
+            android:background="@drawable/custom_menu_button"
+            android:button="@android:color/transparent"
+            android:checked="true"
+            android:gravity="center"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:onClick="onRadioButtonClicked"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" >
+        </View>
+        <RadioButton android:id="@+id/friendsListBtn"
+            android:text="@string/friends_locations"
+            android:background="@drawable/custom_menu_button"
+            android:button="@android:color/transparent"
+            android:checked="false"
+            android:gravity="center"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:onClick="onRadioButtonClicked"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" >
+        </View>
+        <RadioButton android:id="@+id/personalListBtn"
+            android:text="@string/private_locations"
+            android:background="@drawable/custom_menu_button"
+            android:button="@android:color/transparent"
+            android:checked="false"
+            android:gravity="center"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:onClick="onRadioButtonClicked"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" >
+        </View>
+        <ToggleButton android:id="@+id/showHideBtn"
+            android:textOff="@string/arrow_down_show_list"
+            android:textOn="@string/arrow_up_hide_list"
+            android:background="@drawable/custom_menu_button"
+            android:button="@android:color/transparent"
+            android:checked="false"
+            android:gravity="center"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:textSize="20dp" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" >
+        </View>
+    </RadioGroup>
 </LinearLayout>

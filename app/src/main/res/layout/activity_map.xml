@@ -12,10 +12,27 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="48dp"
         tools:context=".MapActivity" />
+<!--  android:layout_marginTop="48dp"-->
 
+<!--    Map Search bar-->
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/map_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_marginLeft="68dp"
+        android:layout_marginRight="68dp"
+        android:alpha="0.7"
+        android:background="@drawable/smultron_search_bar"
+        app:iconifiedByDefault="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/menuFragment"
+        app:layout_constraintStart_toStartOf="@+id/menuFragment"
+        app:layout_constraintTop_toBottomOf="@+id/menuFragment"
+        app:layout_constraintVertical_bias="0.042"
+        app:queryHint="@string/map_search_hint" />
 <!--    List-->
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/listFragment"
         android:name="com.moriawe.smultronstallen.ListFragment"
@@ -39,22 +56,7 @@
         tools:layout="@layout/fragment_menu"
         tools:layout_editor_absoluteX="0dp" />
 
-<!--    Map Search bar-->
-    <androidx.appcompat.widget.SearchView
-        android:id="@+id/map_search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="37.9dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="55dp"
-        android:background="@drawable/smultron_search_bar"
-        app:iconifiedByDefault="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/menuFragment"
-        app:layout_constraintStart_toStartOf="@+id/menuFragment"
-        app:layout_constraintTop_toBottomOf="@+id/menuFragment"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintVertical_bias="0.028"
-        app:queryHint="@string/map_search_hint" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
