@@ -5,14 +5,25 @@ public class Smultronstalle {
     private String name;
     private String comment;
     private String picture;
-    private String adress;
+    private String address;
     private String lastUpdated;
     private boolean share;
 
+    // Empty constructor for the Firebase Firestore database
     public Smultronstalle() {
 
     }
 
+    // Constructor for creating objects/users in CreateAccount
+    public Smultronstalle(String name, String comment, String address, String lastUpdated, boolean share) {
+        this.name = name;
+        this.comment = comment;
+        this.address = address;
+        this.lastUpdated = lastUpdated;
+        this.share = share;
+    }
+
+    // Getters & Setters
 
     public String getName() {
         return name;
@@ -46,12 +57,12 @@ public class Smultronstalle {
         this.share = share;
     }
 
-    public String getAdress() {
-        return adress;
+    public String getAddress() {
+        return address;
     }
 
-    public void setAdress(String adress) {
-        this.adress = adress;
+    public void setAddress(String adress) {
+        this.address = adress;
     }
 
     public String getLastUpdated() {

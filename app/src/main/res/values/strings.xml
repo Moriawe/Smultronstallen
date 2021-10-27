@@ -1,5 +1,13 @@
 <resources>
     <string name="app_name">Smultronstallen</string>
+
+    <!-- Database keys -->
+    <string name="NAME_KEY">NickName</string>
+    <string name="EMAIL_KEY">Email</string>
+    <string name="ID_KEY">User-ID</string>
+    <string name="DATE_KEY">Account created</string>
+    <string name="LASTLOG_KEY">Last logged in</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="scrolltext">Kotlin is a statically typed,
@@ -177,4 +185,5 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="title_activity_maps">MapsActivity</string>
 </resources>

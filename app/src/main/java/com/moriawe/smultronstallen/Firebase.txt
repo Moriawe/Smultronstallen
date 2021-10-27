@@ -4,6 +4,12 @@
         FirebaseAuth.getInstance().signOut();
         Toast.makeText(this, "Signed out", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));
+<<<<<<< HEAD
+
+    } */
+
+=======
+>>>>>>> 49889e6bd30b18afaf930654840d7581bf099152
 
     } */
 
