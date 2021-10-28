@@ -19,8 +19,8 @@ import android.widget.ToggleButton;
 public class MenuFragment extends Fragment implements View.OnClickListener{
     MenuViewModel menuViewModel;
     private static final String MENU_BTN_CHOICE_ALL_LOCATIONS = "all";
-    private static final String MENU_BTN_CHOICE_FRIENDS_LOCATIONS = "friends";
-    private static final String MENU_BTN_CHOICE_PRIVATE_LOCATIONS = "private";
+    private static final String MENU_BTN_CHOICE_FRIENDS_LOCATIONS = "me";
+    private static final String MENU_BTN_CHOICE_PRIVATE_LOCATIONS = "friend";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
