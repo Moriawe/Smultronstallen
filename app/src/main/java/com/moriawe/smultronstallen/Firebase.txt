@@ -1,4 +1,9 @@
 
+    /* SIGN OUT METHOD
+    private void signOut(View view) {
+        FirebaseAuth.getInstance().signOut();
+        Toast.makeText(this, "Signed out", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, MainActivity.class));
 
 
 FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -26,6 +31,7 @@ db.collection("users")
                 Log.w(TAG, "Error adding document", e);
             }
         });
+
 
 
 //read data

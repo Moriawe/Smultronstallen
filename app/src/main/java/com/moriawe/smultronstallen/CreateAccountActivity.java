@@ -13,42 +13,76 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateAccountActivity extends AppCompatActivity {
 
+    String TAG = "Error in Create Account Activity";
+
+    // instances
     private FirebaseAuth mAuth;
-    private EditText userEmailET;
-    private EditText newPasswordET;
-    private EditText confirmPasswordET;
-    private Button createAccButton;
+    private FirebaseFirestore db;
+    DateTimeFormatter dtf;
+    LocalDateTime now;
+
+    // views in xml
+    EditText userEmailET;
+    EditText newPasswordET;
+    EditText confirmPasswordET;
+    EditText userNickNameET;
+    Button createAccButton;
+
+    // variables
+    private String nickName;
+    private String email;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_account);
 
+        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
+        // Makes an instance of Date&Time class
+        dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        now = LocalDateTime.now();
+
+        // Views in xml
         userEmailET =findViewById(R.id.userEmailET);
         newPasswordET = findViewById(R.id.newPasswordET);
         confirmPasswordET = findViewById(R.id.confirmPasswordET);
         createAccButton = findViewById(R.id.createAccBtn);
+        userNickNameET = findViewById(R.id.userNickNameET);
 
     }
 
+    // Called for when you press the Create Account Button
     public void createAccount(View view) {
 
-        String TAG = "Error in Create Account";
-
+        // Check if the password is the same on both fields and if it is long enough.
         if (checkPassword()) {
 
+            // Turn the editText into a string
             String password = newPasswordET.getText().toString();
-            String email = userEmailET.getText().toString();
+            email = userEmailET.getText().toString();
 
+            // Send email and password to mAuth to create a new account
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -57,13 +91,12 @@ public class CreateAccountActivity extends AppCompatActivity {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                updateUI(user);
+                                createNewUser();
+                                goToMap(user);
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                                Toast.makeText(CreateAccountActivity.this, "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
-                                updateUI(null);
+                                Toast.makeText(CreateAccountActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                             }
 
                         }
@@ -71,27 +104,85 @@ public class CreateAccountActivity extends AppCompatActivity {
         }
     }
 
-    private void updateUI(FirebaseUser user) {
+    // Creates a new user in the database for keeping information about the user, like nickname and profilepicture etc.
+    private void createNewUser() {
+
+        String userID = mAuth.getUid(); // Retrieves the userID from the current user.
+        nickName = userNickNameET.getText().toString(); // Reads in the nickname from the textView
+
+        // Adds the following info to the new user in the database. (Could be done without hashmap and instead use the AppUser class, requires further research. [Jennie])
+        Map<String, Object> appUser = new HashMap<>();
+        appUser.put(getString(R.string.NAME_KEY), nickName);
+        appUser.put(getString(R.string.EMAIL_KEY), email);
+        appUser.put(getString(R.string.DATE_KEY), dtf.format(now));
+        appUser.put(getString(R.string.LASTLOG_KEY), dtf.format(now));
+
+        // Add a new document named with the AuthUser ID AppUsers collection
+        db.collection("AppUsers").document(userID)
+                //Tobias kommentar, ändrat till .set(appUser) istället för .update(appUser)
+                .set(appUser)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(CreateAccountActivity.this, "Profile information was saved.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CreateAccountActivity.this, "ERROR! Profile information was NOT saved!", Toast.LENGTH_SHORT).show();
+                        Log.w(TAG, e.toString());
+                    }
+                });
+
+    }
+
+    private void updateLogIn() {
+
+        String userID = mAuth.getUid(); // Retrieves the userID from the current user.
+
+        // Adds the following info to the new user in the database. (Could be done without hashmap and instead use the AppUser class, requires further research. [Jennie])
+        Map<String, Object> appUser = new HashMap<>();
+        appUser.put(getString(R.string.LASTLOG_KEY), dtf.format(now));
+
+        // Add a new document named with the AuthUser ID AppUsers collection
+        db.collection("AppUsers").document(userID)
+                .update(appUser)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(CreateAccountActivity.this, "Time logged.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(CreateAccountActivity.this, "ERROR! Time not logged.", Toast.LENGTH_SHORT).show();
+                        Log.w(TAG, e.toString());
+                    }
+                });
+
+    }
+
+
+    // If the user successfully logs in they are sent to MapActivity, otherwise there will be an error message.
+    private void goToMap(FirebaseUser user) {
 
         if (user != null) {
+
+            updateLogIn();
 
             Intent intent = new Intent(getApplicationContext(), MapActivity.class);
             startActivity(intent);
 
         } else {
 
-            Toast.makeText(this, "No such user", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "User could not be created.", Toast.LENGTH_SHORT).show();
         }
     }
 
-    /* SIGN OUT METHOD
-    private void signOut(View view) {
-        FirebaseAuth.getInstance().signOut();
-        Toast.makeText(this, "Signed out", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, MainActivity.class));
 
-    } */
-
+    // Password check if the passwords match and are long enough.
     private boolean checkPassword() {
 
         if (validateForm()) {
@@ -108,7 +199,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                     return false;
                 }
             } else {
-                Toast.makeText(this, "Password needs to be at least 6 long. Try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Password needs to contain at least 6 characters. Try again.", Toast.LENGTH_SHORT).show();
                 return false;
             }
         } else {
@@ -117,10 +208,11 @@ public class CreateAccountActivity extends AppCompatActivity {
     }
 
 
+    // Runs in checkPassword to see if the user have filled all fields, if not they will be reminded to do so.
     private boolean validateForm() {
         boolean valid = true;
 
-        String email = userEmailET.getText().toString();
+        nickName = userEmailET.getText().toString();
         if (TextUtils.isEmpty(email)) {
             userEmailET.setError("Required.");
             valid = false;
@@ -128,15 +220,32 @@ public class CreateAccountActivity extends AppCompatActivity {
             userEmailET.setError(null);
         }
 
-        String password = newPasswordET.getText().toString();
-        if (TextUtils.isEmpty(password)) {
+        email = userEmailET.getText().toString();
+        if (TextUtils.isEmpty(email)) {
+            userEmailET.setError("Required.");
+            valid = false;
+        } else {
+            userEmailET.setError(null);
+        }
+
+        String newPassword = newPasswordET.getText().toString();
+        if (TextUtils.isEmpty(newPassword)) {
             newPasswordET.setError("Required.");
             valid = false;
         } else {
             newPasswordET.setError(null);
         }
 
+        String confirmPassword = confirmPasswordET.getText().toString();
+        if (TextUtils.isEmpty(confirmPassword)) {
+            confirmPasswordET.setError("Required.");
+            valid = false;
+        } else {
+            confirmPasswordET.setError(null);
+        }
+
         return valid;
     }
+
 
 }

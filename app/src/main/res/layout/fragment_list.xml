@@ -66,7 +66,7 @@
                 android:id="@+id/scrolltext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/scrolltext"
+                android:text="scolltext"
                 android:textColor="@color/black" />
 
 
