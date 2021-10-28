@@ -77,8 +77,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         searchView = findViewById(R.id.map_search_bar);
         mGps = (ImageView) findViewById(R.id.map_location_button);
 
-        Toast.makeText(this, "Creating", Toast.LENGTH_SHORT).show();
-
         //Asking for permission to use gps and initializing map
         getLocationPermission();
 
@@ -129,7 +127,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }//end addShowHideListener
 
     public void onMapReady(GoogleMap googleMap) {
-        Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
 
         if (locationPermissionsGranted) {
@@ -182,7 +179,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        Toast.makeText(this, "initMap", Toast.LENGTH_SHORT).show();
         mGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
