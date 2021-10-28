@@ -134,8 +134,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 return;
             }
             mMap.setMyLocationEnabled(true); //this default "myLocationButton" can't be manually positioned
-            // mMap.getUiSettings().setMyLocationButtonEnabled(false); //TO DO: Can make one manually later and hide the default with this command
-
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);//Type of map. Can be changed to satellite etc.
         }
 
@@ -168,25 +166,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }catch (SecurityException e) {
             Log.e(TAG, "getDeviceLocation: SecurityExeption: " + e.getMessage());
         }
-        //Tobias Kommenterat ut för att kunna köra appen, samma vilkor i try/cath som i if: om (locationPermissionsGranted) är true körs båda eller?
-//       if (locationPermissionsGranted) {
-//            @SuppressLint("MissingPermission") //Permission Check is done!
-//            Task location = mFusedLocationProviderClient.getLastLocation();
-//            location.addOnCompleteListener(new OnCompleteListener() {
-//                @Override
-//                public void onComplete(@NonNull Task task) {
-//                    if (task.isSuccessful()) {
-//                        Log.d(TAG, "onComplete: found location");
-//                        Location currentLocation = (Location) task.getResult();
-//                        moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),
-//                                15f);
-//                    } else {
-//                        Log.d(TAG, "onComplete: found location");
-//                        Toast.makeText(MapActivity.this, "Unable to find location", Toast.LENGTH_LONG).show();
-//                    }
-//                }
-//            });
-//        }
+
     }
 
     //Initialize the map
