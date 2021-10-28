@@ -11,39 +11,14 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toBottomOf="@+id/menuFragment"
-        tools:context=".MapActivity" />
-
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/listFragment"
-        android:name="com.moriawe.smultronstallen.ListFragment"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/map"
-        app:layout_constraintVertical_bias="1.0" />
-
-<!--    Menu with buttons-->
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/menuFragment"
-        android:name="com.moriawe.smultronstallen.MenuFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ffffff"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        tools:layout="@layout/fragment_menu"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:context=".MapActivity" />
 
     <!--    Map Search bar-->
     <androidx.appcompat.widget.SearchView
         android:id="@+id/map_search_bar"
         android:layout_width="match_parent"
-        android:layout_height="37.9dp"
+        android:layout_height="40dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="55dp"
         android:layout_marginTop="5dp"
@@ -55,11 +30,44 @@
         app:layout_constraintTop_toBottomOf="@+id/menuFragment"
         app:layout_constraintVertical_bias="0.0"
         app:queryHint="@string/map_search_hint" />
+
+    <ImageView
+        android:id="@+id/map_location_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="8dp"
+        android:background="@drawable/smultron_search_bar"
+        android:src="@drawable/icon_gps"
+        app:layout_constraintBottom_toBottomOf="@+id/map_search_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/map_search_bar"
+        app:layout_constraintTop_toTopOf="@+id/map_search_bar" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/listFragment"
+        android:name="com.moriawe.smultronstallen.ListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/map"
+        app:layout_constraintVertical_bias="0.0" />
+
+<!--    Menu with buttons-->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/menuFragment"
+        android:name="com.moriawe.smultronstallen.MenuFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout="@layout/fragment_menu"
+        tools:layout_editor_absoluteX="0dp" />
+
+
+
     <!--    List-->
 
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-<!--    tools:layout="@layout/fragment_list"--> <!--save?-->
