@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface LocationsProvider {
+
+    // This is what LocationProvider returns from instance Example: LocationsProvider.getInstance(this).getLocations(locations -> {}
     static LocationsProvider getInstance(Context context) {
 //        if (BuildConfig.DEBUG) {
 //            return new MockedCats(context);
@@ -70,9 +72,9 @@ public interface LocationsProvider {
     }//end LocationsProvider
 
 
+    //If we want to provide
 //    class MockedCats implements CatLocationProvider {
 //        public MockedCats(Context context) {
-//
 //        }
 //        @Override
 //        public void getCatLocations(Callback callback) {
@@ -94,22 +96,14 @@ public interface LocationsProvider {
         public String getImage() { return image; }
         public void setImage(String image) { this.image = image; }
 
-        public String getName() {
-            return name;
-        }
-        public void setName(String name) {
-            this.name = name;
-        }
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
 
-        public GeoPoint getLocation() {
-            return location;
-        }
+        public GeoPoint getLocation() { return location; }
         public void setLocation(GeoPoint location) { this.location = location; }
 
         public String getOwner() { return owner; }
         public void setOwner(String owner) { this.owner = owner; }
-
-
     }
 
 }

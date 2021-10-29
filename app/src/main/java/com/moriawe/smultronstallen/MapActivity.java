@@ -55,24 +55,16 @@ import androidx.fragment.app.FragmentActivity;
 
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
-    //Tobias
-    private static final String NAME_OF_COLLECTION = "Locations";
-    private static final String MENU_BTN_CHOICE_ALL_LOCATIONS = "all";
-    private static final String MENU_BTN_CHOICE_PRIVATE_LOCATIONS = "me";
-    private static final String MENU_BTN_CHOICE_FRIENDS_LOCATIONS = "friend";
+    private static final String FIREBASE_LOCATIONS_COLLECTION = "Locations";
     private FirebaseFirestore fireStore;
     private MenuViewModel menuChoiceViewModel;
-    //Tobias
-
-    FragmentManager fragmentManager = getSupportFragmentManager();
-    TextView fragmentText;
-    private MenuViewModel viewModel;
-
     //Map vars
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -80,15 +72,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final int LOCATION_PERMISSION_CODE = 101;
     private final float DEFAULT_ZOOM = 15f;
     SearchView searchView;
+    FragmentManager fragmentManager = getSupportFragmentManager();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TOBIAS
         fireStore = FirebaseFirestore.getInstance();
         menuChoiceViewModel = new ViewModelProvider(this).get(MenuViewModel.class);
-        //TOBIAS
 
         setContentView(R.layout.activity_map);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -97,17 +88,25 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //Asking for permission to use gps and initializing map
         getLocationPermission();
 
-        //TOBIAS
+        //Set initial value on ListFragment to hidden
+        ListFragment menuFragment = (ListFragment) fragmentManager.findFragmentById(R.id.listFragment);
+        FragmentTransaction fragTransaction = fragmentManager.beginTransaction();
+        fragTransaction.hide(menuFragment);
+        fragTransaction.commit();
+
+        //Observes menuBtnClicks, sorts Markers (Alla, Egna, Privata) when button is clicked in MenuFragment
         menuChoiceViewModel.getSelectedBtnValueChange().observe(this, filterLocationsChoice -> {
+            //Provider, render markers on map, provides and listen to updates from the FirebaseCollection, updates markers on map when data is changed on Firebase
             LocationsProvider.getInstance(this).getLocations(locations -> {
                 List<LocationsProvider.LocationClass> sortedList = new ArrayList<>();
-                if (filterLocationsChoice.equals(MENU_BTN_CHOICE_ALL_LOCATIONS)) {
+                if (filterLocationsChoice.equals(Constants.MENU_BTN_CHOICE_ALL_LOCATIONS)) {
                     sortedList.addAll(locations);
-                } else if (filterLocationsChoice.equals(MENU_BTN_CHOICE_PRIVATE_LOCATIONS)) {
-                    sortedList.addAll(filterAllFriendsOwn(locations, MENU_BTN_CHOICE_PRIVATE_LOCATIONS));
-                } else if (filterLocationsChoice.equals(MENU_BTN_CHOICE_FRIENDS_LOCATIONS)) {
-                    sortedList.addAll(filterAllFriendsOwn(locations, MENU_BTN_CHOICE_FRIENDS_LOCATIONS));
+                } else if (filterLocationsChoice.equals(Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS)) {
+                    sortedList.addAll(filterAllFriendsOwn(locations, Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS));
+                } else if (filterLocationsChoice.equals(Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS)) {
+                    sortedList.addAll(filterAllFriendsOwn(locations, Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS));
                 }
+                //Updates map
                 mapFragment.getMapAsync(googleMap -> {
                     googleMap.clear();
                     for (LocationsProvider.LocationClass sortedLocation : sortedList) {
@@ -118,10 +117,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     }
                 });
 
-            });//end Provider
-        });
-        //TOBIAS
-        //TOBIAS
+            });//end LocationsProvider
+        });//end menuChoiceViewModel
+
 
 
         //Search in map and move camera to searched location
@@ -149,18 +147,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        //Set ListFragment to hide from start
-        ListFragment menuFragment = (ListFragment) fragmentManager.findFragmentById(R.id.listFragment);
-        FragmentTransaction fragTransaction = fragmentManager.beginTransaction();
-        fragTransaction.hide(menuFragment);
-        fragTransaction.commit();
-
     }//end onCreate
-
-    private static LatLng convertGeoToLatLng(GeoPoint gp) {
-        return new LatLng(gp.getLatitude(), gp.getLongitude());
-    }
-    //TOBIAS
 
     //TOBIAS
     private List<LocationsProvider.LocationClass> filterAllFriendsOwn(List<LocationsProvider.LocationClass> locationsList, String text) {
@@ -209,25 +196,23 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-
                 Toast.makeText(MapActivity.this, "onMapClick:\n" + latLng.latitude + " : " + latLng.longitude, Toast.LENGTH_SHORT).show();
-
             }
         });
 
+        //Triggers onLongClick-method gets LatLng from maps
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(@NonNull LatLng latLng) {
-
                 onLongClick(latLng);
-
             }
         });
 
     }
 
+    //Jennie, notice commented out code in onLongClick-method to start AddPlaceActivity-intent sending LatLng values with the intent
+    //Generates/sets values and uploading Location-item to firebase
     private void onLongClick(LatLng latLng) {
-
         //Go to add event activity, sending LatLng with event
 //        goToAddPlaceActivity(latLng);
 
@@ -236,17 +221,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         final int randomNumber = new Random().nextInt((max - min) + 1) + min;
         Random randomOwner = new Random();
         //End generate randoms
-//        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-//        LocalDateTime now = LocalDateTime.now();
 
-        //Set values for loacationitem
+        //Set values loacationitem
         String name = "Rubrik" + randomNumber;
         String date = (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString());
         String image = "Imageurl" + randomNumber;
         GeoPoint gp = new GeoPoint(latLng.latitude, latLng.longitude);
-        String owner = randomOwner.nextBoolean() ? "me" : "friend";
+        String owner = randomOwner.nextBoolean() ? Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS : Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS;
 
-        //Create Locationitem
+        //Create locationitem
         LocationsProvider.LocationClass locationToSave = new LocationsProvider.LocationClass();
 
         //Add values to locationitem
@@ -257,7 +240,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         locationToSave.setOwner(owner);
 
         //Upload locationitem do database
-        Task<DocumentReference> task = fireStore.collection(NAME_OF_COLLECTION).add(locationToSave);
+        Task<DocumentReference> task = fireStore.collection(FIREBASE_LOCATIONS_COLLECTION).add(locationToSave);
         task.addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
             @Override
             public void onComplete(@NonNull Task<DocumentReference> task) {
@@ -266,30 +249,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
     }//End onLongClick
 
+
     //Go to add event activity, sending LatLng with event
+//    private void goToAddPlaceActivity(LatLng latLng) {
+//        if (latLng != null) {
+//            Intent goToAddPlaceActivityIntent = new Intent(this, AddPlaceActivity.class);
+//            goToAddPlaceActivityIntent.putExtra("latLng", convertLatLngToDoubleArray(latLng) );
+//            startActivity(goToAddPlaceActivityIntent);
+//        } else {
+//            Toast.makeText(this, "No LatLng provided", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+    // Convert LatLng so it can bes sent to AddPlaceActivity
+//    public ArrayList<Double> convertLatLngToDoubleArray (LatLng latLng) {
+//        ArrayList<Double> latLngArr = new ArrayList<>();
+//        double lat = latLng.latitude;
+//        double lng = latLng.longitude;
+//        latLngArr.add(lat);
+//        latLngArr.add(lng);
+//        return latLngArr;
+//    }
 
-    private void goToAddPlaceActivity(LatLng latLng) {
-        if (latLng != null) {
-            Intent goToAddPlaceActivityIntent = new Intent(this, AddPlaceActivity.class);
-            goToAddPlaceActivityIntent.putExtra("latLng", convertLatLngToDoubleArray(latLng) );
-            startActivity(goToAddPlaceActivityIntent);
-        } else {
-            Toast.makeText(this, "No LatLng provided", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public ArrayList<Double> convertLatLngToDoubleArray (LatLng latLng) {
-        ArrayList<Double> latLngArr = new ArrayList<>();
-        double lat = latLng.latitude;
-        double lng = latLng.longitude;
-        latLngArr.add(lat);
-        latLngArr.add(lng);
-        return latLngArr;
-    }
-
-    private void onLocationSaveComplete(Task<DocumentReference> task) {
-        Toast.makeText(MapActivity.this, "Uppladdning gick bra", Toast.LENGTH_SHORT).show();
-    }
 
     //Sets camera to current location. Runs method to ask for permission.
     private void getDeviceLocation() {
@@ -400,6 +380,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    //Helper methods converters, toasts
+    private static LatLng convertGeoToLatLng(GeoPoint gp) {
+        return new LatLng(gp.getLatitude(), gp.getLongitude());
+    }
 
+    private void onLocationSaveComplete(Task<DocumentReference> task) {
+        Toast.makeText(MapActivity.this, "Uppladdning gick bra", Toast.LENGTH_SHORT).show();
+    }
 
 }

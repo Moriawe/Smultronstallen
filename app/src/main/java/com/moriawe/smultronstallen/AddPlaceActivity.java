@@ -43,6 +43,8 @@ public class AddPlaceActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_place);
+
+        //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getexta Intent?)
 //        Intent intent = getIntent();
 //        //Getting LatLng values from putextas as a ArrayList<Double>
 //        ArrayList<Double> latLngArr = (ArrayList<Double>) intent.getSerializableExtra("latLng");
