@@ -130,6 +130,10 @@
     <string name="arrow_up_hide_list">▲</string>
     <string name="logga_ut">Logga ut</string>
 
+    <!-- Actionbar -->
+    <string name="action_menu_logout">Logga ut</string>
+    <string name="action_menu_info">Information</string>
+
     <!-- Database keys -->
 <!--    <string name="MENU_BTN_CHOICE_ALL_LOCATIONS">all</string>-->
 <!--    <string name="MENU_BTN_CHOICE_PRIVATE_LOCATIONS">private</string>-->
