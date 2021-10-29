@@ -4,97 +4,159 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 public class AddPlaceActivity extends AppCompatActivity {
 
+    String TAG = "Error in AddPlace Activity";
+
+    // Instances
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    DateTimeFormatter dtf;
+    LocalDateTime now;
+
+    // Objects
+    AppUser currentAppUser;
+    Smultronstalle smultronstalle;
+
+    // Info about the new place
+    String nameText;
+    String commentsText;
+    GeoPoint adress = new GeoPoint(52, 12); //TODO Just for trying it out now
+    boolean share = true; // TODO needs to read what the switch is
+    String addedBy; //TODO Make it work so it reads in the user NickName
+
+    // Views in XML
     TextView nyttStalle;
     EditText nameView;
-    EditText geopointView;
     EditText commentsView;
     Button submitButton;
-    TextView hamtaStalleView;
+    Switch shareSwitch;
 
-    public static final String NAME_KEY = "Name";
-    public static final String GEO_KEY = "Geopoint";
-    public static final String COMMENT_KEY = "Comment";
-
-    private DocumentReference mDocRef = FirebaseFirestore.getInstance().document("Smultronstalle/auto-ID");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_place);
 
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        // Makes an instance of Date&Time class
+        dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        now = LocalDateTime.now();
+
+        // The current user DOESN'T WORK!
+        //currentAppUser = new AppUser();
+
+        // Views in XML
         nyttStalle = (TextView) findViewById(R.id.nyttStalle);
         nameView = (EditText) findViewById(R.id.nameOfPlaceET);
-        geopointView = (EditText) findViewById(R.id.geoPointOfPlaceET);
         commentsView = (EditText) findViewById(R.id.commentsOfPlaceET);
         submitButton = (Button) findViewById(R.id.submitButton);
-        hamtaStalleView = (TextView) findViewById(R.id.hamtaStalle);
+        shareSwitch = (Switch) findViewById(R.id.share_switch);
+
+        nyttStalle.setText("Lägg till ett nytt Smultronställe på ´\n´" + adress);
 
     }
 
 
     public void submitPlace(View view) {
 
-        String nameText = nameView.getText().toString();
-        String commentsText = commentsView.getText().toString();
-        String geopointText = geopointView.getText().toString();
-        String TAG = "Submit Place";
+        // PART 1 - CHECK IF ALL IMPORTANT FIELDS (NAME AND COMMENTS) ARE FILLED
+        if (validateForm()) {
 
-        if (nameText.isEmpty() || commentsText.isEmpty() || geopointText.isEmpty()) {
-            return;
+            // PART 2 - FIND CURRENT USER AND MAKE A OBJECT OF APPUSER WITH CURRENT USER INFO / /TODO MAKE INTO SEPARATE METHOD
+            // Get's  the current users ID
+            String userID = mAuth.getCurrentUser().getUid();
+
+            // Tells the program where to look for information. In the collection AppUsers, the document named "userID"
+            db.collection("AppUsers").document(userID)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            AppUser user = documentSnapshot.toObject(AppUser.class); // Object must be made here, don't ask me why. [Jennie]
+                            addedBy = user.getNickName();
+                            savePlace(); // Calls for next method once the name is saved.
+
+                        }
+                    });
         }
-        Map<String, Object> dataToSave = new HashMap<String, Object>();
-        dataToSave.put(NAME_KEY, nameText);
-        dataToSave.put(COMMENT_KEY, commentsText);
-        dataToSave.put(GEO_KEY, geopointText);
-        mDocRef.set(dataToSave).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Log.d(TAG, "Document has been saved.");
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "Document was not saved!", e);
-            }
-        });
+    }
+
+    private void savePlace() {
+
+            // PART 3 - GET INFO ABOUT THE NEW SMULTRONSTALLE AND PUT IT INTO OBJECT.
+            // adress = new GeoPoint() // TODO from intent - mapActivity
+            // share = // from Switch
+            smultronstalle = new Smultronstalle(nameText, commentsText, adress, dtf.format(now), share, addedBy);
+
+            // PART 4 - LOAD THE OBJECT INTO THE DATABASE
+            // Makes a new document with a generated ID in the database and checks if the document was successfully created.
+            db.collection("Smultronstalle")
+                    .add(smultronstalle)
+                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                        @Override
+                        public void onSuccess(DocumentReference documentReference) {
+                            Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                            Toast.makeText(AddPlaceActivity.this, "Smultronstalle info saved to the database", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error adding document", e);
+                            Toast.makeText(AddPlaceActivity.this, "Smultronstalle info did not get saved correctly", Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
     }
 
-    public void fetchPlace(View view) {
-        mDocRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
+    private boolean validateForm() {
+        boolean valid = true;
 
-                    String nameText = documentSnapshot.getString(NAME_KEY);
-                    String geopointText = documentSnapshot.getString(GEO_KEY);
-                    String commentsText = documentSnapshot.getString(COMMENT_KEY);
+        nameText = nameView.getText().toString();
+        if (TextUtils.isEmpty(nameText)) {
+            nameView.setError("Required.");
+            valid = false;
+        } else {
+            nameView.setError(null);
+        }
 
-                    hamtaStalleView.setText(nameText + '\n'
-                                            + commentsText + '\n'
-                                            + geopointText);
+        commentsText = commentsView.getText().toString();
+        if (TextUtils.isEmpty(commentsText)) {
+            commentsView.setError("Required.");
+            valid = false;
+        } else {
+            commentsView.setError(null);
+        }
 
-                }
-            }
-        });
+        return valid;
     }
-
 
 }
