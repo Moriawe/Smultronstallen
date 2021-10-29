@@ -103,9 +103,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         searchView = findViewById(R.id.map_search_bar);
         mGps = (ImageView) findViewById(R.id.map_location_button);
 
-        //Actionbar
-
-
         //Asking for permission to use gps and initializing map
         getLocationPermission();
 
