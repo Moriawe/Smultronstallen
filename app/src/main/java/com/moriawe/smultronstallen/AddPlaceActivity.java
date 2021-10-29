@@ -3,6 +3,7 @@ package com.moriawe.smultronstallen;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -23,8 +25,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,6 +66,7 @@ public class AddPlaceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_place);
 
+
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -74,6 +79,14 @@ public class AddPlaceActivity extends AppCompatActivity {
         //currentAppUser = new AppUser();
 
         // Views in XML
+
+        //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getexta Intent?)
+        //Intent intent = getIntent();
+        //Getting LatLng values from putextas as a ArrayList<Double>
+        //ArrayList<Double> latLngArr = (ArrayList<Double>) intent.getSerializableExtra("latLng");
+        //Toast.makeText(this, latLngArr.get(0).toString() + " " +latLngArr.get(1).toString(), Toast.LENGTH_SHORT).show();
+
+
         nyttStalle = (TextView) findViewById(R.id.nyttStalle);
         nameView = (EditText) findViewById(R.id.nameOfPlaceET);
         commentsView = (EditText) findViewById(R.id.commentsOfPlaceET);

@@ -128,7 +128,7 @@
 
     <!-- Database keys -->
 <!--    <string name="MENU_BTN_CHOICE_ALL_LOCATIONS">all</string>-->
-<!--    <string name="MENU_BTN_CHOICE_PRIVATE_LOCATIONS">me</string>-->
+<!--    <string name="MENU_BTN_CHOICE_PRIVATE_LOCATIONS">private</string>-->
 <!--    <string name="MENU_BTN_CHOICE_FRIENDS_LOCATIONS">friends</string>-->
 
 </resources>
