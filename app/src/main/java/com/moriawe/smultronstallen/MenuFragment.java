@@ -18,9 +18,6 @@ import android.widget.ToggleButton;
 
 public class MenuFragment extends Fragment implements View.OnClickListener{
     MenuViewModel menuViewModel;
-    private static final String MENU_BTN_CHOICE_ALL_LOCATIONS = "all";
-    private static final String MENU_BTN_CHOICE_FRIENDS_LOCATIONS = "friends";
-    private static final String MENU_BTN_CHOICE_PRIVATE_LOCATIONS = "private";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -30,7 +27,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         //livedata with observer-functionality(update UI in activities/fragments when value is changed)
         menuViewModel = new ViewModelProvider(requireActivity()).get(MenuViewModel.class);
 
-        //Radiobuttons, enables you to see which button(category Alla, Egna, Privata) is highlighted/clicked
+        //Radiobuttons, enables you to see which button(choices Alla, Egna, Privata) is highlighted/clicked
         RadioButton completeListBtn = (RadioButton) view.findViewById(R.id.completeListBtn);
         completeListBtn.setOnClickListener(this);
 
@@ -44,6 +41,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         ToggleButton showHideBtn = (ToggleButton) view.findViewById(R.id.showHideBtn);
         showHideBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //Add handle error code
                 Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
                 ((MapActivity) getActivity()).showHideList();
             }
@@ -61,15 +59,15 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         switch(v.getId()) {
             case R.id.completeListBtn:
                 if (checked)
-                    menuViewModel.setData(MENU_BTN_CHOICE_ALL_LOCATIONS);
+                    menuViewModel.setData(Constants.MENU_BTN_CHOICE_ALL_LOCATIONS);
                 break;
             case R.id.friendsListBtn:
                 if (checked)
-                    menuViewModel.setData(MENU_BTN_CHOICE_PRIVATE_LOCATIONS);
+                    menuViewModel.setData(Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS);
                 break;
             case R.id.personalListBtn:
                 if (checked)
-                    menuViewModel.setData(MENU_BTN_CHOICE_FRIENDS_LOCATIONS);
+                    menuViewModel.setData(Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS);
                 break;
         }
     }
