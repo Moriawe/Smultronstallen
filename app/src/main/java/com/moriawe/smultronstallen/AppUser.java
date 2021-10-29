@@ -4,6 +4,7 @@ public class AppUser {
 
     private String nickName;
     private String email;
+
     private String accountCreated;
     private String lastLoggedIn;
 
