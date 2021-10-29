@@ -61,13 +61,11 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    //TODO Checks if the user is already logged in! Should be in main activity?? [Jennie]
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-
         sendUserToMap(currentUser);
     }
 
@@ -125,13 +123,9 @@ public class LoginActivity extends AppCompatActivity {
 
         String userID = mAuth.getUid(); // Retrieves the userID from the current user.
 
-        // Adds the following info to the new user in the database. (Could be done without hashmap and instead use the AppUser class, requires further research. [Jennie])
-        Map<String, Object> appUser = new HashMap<>();
-        appUser.put(getString(R.string.LASTLOG_KEY), dtf.format(now));
-
-        // Add a new document named with the AuthUser ID AppUsers collection
+        // Updates the AppUser/userID document with a new lastLoggedIn
         db.collection("AppUsers").document(userID)
-                .set(appUser)
+                .update("lastLoggedIn", dtf.format(now))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
