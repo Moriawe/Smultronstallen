@@ -406,11 +406,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         switch (item.getItemId()) {
             case R.id.action_logout:
                 signOut();
-
-        }
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
-            return true;
+                return true;
+            case R.id.action_info: //TODO: We need an activity with our information
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
