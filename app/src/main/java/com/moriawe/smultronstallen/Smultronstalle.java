@@ -1,13 +1,19 @@
 package com.moriawe.smultronstallen;
 
+import com.google.firebase.firestore.GeoPoint;
+
 public class Smultronstalle {
+
+    private GeoPoint adress;
 
     private String name;
     private String comment;
     private String picture;
-    private String address;
-    private String lastUpdated;
-    private boolean share;
+
+    private String dateCreated;
+
+    private boolean shared;
+    private String addedBy;
 
     // Empty constructor for the Firebase Firestore database
     public Smultronstalle() {
@@ -15,15 +21,25 @@ public class Smultronstalle {
     }
 
     // Constructor for creating objects/users in CreateAccount
-    public Smultronstalle(String name, String comment, String address, String lastUpdated, boolean share) {
+    public Smultronstalle(String name, String comment, GeoPoint adress, String dateCreated, boolean shared, String addedBy) {
         this.name = name;
         this.comment = comment;
-        this.address = address;
-        this.lastUpdated = lastUpdated;
-        this.share = share;
+        this.adress = adress;
+        this.dateCreated = dateCreated;
+        this.shared = shared;
+        this.addedBy = addedBy;
     }
 
     // Getters & Setters
+
+
+    public GeoPoint getAdress() {
+        return adress;
+    }
+
+    public void setAdress(GeoPoint adress) {
+        this.adress = adress;
+    }
 
     public String getName() {
         return name;
@@ -49,27 +65,27 @@ public class Smultronstalle {
         this.picture = picture;
     }
 
-    public boolean isShare() {
-        return share;
+    public String getDateCreated() {
+        return dateCreated;
     }
 
-    public void setShare(boolean share) {
-        this.share = share;
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
-    public String getAddress() {
-        return address;
+    public boolean isShared() {
+        return shared;
     }
 
-    public void setAddress(String adress) {
-        this.address = adress;
+    public void setShared(boolean shared) {
+        this.shared = shared;
     }
 
-    public String getLastUpdated() {
-        return lastUpdated;
+    public String getAddedBy() {
+        return addedBy;
     }
 
-    public void setLastUpdated(String lastUpdated) {
-        this.lastUpdated = lastUpdated;
+    public void setAddedBy(String addedBy) {
+        this.addedBy = addedBy;
     }
 }

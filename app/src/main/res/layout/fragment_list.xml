@@ -4,77 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/pink_primary"
+    android:fitsSystemWindows="true"
     tools:context=".ListFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp">
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="100dp">
 
-        <LinearLayout
+
+        <EditText
+            android:id="@+id/edittext"
+            android:background="@drawable/smultron_search_bar"
+            android:drawableLeft="@drawable/ic_search_black_24dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
+            android:layout_height="wrap_content"
+            android:hint="Search here"
+            android:imeOptions="actionDone"
+            android:clickable="true"
+            android:focusableInTouchMode="true"
+            android:singleLine="true"
+            android:focusable="true" />
 
-            <TextView
-                android:id="@+id/listeItem1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:background="@color/white"
-                android:padding="20dp"
-                android:text="Kartobjekt1" />
+<!--        <ListView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/listView" />-->
 
-            <TextView
-                android:id="@+id/listeItem2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:background="@color/white"
-                android:padding="20dp"
-                android:text="Kartobjekt2" />
-
-            <TextView
-                android:id="@+id/listeItem3"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_margin="12dp"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:gravity="top"
-                android:padding="20dp"
-                android:text="Kartobjekt2" />
-
-            <TextView
-                android:id="@+id/testTextList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TESTTEXTLIST"
-                android:textSize="40dp"
-                app:layout_constraintBottom_toBottomOf="@+id/background_image_view"
-                app:layout_constraintEnd_toEndOf="@+id/background_image_view"
-                app:layout_constraintStart_toStartOf="@+id/background_image_view"
-                app:layout_constraintTop_toTopOf="@+id/background_image_view" />
-
-            <TextView
-                android:id="@+id/scrolltext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="scolltext"
-                android:textColor="@color/black" />
-
-
-        </LinearLayout>
-
-
-    </ScrollView>
-
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="vertical" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

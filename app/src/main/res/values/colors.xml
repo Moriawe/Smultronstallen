@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    66CCCC
+
     <color name="pink_primary">#D89FC8</color>
     <color name="turquoise_primary">#6EC6D9</color>
 
@@ -13,4 +13,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="black_transparent">#99000000</color>
+
+    <color name="contact_name">#333333</color>
+    <color name="contact_number">#8c8c8c</color>
 </resources>
