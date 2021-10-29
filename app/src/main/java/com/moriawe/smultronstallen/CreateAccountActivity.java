@@ -31,23 +31,24 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     String TAG = "Error in Create Account Activity";
 
-    // instances
+    // Instances
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     DateTimeFormatter dtf;
     LocalDateTime now;
 
-    // views in xml
+    // Views in XML
     EditText userEmailET;
     EditText newPasswordET;
     EditText confirmPasswordET;
     EditText userNickNameET;
     Button createAccButton;
 
-    // variables
+    // Variables
     private String nickName;
     private String email;
 
+    private AppUser appUser;
 
 
     @Override
@@ -63,7 +64,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         now = LocalDateTime.now();
 
-        // Views in xml
+        // Views in XML
         userEmailET =findViewById(R.id.userEmailET);
         newPasswordET = findViewById(R.id.newPasswordET);
         confirmPasswordET = findViewById(R.id.confirmPasswordET);
@@ -91,8 +92,8 @@ public class CreateAccountActivity extends AppCompatActivity {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
+                                goToMap(user); // Changed places on goToMap and CreateNewUser since there was a delay when pushing the button [Jennie]
                                 createNewUser();
-                                goToMap(user);
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -110,16 +111,10 @@ public class CreateAccountActivity extends AppCompatActivity {
         String userID = mAuth.getUid(); // Retrieves the userID from the current user.
         nickName = userNickNameET.getText().toString(); // Reads in the nickname from the textView
 
-        // Adds the following info to the new user in the database. (Could be done without hashmap and instead use the AppUser class, requires further research. [Jennie])
-        Map<String, Object> appUser = new HashMap<>();
-        appUser.put(getString(R.string.NAME_KEY), nickName);
-        appUser.put(getString(R.string.EMAIL_KEY), email);
-        appUser.put(getString(R.string.DATE_KEY), dtf.format(now));
-        appUser.put(getString(R.string.LASTLOG_KEY), dtf.format(now));
+        appUser = new AppUser(nickName, email, dtf.format(now), dtf.format(now));
 
         // Add a new document named with the AuthUser ID AppUsers collection
         db.collection("AppUsers").document(userID)
-                //Tobias kommentar, ändrat till .set(appUser) istället för .update(appUser)
                 .set(appUser)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -137,17 +132,14 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     }
 
+    // Updates the lastLoggedIn key with date and time now.
     private void updateLogIn() {
 
         String userID = mAuth.getUid(); // Retrieves the userID from the current user.
 
-        // Adds the following info to the new user in the database. (Could be done without hashmap and instead use the AppUser class, requires further research. [Jennie])
-        Map<String, Object> appUser = new HashMap<>();
-        appUser.put(getString(R.string.LASTLOG_KEY), dtf.format(now));
-
-        // Add a new document named with the AuthUser ID AppUsers collection
+        // Tells the database to update lastLoggedIn with todays date and time
         db.collection("AppUsers").document(userID)
-                .update(appUser)
+                .update("lastLoggedIn", dtf.format(now))
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
