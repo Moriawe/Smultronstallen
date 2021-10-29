@@ -19,7 +19,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ListFragment extends Fragment implements ListAdapter.OnClickListItemListener{
 
     private View view;
@@ -111,7 +110,10 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
     @Override
     public void onItemClick(ListItem item) {
         //To do? get location data from listitemclick, close fragment and move mapCamera to clicked location or marker?
-        Toast.makeText(getContext(), item.toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), item.getTextGeoPoint(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
+        //Hide list
+        ((MapActivity) getActivity()).showHideList();
     }
 
 }
