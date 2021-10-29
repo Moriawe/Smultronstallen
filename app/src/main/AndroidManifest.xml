@@ -36,13 +36,6 @@
         <activity
             android:name=".UserSettings"
             android:exported="false" />
-
-        <activity
-            android:name=".AddPlaceActivity"
-            android:exported="false" />
-        <activity
-            android:name=".UserSettings"
-            android:exported="false" />
         <activity
             android:name=".CreateAccountActivity"
             android:exported="false" />
