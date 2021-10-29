@@ -12,6 +12,15 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.snackbar.Snackbar;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.moriawe.smultronstallen.databinding.ActivityMainBinding;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -25,6 +34,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.KeyEvent;
 
+import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
@@ -49,6 +59,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.moriawe.smultronstallen.databinding.ActivityMapBinding;
 
 //Search in map
 import android.location.Address;
@@ -92,6 +103,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         searchView = findViewById(R.id.map_search_bar);
         mGps = (ImageView) findViewById(R.id.map_location_button);
 
+        //Actionbar
+
+
         //Asking for permission to use gps and initializing map
         getLocationPermission();
 
@@ -130,8 +144,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             });//end LocationsProvider
         });//end menuChoiceViewModel
-
-
 
         //Search in map and move camera to searched location
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -324,10 +336,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
     }
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return true;
-    }
-
     //Move camera
     private void moveCamera(LatLng latLng, float zoom) {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
@@ -385,6 +393,37 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private void onLocationSaveComplete(Task<DocumentReference> task) {
         Toast.makeText(MapActivity.this, "Uppladdning gick bra", Toast.LENGTH_SHORT).show();
+    }
+
+    //Actionbar Overflow menu Inflate
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    //Actionbar Overflow menu Click method
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                signOut();
+
+        }
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_logout) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    //SIGN OUT METHOD
+    private void signOut() {
+        FirebaseAuth.getInstance().signOut();
+        Toast.makeText(this, "Signed out", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, MainActivity.class));
     }
 
 }
