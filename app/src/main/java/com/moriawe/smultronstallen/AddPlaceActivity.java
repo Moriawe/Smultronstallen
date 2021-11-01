@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -100,6 +101,11 @@ public class AddPlaceActivity extends Activity {
         // Read in lat and long from map and puts into adress.
         adress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
+        //Pernilla shortened geopoint so it would fit in textview whilst working on activity_add_place
+        float adressLong = (float) adress.getLongitude();
+        float adressLat = (float) adress.getLatitude();
+        String adressA = adressLat + ", " + adressLong;
+
 
         // TestString from Tobbe
         //Put lattngarrdata in geopoint
@@ -117,7 +123,8 @@ public class AddPlaceActivity extends Activity {
 
 
         // Writes out the text seen on top. TODO change Geopoint to a correct adress if possible [Jennie]
-        nyttStalle.setText("Lägg till ett nytt Smultronställe på ´\n´" + adress);
+        nyttStalle.setText (adressA); //Pernilla shortened text to fit in activity_add_place before getting streetnames
+                //("Lägg till ett nytt Smultronställe på ´\n´" + adress); //provar att ha endast adress
 
 
     }

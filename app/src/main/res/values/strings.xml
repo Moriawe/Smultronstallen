@@ -131,6 +131,11 @@
     <string name="action_menu_logout">Logga ut</string>
     <string name="action_menu_info">Information</string>
 
+    <!-- Add new place -->
+    <string name="comments">Kommentar</string>
+    <string name="headline">Rubrik</string>
+    <string name="adress">Adress</string>
+
     <!-- Database keys -->
 <!--    <string name="MENU_BTN_CHOICE_ALL_LOCATIONS">all</string>-->
 <!--    <string name="MENU_BTN_CHOICE_PRIVATE_LOCATIONS">private</string>-->
