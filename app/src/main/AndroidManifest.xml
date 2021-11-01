@@ -32,6 +32,7 @@
 
         <activity
             android:name=".AddPlaceActivity"
+            android:theme="@style/AppTheme.PopUp"
             android:exported="false" />
         <activity
             android:name=".UserSettings"

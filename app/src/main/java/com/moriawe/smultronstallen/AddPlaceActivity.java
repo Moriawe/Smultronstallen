@@ -1,13 +1,16 @@
 package com.moriawe.smultronstallen;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -29,7 +32,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-public class AddPlaceActivity extends AppCompatActivity {
+public class AddPlaceActivity extends Activity {
 
     String TAG = "Error in AddPlace Activity";
 
@@ -46,8 +49,7 @@ public class AddPlaceActivity extends AppCompatActivity {
     String nameText;
     String commentsText;
     GeoPoint adress;
-    GeoPoint testGeoFromMapActivity;
-    boolean share;
+    //GeoPoint testGeoFromMapActivity;
     String addedBy;
 
     // Views in XML
@@ -63,6 +65,21 @@ public class AddPlaceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_place);
 
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+
+        // Sets size for pop-up window
+        getWindow().setLayout((int)(width*.8), (int)(height*.7));
+
+        // set's window in the center of the screen
+        WindowManager.LayoutParams params = getWindow().getAttributes();
+        params.gravity = Gravity.CENTER;
+        params.x = 0;
+        params.y = -20;
+        getWindow().setAttributes(params);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -80,13 +97,16 @@ public class AddPlaceActivity extends AppCompatActivity {
         Intent intent = getIntent();
         //Getting LatLng values from putextas as a ArrayList<Double>
         ArrayList<Double> latLngArr = (ArrayList<Double>) intent.getSerializableExtra("latLng");
-        //Put lattngarrdata in geopoint
-        testGeoFromMapActivity = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
-        //Show created geopoint in toast
-        Toast.makeText(this, testGeoFromMapActivity.toString(), Toast.LENGTH_SHORT).show();
-
         // Read in lat and long from map and puts into adress.
         adress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
+
+
+        // TestString from Tobbe
+        //Put lattngarrdata in geopoint
+        //testGeoFromMapActivity = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
+        //Show created geopoint in toast
+        //Toast.makeText(this, testGeoFromMapActivity.toString(), Toast.LENGTH_SHORT).show();
+
 
         // Views in XML
         nyttStalle = (TextView) findViewById(R.id.nyttStalle);
