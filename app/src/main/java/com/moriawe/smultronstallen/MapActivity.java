@@ -197,6 +197,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         fragTransaction.commit();
     }//end addShowHideListener
 
+    //Runs map and moves camera to current location if permission is granted.
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
@@ -291,7 +292,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 //    }
 
 
-    //Sets camera to current location. Runs method to ask for permission.
+    //Sets camera to current location. Runs method to check permission.
     private void getDeviceLocation() {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -320,7 +321,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    //Initialize the map
+    //Initialize the map and custom made Location button
     private void initMap() {
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);

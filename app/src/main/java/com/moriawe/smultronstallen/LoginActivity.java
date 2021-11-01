@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,6 +61,27 @@ public class LoginActivity extends AppCompatActivity {
         userPasswordET = findViewById(R.id.newPasswordET);
         CreateNewAccountTV = findViewById(R.id.CreateNewAccountTV);
 
+    }
+
+    //Actionbar Overflow menu Inflate
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        menu.findItem(R.id.action_logout).setVisible(false);
+
+        return true;
+    }
+
+    //Actionbar Overflow menu Click method
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.action_info:
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
