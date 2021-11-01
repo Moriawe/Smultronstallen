@@ -36,29 +36,28 @@ public class MainActivity extends AppCompatActivity {
         startActivity(goToLoginIntent); //Start next activity(LoginActivity)
     }
 
-    // Actionbar inflate; this adds items to the action bar if it is present.
+    //Actionbar Overflow menu Inflate
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        menu.findItem(R.id.action_logout).setVisible(false);
+
         return true;
     }
 
-    // Actionbar clickable items
+    //Actionbar Overflow menu Click method
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        // If click is handled with
-        if (id == R.id.action_logout) {
-            signOut();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_info:
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
     // SIGN OUT METHOD
     private void signOut() {

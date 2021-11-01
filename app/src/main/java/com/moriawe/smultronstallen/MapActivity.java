@@ -80,6 +80,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final String FIREBASE_LOCATIONS_COLLECTION = "Locations";
     private FirebaseFirestore fireStore;
     private MenuViewModel menuChoiceViewModel;
+    private SupportMapFragment mapFragment;
+    private ListFragment menuFragment;
+    private FragmentTransaction fragTransaction;
 
     //Map vars
     private GoogleMap mMap;
@@ -99,21 +102,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         menuChoiceViewModel = new ViewModelProvider(this).get(MenuViewModel.class);
 
         setContentView(R.layout.activity_map);
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         searchView = findViewById(R.id.map_search_bar);
         mGps = (ImageView) findViewById(R.id.map_location_button);
-
-        //Actionbar
-
 
         //Asking for permission to use gps and initializing map
         getLocationPermission();
 
         //Set initial value on ListFragment to hidden
-        ListFragment menuFragment = (ListFragment) fragmentManager.findFragmentById(R.id.listFragment);
-        FragmentTransaction fragTransaction = fragmentManager.beginTransaction();
-        fragTransaction.hide(menuFragment);
-        fragTransaction.commit();
+        initMenuFragment();
+
 
         //Observes menuBtnClicks, sorts Markers (Alla, Egna, Privata) when button is clicked in MenuFragment
         menuChoiceViewModel.getSelectedBtnValueChange().observe(this, filterLocationsChoice -> {
@@ -140,10 +137,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         markerOption.title(sortedLocation.getName());
                         googleMap.addMarker(markerOption);
                     }
+
                 });
 
             });//end LocationsProvider
         });//end menuChoiceViewModel
+
+
+
 
         //Search in map and move camera to searched location
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -186,13 +187,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     //Show hide listfragment method is called from MenuFragment
         void showHideList() {
-        Fragment fragment = (Fragment) fragmentManager.findFragmentById(R.id.listFragment);
-        FragmentTransaction fragTransaction = fragmentManager.beginTransaction();
+        fragTransaction = fragmentManager.beginTransaction();
         fragTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        if (fragment.isHidden()) {
-            fragTransaction.show(fragment);
+        if (menuFragment.isHidden()) {
+            fragTransaction.show(menuFragment);
         } else {
-            fragTransaction.hide(fragment);
+            fragTransaction.hide(menuFragment);
         }
         fragTransaction.commit();
     }//end addShowHideListener
@@ -207,9 +207,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-
-            mMap.setMyLocationEnabled(true); //this default "myLocationButton" can't be manually positioned
-
             mMap.setMyLocationEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(false); //this can't be manually positioned. Making a custom.
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);//Type of map. Can be changed to satellite etc.
@@ -218,7 +215,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
-            public void onMapClick(LatLng latLng) {
+            public void onMapClick(@NonNull LatLng latLng) {
                 Toast.makeText(MapActivity.this, "onMapClick:\n" + latLng.latitude + " : " + latLng.longitude, Toast.LENGTH_SHORT).show();
             }
         });
@@ -325,7 +322,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     //Initialize the map
     private void initMap() {
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         mGps.setOnClickListener(new View.OnClickListener() {
@@ -386,6 +383,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    public void initMenuFragment() {
+        menuFragment = (ListFragment) fragmentManager.findFragmentById(R.id.listFragment);
+        fragTransaction = fragmentManager.beginTransaction();
+        fragTransaction.hide(menuFragment);
+        fragTransaction.commit();
+    }
+
     //Helper methods converters, toasts
     private static LatLng convertGeoToLatLng(GeoPoint gp) {
         return new LatLng(gp.getLatitude(), gp.getLongitude());
@@ -394,6 +398,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private void onLocationSaveComplete(Task<DocumentReference> task) {
         Toast.makeText(MapActivity.this, "Uppladdning gick bra", Toast.LENGTH_SHORT).show();
     }
+
 
     //Actionbar Overflow menu Inflate
     @Override
@@ -409,11 +414,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         switch (item.getItemId()) {
             case R.id.action_logout:
                 signOut();
-
-        }
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
-            return true;
+                return true;
+            case R.id.action_info: //TODO: We need an activity with our information
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

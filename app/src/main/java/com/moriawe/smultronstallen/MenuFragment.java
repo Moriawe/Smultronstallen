@@ -39,6 +39,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
 
         //ToggleButton, open or close LocationList
         ToggleButton showHideBtn = (ToggleButton) view.findViewById(R.id.showHideBtn);
+//        showHideBtn.setChecked(true);
         showHideBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 //Add handle error code

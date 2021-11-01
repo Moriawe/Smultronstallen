@@ -19,7 +19,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ListFragment extends Fragment implements ListAdapter.OnClickListItemListener{
 
     private View view;
@@ -53,12 +52,16 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
             Toast.makeText(getContext(), "change observer" + filterLocationsChoice, Toast.LENGTH_SHORT).show();
             LocationsProvider.getInstance(getContext()).getLocations(locations -> {
                 List<LocationsProvider.LocationClass> sortedList = new ArrayList<>();
-                if (filterLocationsChoice.equals(Constants.MENU_BTN_CHOICE_ALL_LOCATIONS)) {
-                    sortedList.addAll(locations);
-                } else if (filterLocationsChoice.equals(Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS)) {
-                    sortedList.addAll(filterAllFriendsOwn(locations, Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS));
-                } else if (filterLocationsChoice.equals(Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS)) {
-                    sortedList.addAll(filterAllFriendsOwn(locations, Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS));
+                switch (filterLocationsChoice) {
+                    case Constants.MENU_BTN_CHOICE_ALL_LOCATIONS:
+                        sortedList.addAll(locations);
+                        break;
+                    case Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS:
+                        sortedList.addAll(filterAllFriendsOwn(locations, Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS));
+                        break;
+                    case Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS:
+                        sortedList.addAll(filterAllFriendsOwn(locations, Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS));
+                        break;
                 }
                 createListAdaptedToRecyclerView(sortedList);
                 buildRecyclerView();
@@ -111,7 +114,9 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
     @Override
     public void onItemClick(ListItem item) {
         //To do? get location data from listitemclick, close fragment and move mapCamera to clicked location or marker?
-        Toast.makeText(getContext(), item.toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), item.getTextGeoPoint(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
+        //Hide list
     }
 
 }
