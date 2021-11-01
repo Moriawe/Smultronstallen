@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -44,9 +45,9 @@ public class AddPlaceActivity extends AppCompatActivity {
     // Info about the new place
     String nameText;
     String commentsText;
-    GeoPoint adress = new GeoPoint(52, 12); //TODO Just for trying it out now
+    GeoPoint adress; // = new GeoPoint(52, 12); //TODO Just for trying it out now
     GeoPoint testGeoFromMapActivity;
-    boolean share = true; // TODO needs to read what the switch is
+    boolean share;
     String addedBy;
 
     // Views in XML
@@ -80,6 +81,9 @@ public class AddPlaceActivity extends AppCompatActivity {
         testGeoFromMapActivity = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
         //Show created geopoint in toast
         Toast.makeText(this, testGeoFromMapActivity.toString(), Toast.LENGTH_SHORT).show();
+
+        // Read in lat and long from map and puts into adress.
+        adress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
 
         // Views in XML
@@ -158,6 +162,8 @@ public class AddPlaceActivity extends AppCompatActivity {
                     }
                 });
 
+        goBackToMap();
+
     }
 
 
@@ -199,6 +205,14 @@ public class AddPlaceActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    // If the user is correctly logged in they are sent to MapActivity, otherwise there will be an error toast.
+    private void goBackToMap() {
+
+            Intent goToMapActivityIntent = new Intent(this, MapActivity.class);
+            startActivity(goToMapActivityIntent);
+
     }
 
 }
