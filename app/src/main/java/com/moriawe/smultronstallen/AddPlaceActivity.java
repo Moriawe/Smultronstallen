@@ -1,11 +1,15 @@
 package com.moriawe.smultronstallen;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -15,6 +19,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +55,7 @@ public class AddPlaceActivity extends Activity {
     String nameText;
     String commentsText;
     GeoPoint adress;
+
     //GeoPoint testGeoFromMapActivity;
     String addedBy;
 
@@ -73,7 +79,7 @@ public class AddPlaceActivity extends Activity {
         int height = dm.heightPixels;
 
         // Sets size for pop-up window
-        getWindow().setLayout((int)(width*.8), (int)(height*.7));
+        getWindow().setLayout((int)(width*.75), (int)(height*.75));
 
         // set's window in the center of the screen
         WindowManager.LayoutParams params = getWindow().getAttributes();
@@ -93,7 +99,6 @@ public class AddPlaceActivity extends Activity {
         // New object - Smultronstalle
         smultronstalle = new Smultronstalle();
 
-
         //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getexta Intent?)
         Intent intent = getIntent();
         //Getting LatLng values from putextas as a ArrayList<Double>
@@ -101,7 +106,7 @@ public class AddPlaceActivity extends Activity {
         // Read in lat and long from map and puts into adress.
         adress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
-        //Pernilla shortened geopoint so it would fit in textview whilst working on activity_add_place
+        //Pernilla shortened geopoint so it would fit in textview whilst working on activity_add_place. //TODO: Remove the whole thing when geocoder is working
         float adressLong = (float) adress.getLongitude();
         float adressLat = (float) adress.getLatitude();
         String adressA = adressLat + ", " + adressLong;
@@ -120,15 +125,27 @@ public class AddPlaceActivity extends Activity {
         commentsView = (EditText) findViewById(R.id.commentsOfPlaceET);
         submitButton = (Button) findViewById(R.id.submitButton);
         shareSwitch = (Switch) findViewById(R.id.share_switch);
+        ImageView imageView = (ImageView) findViewById(R.id.new_place_image);
 
+        //Sets default image to logo
+        imageView.setImageResource(R.drawable.ic_logo_text);
 
         // Writes out the text seen on top. TODO change Geopoint to a correct adress if possible [Jennie]
-        nyttStalle.setText (adressA); //Pernilla shortened text to fit in activity_add_place before getting streetnames
-                //("Lägg till ett nytt Smultronställe på ´\n´" + adress); //provar att ha endast adress
+        nyttStalle.setText (adressA);
+                //("Lägg till ett nytt Smultronställe på ´\n´" + adress); //Pernilla shortened text to fit in activity_add_place before geocoding is working
+
+        //launch gallery and make images clickable
+        Button gallery = findViewById(R.id.gallery_btn);
+        gallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, 3);
+            }
+        });
 
 
     }
-
 
     // Method that runs when you push the SUBMIT button in the activity.
     public void submitPlace(View view) {
@@ -155,7 +172,6 @@ public class AddPlaceActivity extends Activity {
                     });
         }
     }
-
 
     // Saves the new Smultronstalle to the database once we have picked out the User's name from the submitPlace-method
     private void savePlace() {
@@ -191,7 +207,6 @@ public class AddPlaceActivity extends Activity {
 
     }
 
-
     // Checks what the switch is set to.
     private void checkVisibility() {
 
@@ -207,7 +222,6 @@ public class AddPlaceActivity extends Activity {
         });
 
     }
-
 
     // Checks so that all (name and comments) fields are filled in.
     private boolean validateForm() {
@@ -238,6 +252,19 @@ public class AddPlaceActivity extends Activity {
             Intent goToMapActivityIntent = new Intent(this, MapActivity.class);
             startActivity(goToMapActivityIntent);
 
+    }
+
+    // Pick an image from gallery and put it into image view
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //Checks if user clicks an image, and not cancelling action.
+        if((resultCode == RESULT_OK) && (data !=null)) {
+            Uri selectedImage = data.getData();
+            ImageView imageView = findViewById(R.id.new_place_image);
+            imageView.setImageURI(selectedImage);
+        }
     }
 
 }
