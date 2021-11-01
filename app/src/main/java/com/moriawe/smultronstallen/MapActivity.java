@@ -143,9 +143,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             });//end LocationsProvider
         });//end menuChoiceViewModel
 
-
-
-
         //Search in map and move camera to searched location
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
