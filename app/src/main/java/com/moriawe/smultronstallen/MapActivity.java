@@ -233,35 +233,38 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         locationToSave.setOwner(owner);
 
         //Upload locationitem do database
-        Task<DocumentReference> task = fireStore.collection(FIREBASE_LOCATIONS_COLLECTION).add(locationToSave);
-        task.addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentReference> task) {
-                onLocationSaveComplete(task);
-            }
-        });
+//        Task<DocumentReference> task = fireStore.collection(FIREBASE_LOCATIONS_COLLECTION).add(locationToSave);
+//        task.addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentReference> task) {
+//                onLocationSaveComplete(task);
+//            }
+//        });
+
+        //Go to add event activity, sending LatLng with event
+        goToAddPlaceActivity(latLng);
     }//End onLongClick
 
 
     //Go to add event activity, sending LatLng with event
-//    private void goToAddPlaceActivity(LatLng latLng) {
-//        if (latLng != null) {
-//            Intent goToAddPlaceActivityIntent = new Intent(this, AddPlaceActivity.class);
-//            goToAddPlaceActivityIntent.putExtra("latLng", convertLatLngToDoubleArray(latLng) );
-//            startActivity(goToAddPlaceActivityIntent);
-//        } else {
-//            Toast.makeText(this, "No LatLng provided", Toast.LENGTH_SHORT).show();
-//        }
-//    }
+    private void goToAddPlaceActivity(LatLng latLng) {
+        if (latLng != null) {
+            Intent goToAddPlaceActivityIntent = new Intent(this, AddPlaceActivity.class);
+            goToAddPlaceActivityIntent.putExtra("latLng", convertLatLngToDoubleArray(latLng) );
+            startActivity(goToAddPlaceActivityIntent);
+        } else {
+            Toast.makeText(this, "No LatLng provided", Toast.LENGTH_SHORT).show();
+        }
+    }
     // Convert LatLng so it can bes sent to AddPlaceActivity
-//    public ArrayList<Double> convertLatLngToDoubleArray (LatLng latLng) {
-//        ArrayList<Double> latLngArr = new ArrayList<>();
-//        double lat = latLng.latitude;
-//        double lng = latLng.longitude;
-//        latLngArr.add(lat);
-//        latLngArr.add(lng);
-//        return latLngArr;
-//    }
+    public ArrayList<Double> convertLatLngToDoubleArray (LatLng latLng) {
+        ArrayList<Double> latLngArr = new ArrayList<>();
+        double lat = latLng.latitude;
+        double lng = latLng.longitude;
+        latLngArr.add(lat);
+        latLngArr.add(lng);
+        return latLngArr;
+    }
 
 
     //Sets camera to current location. Runs method to check permission.

@@ -3,7 +3,7 @@ package com.moriawe.smultronstallen;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,6 +26,7 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class AddPlaceActivity extends AppCompatActivity {
 
@@ -45,6 +45,7 @@ public class AddPlaceActivity extends AppCompatActivity {
     String nameText;
     String commentsText;
     GeoPoint adress = new GeoPoint(52, 12); //TODO Just for trying it out now
+    GeoPoint testGeoFromMapActivity;
     boolean share = true; // TODO needs to read what the switch is
     String addedBy;
 
@@ -70,11 +71,16 @@ public class AddPlaceActivity extends AppCompatActivity {
         dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         now = LocalDateTime.now();
 
+
         //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getexta Intent?)
-        //Intent intent = getIntent();
+        Intent intent = getIntent();
         //Getting LatLng values from putextas as a ArrayList<Double>
-        //ArrayList<Double> latLngArr = (ArrayList<Double>) intent.getSerializableExtra("latLng");
-        //Toast.makeText(this, latLngArr.get(0).toString() + " " +latLngArr.get(1).toString(), Toast.LENGTH_SHORT).show();
+        ArrayList<Double> latLngArr = (ArrayList<Double>) intent.getSerializableExtra("latLng");
+        //Put lattngarrdata in geopoint
+        testGeoFromMapActivity = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
+        //Show created geopoint in toast
+        Toast.makeText(this, testGeoFromMapActivity.toString(), Toast.LENGTH_SHORT).show();
+
 
         // Views in XML
         nyttStalle = (TextView) findViewById(R.id.nyttStalle);
@@ -125,6 +131,7 @@ public class AddPlaceActivity extends AppCompatActivity {
         // adress = new GeoPoint() // TODO from intent - mapActivity
         // share = // from Switch
         //smultronstalle = new Smultronstalle(nameText, commentsText, adress, dtf.format(now), share, addedBy);
+
 
         smultronstalle.setName(nameText);
         smultronstalle.setComment(commentsText);
