@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/pop_bg"
     tools:context=".AddPlaceActivity">
 
     <TextView
@@ -27,21 +28,22 @@
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/commentsOfPlaceET"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.837" />
 
     <EditText
         android:id="@+id/commentsOfPlaceET"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginBottom="428dp"
+        android:layout_marginBottom="156dp"
         android:ems="10"
         android:hint="Kommentarer"
         android:inputType="textLongMessage"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -52,10 +54,10 @@
         android:text="Submit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.735"
+        app:layout_constraintHorizontal_bias="0.781"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/commentsOfPlaceET"
-        app:layout_constraintVertical_bias="0.1" />
+        app:layout_constraintVertical_bias="0.574" />
 
     <Switch
         android:id="@+id/share_switch"
@@ -64,8 +66,9 @@
         android:text="Share"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/submitButton"
+        app:layout_constraintHorizontal_bias="0.514"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/commentsOfPlaceET"
-        app:layout_constraintVertical_bias="0.122" />
+        app:layout_constraintVertical_bias="0.558" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
