@@ -72,6 +72,9 @@ public class AddPlaceActivity extends AppCompatActivity {
         dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         now = LocalDateTime.now();
 
+        // New object - Smultronstalle
+        smultronstalle = new Smultronstalle();
+
 
         //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getexta Intent?)
         Intent intent = getIntent();
@@ -85,7 +88,6 @@ public class AddPlaceActivity extends AppCompatActivity {
         // Read in lat and long from map and puts into adress.
         adress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
-
         // Views in XML
         nyttStalle = (TextView) findViewById(R.id.nyttStalle);
         nameView = (EditText) findViewById(R.id.nameOfPlaceET);
@@ -93,9 +95,11 @@ public class AddPlaceActivity extends AppCompatActivity {
         submitButton = (Button) findViewById(R.id.submitButton);
         shareSwitch = (Switch) findViewById(R.id.share_switch);
 
+
+        // Writes out the text seen on top. TODO change Geopoint to a correct adress if possible [Jennie]
         nyttStalle.setText("Lägg till ett nytt Smultronställe på ´\n´" + adress);
 
-        smultronstalle = new Smultronstalle();
+
 
 
     }
@@ -132,16 +136,12 @@ public class AddPlaceActivity extends AppCompatActivity {
     private void savePlace() {
 
         // PART 3 - GET INFO ABOUT THE NEW SMULTRONSTALLE AND PUT IT INTO OBJECT.
-        // adress = new GeoPoint() // TODO from intent - mapActivity
-        // share = // from Switch
-        //smultronstalle = new Smultronstalle(nameText, commentsText, adress, dtf.format(now), share, addedBy);
-
-
         smultronstalle.setName(nameText);
         smultronstalle.setComment(commentsText);
-        smultronstalle.setAdress(adress);
+        smultronstalle.setAdress(adress); // comes from the intent from MapActivity
         smultronstalle.setDateCreated(dtf.format(now));
         smultronstalle.setAddedBy(addedBy);
+        //smultronstalle.setShared(); - get's set in the CheckVisibility method
 
         // PART 4 - LOAD THE OBJECT INTO THE DATABASE
         // Makes a new document with a generated ID in the database and checks if the document was successfully created.
