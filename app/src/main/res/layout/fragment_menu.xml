@@ -73,5 +73,6 @@
             android:layout_height="1dp"
             android:layout_weight="1" >
         </View>
+
     </RadioGroup>
 </LinearLayout>

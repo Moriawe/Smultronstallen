@@ -2,15 +2,12 @@ package com.moriawe.smultronstallen;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.Toast;
@@ -18,6 +15,8 @@ import android.widget.ToggleButton;
 
 public class MenuFragment extends Fragment implements View.OnClickListener{
     MenuViewModel menuViewModel;
+    public ToggleButton showHideBtn;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,15 +37,19 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         personalListBtn.setOnClickListener(this);
 
         //ToggleButton, open or close LocationList
-        ToggleButton showHideBtn = (ToggleButton) view.findViewById(R.id.showHideBtn);
-//        showHideBtn.setChecked(true);
-        showHideBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //Add handle error code
-                Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
-                ((MapActivity) getActivity()).showHideList();
-            }
+        showHideBtn = (ToggleButton) view.findViewById(R.id.showHideBtn);
+
+        menuViewModel.getShowHideListValueFromListFragment().observe(getViewLifecycleOwner(), showHideListFromListFragment -> {
+            showHideBtn.setChecked(showHideListFromListFragment);
+
+            showHideBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
+                    menuViewModel.setShowHideList(!isChecked);
+                }
+            });
         });
+
         return view;
     }
 
@@ -60,15 +63,15 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         switch(v.getId()) {
             case R.id.completeListBtn:
                 if (checked)
-                    menuViewModel.setData(Constants.MENU_BTN_CHOICE_ALL_LOCATIONS);
+                    menuViewModel.setSelectedMenuBtnValue(Constants.MENU_BTN_CHOICE_ALL_LOCATIONS);
                 break;
             case R.id.friendsListBtn:
                 if (checked)
-                    menuViewModel.setData(Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS);
+                    menuViewModel.setSelectedMenuBtnValue(Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS);
                 break;
             case R.id.personalListBtn:
                 if (checked)
-                    menuViewModel.setData(Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS);
+                    menuViewModel.setSelectedMenuBtnValue(Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS);
                 break;
         }
     }
