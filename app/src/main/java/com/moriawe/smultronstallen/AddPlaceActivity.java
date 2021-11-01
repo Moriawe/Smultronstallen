@@ -45,7 +45,7 @@ public class AddPlaceActivity extends AppCompatActivity {
     // Info about the new place
     String nameText;
     String commentsText;
-    GeoPoint adress; // = new GeoPoint(52, 12); //TODO Just for trying it out now
+    GeoPoint adress;
     GeoPoint testGeoFromMapActivity;
     boolean share;
     String addedBy;
@@ -98,8 +98,6 @@ public class AddPlaceActivity extends AppCompatActivity {
 
         // Writes out the text seen on top. TODO change Geopoint to a correct adress if possible [Jennie]
         nyttStalle.setText("Lägg till ett nytt Smultronställe på ´\n´" + adress);
-
-
 
 
     }
@@ -207,7 +205,7 @@ public class AddPlaceActivity extends AppCompatActivity {
         return valid;
     }
 
-    // If the user is correctly logged in they are sent to MapActivity, otherwise there will be an error toast.
+    // Sends the user back to MapActivity after submitting a new place
     private void goBackToMap() {
 
             Intent goToMapActivityIntent = new Intent(this, MapActivity.class);
