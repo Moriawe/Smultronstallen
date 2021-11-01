@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -44,9 +45,9 @@ public class AddPlaceActivity extends AppCompatActivity {
     // Info about the new place
     String nameText;
     String commentsText;
-    GeoPoint adress = new GeoPoint(52, 12); //TODO Just for trying it out now
+    GeoPoint adress; // = new GeoPoint(52, 12); //TODO Just for trying it out now
     GeoPoint testGeoFromMapActivity;
-    boolean share = true; // TODO needs to read what the switch is
+    boolean share;
     String addedBy;
 
     // Views in XML
@@ -71,6 +72,9 @@ public class AddPlaceActivity extends AppCompatActivity {
         dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         now = LocalDateTime.now();
 
+        // New object - Smultronstalle
+        smultronstalle = new Smultronstalle();
+
 
         //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getexta Intent?)
         Intent intent = getIntent();
@@ -81,6 +85,8 @@ public class AddPlaceActivity extends AppCompatActivity {
         //Show created geopoint in toast
         Toast.makeText(this, testGeoFromMapActivity.toString(), Toast.LENGTH_SHORT).show();
 
+        // Read in lat and long from map and puts into adress.
+        adress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
         // Views in XML
         nyttStalle = (TextView) findViewById(R.id.nyttStalle);
@@ -89,9 +95,11 @@ public class AddPlaceActivity extends AppCompatActivity {
         submitButton = (Button) findViewById(R.id.submitButton);
         shareSwitch = (Switch) findViewById(R.id.share_switch);
 
+
+        // Writes out the text seen on top. TODO change Geopoint to a correct adress if possible [Jennie]
         nyttStalle.setText("Lägg till ett nytt Smultronställe på ´\n´" + adress);
 
-        smultronstalle = new Smultronstalle();
+
 
 
     }
@@ -128,16 +136,12 @@ public class AddPlaceActivity extends AppCompatActivity {
     private void savePlace() {
 
         // PART 3 - GET INFO ABOUT THE NEW SMULTRONSTALLE AND PUT IT INTO OBJECT.
-        // adress = new GeoPoint() // TODO from intent - mapActivity
-        // share = // from Switch
-        //smultronstalle = new Smultronstalle(nameText, commentsText, adress, dtf.format(now), share, addedBy);
-
-
         smultronstalle.setName(nameText);
         smultronstalle.setComment(commentsText);
-        smultronstalle.setAdress(adress);
+        smultronstalle.setAdress(adress); // comes from the intent from MapActivity
         smultronstalle.setDateCreated(dtf.format(now));
         smultronstalle.setAddedBy(addedBy);
+        //smultronstalle.setShared(); - get's set in the CheckVisibility method
 
         // PART 4 - LOAD THE OBJECT INTO THE DATABASE
         // Makes a new document with a generated ID in the database and checks if the document was successfully created.
@@ -157,6 +161,8 @@ public class AddPlaceActivity extends AppCompatActivity {
                         Toast.makeText(AddPlaceActivity.this, "Smultronstalle info did not get saved correctly", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+        goBackToMap();
 
     }
 
@@ -199,6 +205,14 @@ public class AddPlaceActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    // If the user is correctly logged in they are sent to MapActivity, otherwise there will be an error toast.
+    private void goBackToMap() {
+
+            Intent goToMapActivityIntent = new Intent(this, MapActivity.class);
+            startActivity(goToMapActivityIntent);
+
     }
 
 }
