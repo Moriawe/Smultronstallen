@@ -3,22 +3,21 @@ package com.moriawe.smultronstallen;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -28,9 +27,6 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AddPlaceActivity extends AppCompatActivity {
 
@@ -43,7 +39,6 @@ public class AddPlaceActivity extends AppCompatActivity {
     LocalDateTime now;
 
     // Objects
-    AppUser currentAppUser;
     Smultronstalle smultronstalle;
 
     // Info about the new place
@@ -51,7 +46,7 @@ public class AddPlaceActivity extends AppCompatActivity {
     String commentsText;
     GeoPoint adress = new GeoPoint(52, 12); //TODO Just for trying it out now
     boolean share = true; // TODO needs to read what the switch is
-    String addedBy; //TODO Make it work so it reads in the user NickName
+    String addedBy;
 
     // Views in XML
     TextView nyttStalle;
@@ -75,18 +70,13 @@ public class AddPlaceActivity extends AppCompatActivity {
         dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         now = LocalDateTime.now();
 
-        // The current user DOESN'T WORK!
-        //currentAppUser = new AppUser();
-
-        // Views in XML
-
         //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getexta Intent?)
         //Intent intent = getIntent();
         //Getting LatLng values from putextas as a ArrayList<Double>
         //ArrayList<Double> latLngArr = (ArrayList<Double>) intent.getSerializableExtra("latLng");
         //Toast.makeText(this, latLngArr.get(0).toString() + " " +latLngArr.get(1).toString(), Toast.LENGTH_SHORT).show();
 
-
+        // Views in XML
         nyttStalle = (TextView) findViewById(R.id.nyttStalle);
         nameView = (EditText) findViewById(R.id.nameOfPlaceET);
         commentsView = (EditText) findViewById(R.id.commentsOfPlaceET);
@@ -95,15 +85,19 @@ public class AddPlaceActivity extends AppCompatActivity {
 
         nyttStalle.setText("Lägg till ett nytt Smultronställe på ´\n´" + adress);
 
+        smultronstalle = new Smultronstalle();
+
+
     }
 
 
+    // Method that runs when you push the SUBMIT button in the activity.
     public void submitPlace(View view) {
 
-        // PART 1 - CHECK IF ALL IMPORTANT FIELDS (NAME AND COMMENTS) ARE FILLED
+        // PART 1 - CHECK IF ALL IMPORTANT FIELDS (NAME AND COMMENTS) ARE FILLED IN
         if (validateForm()) {
 
-            // PART 2 - FIND CURRENT USER AND MAKE A OBJECT OF APPUSER WITH CURRENT USER INFO / /TODO MAKE INTO SEPARATE METHOD
+            // PART 2 - FIND CURRENT USER AND MAKE A OBJECT OF APPUSER WITH CURRENT USER INFO
             // Get's  the current users ID
             String userID = mAuth.getCurrentUser().getUid();
 
@@ -115,6 +109,7 @@ public class AddPlaceActivity extends AppCompatActivity {
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             AppUser user = documentSnapshot.toObject(AppUser.class); // Object must be made here, don't ask me why. [Jennie]
                             addedBy = user.getNickName();
+                            checkVisibility();
                             savePlace(); // Calls for next method once the name is saved.
 
                         }
@@ -122,34 +117,61 @@ public class AddPlaceActivity extends AppCompatActivity {
         }
     }
 
+
+    // Saves the new Smultronstalle to the database once we have picked out the User's name from the submitPlace-method
     private void savePlace() {
 
-            // PART 3 - GET INFO ABOUT THE NEW SMULTRONSTALLE AND PUT IT INTO OBJECT.
-            // adress = new GeoPoint() // TODO from intent - mapActivity
-            // share = // from Switch
-            smultronstalle = new Smultronstalle(nameText, commentsText, adress, dtf.format(now), share, addedBy);
+        // PART 3 - GET INFO ABOUT THE NEW SMULTRONSTALLE AND PUT IT INTO OBJECT.
+        // adress = new GeoPoint() // TODO from intent - mapActivity
+        // share = // from Switch
+        //smultronstalle = new Smultronstalle(nameText, commentsText, adress, dtf.format(now), share, addedBy);
 
-            // PART 4 - LOAD THE OBJECT INTO THE DATABASE
-            // Makes a new document with a generated ID in the database and checks if the document was successfully created.
-            db.collection("Smultronstalle")
-                    .add(smultronstalle)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                            Toast.makeText(AddPlaceActivity.this, "Smultronstalle info saved to the database", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Error adding document", e);
-                            Toast.makeText(AddPlaceActivity.this, "Smultronstalle info did not get saved correctly", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+        smultronstalle.setName(nameText);
+        smultronstalle.setComment(commentsText);
+        smultronstalle.setAdress(adress);
+        smultronstalle.setDateCreated(dtf.format(now));
+        smultronstalle.setAddedBy(addedBy);
+
+        // PART 4 - LOAD THE OBJECT INTO THE DATABASE
+        // Makes a new document with a generated ID in the database and checks if the document was successfully created.
+        db.collection("Smultronstalle")
+                .add(smultronstalle)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+                        Toast.makeText(AddPlaceActivity.this, "Smultronstalle info saved to the database", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding document", e);
+                        Toast.makeText(AddPlaceActivity.this, "Smultronstalle info did not get saved correctly", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
+
+    // Checks what the switch is set to.
+    private void checkVisibility() {
+
+        //Switch shareSwitch = (ToggleButton) findViewById(R.id.share_switch);
+        shareSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    smultronstalle.setShared(true);
+                } else {
+                    smultronstalle.setShared(false);
+                }
+            }
+        });
+
+    }
+
+
+    // Checks so that all (name and comments) fields are filled in.
     private boolean validateForm() {
         boolean valid = true;
 
