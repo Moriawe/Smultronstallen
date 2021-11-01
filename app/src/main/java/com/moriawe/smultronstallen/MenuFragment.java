@@ -67,11 +67,11 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.friendsListBtn:
                 if (checked)
-                    menuViewModel.setSelectedMenuBtnValue(Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS);
+                    menuViewModel.setSelectedMenuBtnValue(Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS);
                 break;
             case R.id.personalListBtn:
                 if (checked)
-                    menuViewModel.setSelectedMenuBtnValue(Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS);
+                    menuViewModel.setSelectedMenuBtnValue(Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS);
                 break;
         }
     }

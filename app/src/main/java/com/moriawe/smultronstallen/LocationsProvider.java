@@ -34,6 +34,7 @@ public interface LocationsProvider {
 
     //Class FireStoreLocations
     class FireStoreLocations implements LocationsProvider, EventListener<QuerySnapshot> {
+        private static final String FIREBASE_LOCATIONS_COLLECTION = "Smultronstalle";
         private static final String TAG = FireStoreLocations.class.getSimpleName();;
         FirebaseFirestore store;
         List<Callback> subscribers = new ArrayList<>();
@@ -42,7 +43,7 @@ public interface LocationsProvider {
         // FireStoreLocations Constructor
         FireStoreLocations(Context context) {
             store = FirebaseFirestore.getInstance();
-            store.collection("Locations").addSnapshotListener(this);
+            store.collection(FIREBASE_LOCATIONS_COLLECTION).addSnapshotListener(this);
             receivedContext = context;
         }
 
@@ -85,17 +86,25 @@ public interface LocationsProvider {
         private List<LocationClass> parseDocuments(List<DocumentSnapshot> documents) {
             List<LocationClass> locations = new ArrayList<>();
             for (DocumentSnapshot document : documents) {
+                GeoPoint adress = document.getGeoPoint("adress");
                 String name = document.getString("name");
-                String image = document.getString("image");
-                String date = document.getString("date");
-                GeoPoint gp = document.getGeoPoint("location");
-                String owner = document.getString("owner");
+                String comment = document.getString("comment");
+                String picture = document.getString("picture");
+                String date = document.getString("dateCreated");
+                Boolean shared = document.getBoolean("shared");
+                String addedBy = document.getString("addedBy");
+
                 LocationClass location = new LocationClass();
-                location.setLocation(gp);
+
+                location.setAdress(adress);
                 location.setName(name);
-                location.setDate(date);
-                location.setImage(image);
-                location.setOwner(owner);
+                location.setComment(comment);
+                location.setPicture(picture);
+                location.setDateCreated(date);
+                location.setShared(shared);
+                location.setAddedBy(addedBy);
+
+                //Add values to location item
                 locations.add(location);
             }
             return locations;
@@ -118,26 +127,46 @@ public interface LocationsProvider {
 
 
     static class LocationClass {
+        private GeoPoint adress;
         private String name;
-        private String image;
-        private String date;
-        private GeoPoint location;
-        private String owner;
+        private String comment;
 
-        public String getDate() { return date; }
-        public void setDate(String date) { this.date = date; }
+        private String picture;
+        private String dateCreated;
 
-        public String getImage() { return image; }
-        public void setImage(String image) { this.image = image; }
+        private Boolean shared;
+        private String addedBy;
+
+        public String getComment() {
+            return comment;
+        }
+
+        public void setComment(String comment) {
+            this.comment = comment;
+        }
+
+        public String getAddedBy() {
+            return addedBy;
+        }
+
+        public void setAddedBy(String addedBy) {
+            this.addedBy = addedBy;
+        }
+
+        public String getDateCreated() { return dateCreated; }
+        public void setDateCreated(String dateCreated) { this.dateCreated = dateCreated; }
+
+        public String getPicture() { return picture; }
+        public void setPicture(String picture) { this.picture = picture; }
 
         public String getName() { return name; }
         public void setName(String name) { this.name = name; }
 
-        public GeoPoint getLocation() { return location; }
-        public void setLocation(GeoPoint location) { this.location = location; }
+        public GeoPoint getAdress() { return adress; }
+        public void setAdress(GeoPoint adress) { this.adress = adress; }
 
-        public String getOwner() { return owner; }
-        public void setOwner(String owner) { this.owner = owner; }
+        public Boolean getShared() { return shared; }
+        public void setShared(Boolean shared) { this.shared = shared; }
     }//end LocationClass
 
 }//end interface LocationsProvider

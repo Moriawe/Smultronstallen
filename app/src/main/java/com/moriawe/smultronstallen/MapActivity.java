@@ -19,7 +19,6 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
 
 import android.view.Menu;
@@ -51,11 +50,9 @@ import androidx.appcompat.widget.SearchView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
     FragmentManager fragmentManager = getSupportFragmentManager();
-    private static final String FIREBASE_LOCATIONS_COLLECTION = "Locations";
     private FirebaseFirestore fireStore;
     private MenuViewModel menuChoiceViewModel;
     private SupportMapFragment mapFragment;
@@ -94,38 +91,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             showHideList(showHideList);
         });
 
-
+        //Get latest values from firebase, listening to updates
         LocationsProvider.getInstance(this).getLocations(locations -> {
+            //Get selected value from menuBtns, listening to btnClicks
             menuChoiceViewModel.getSelectedBtnValue().observe(this, filterLocationsChoice -> {
+                //Declaring empty array to store filtered list in
                 List<LocationsProvider.LocationClass> sortedList = new ArrayList<>();
-                switch (filterLocationsChoice) {
-                    case Constants.MENU_BTN_CHOICE_ALL_LOCATIONS:
-                        sortedList.addAll(locations);
-                        break;
-                    case Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS:
-                        sortedList.addAll(filterAllFriendsOwn(locations, Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS));
-                        break;
-                    case Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS:
-                        sortedList.addAll(filterAllFriendsOwn(locations, Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS));
-                        break;
-                }
+                //Adding filtered array from method: filterListMenuChoice()
+                sortedList.addAll(filterListMenuChoice(locations, filterLocationsChoice));
 
-                //Updates map
+                //Update map with filtered array
                 mapFragment.getMapAsync(googleMap -> {
                     googleMap.clear();
                     for (LocationsProvider.LocationClass sortedLocation : sortedList) {
                         MarkerOptions markerOption = new MarkerOptions();
-                        markerOption.position(convertGeoToLatLng(sortedLocation.getLocation()));
+                        markerOption.position(convertGeoToLatLng(sortedLocation.getAdress()));
                         markerOption.title(sortedLocation.getName());
                         googleMap.addMarker(markerOption);
                     }
-
                 });
-
             });//end menuChoiceViewModel
-
         });//end LocationsProvider
-
 
 
         //Search in map and move camera to searched location
@@ -155,15 +141,33 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }//end onCreate
 
-    private List<LocationsProvider.LocationClass> filterAllFriendsOwn(List<LocationsProvider.LocationClass> locationsList, String text) {
+    private List<LocationsProvider.LocationClass> filterListMenuChoice(List<LocationsProvider.LocationClass> locationsList, String filterLocationsChoice) {
         List<LocationsProvider.LocationClass> filteredList = new ArrayList<>();
-        for (LocationsProvider.LocationClass item : locationsList) {
-            if (item.getOwner().toLowerCase().contains(text.toLowerCase())) {
 
-                filteredList.add(item);
-
-            }
+        switch (filterLocationsChoice) {
+            case Constants.MENU_BTN_CHOICE_ALL_LOCATIONS:
+                for (LocationsProvider.LocationClass item : locationsList) {
+                    if (item.getAddedBy().equals("Morot") || item.getShared() == true) {
+                        filteredList.add(item);
+                    }
+                }
+                break;
+            case Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS:
+                for (LocationsProvider.LocationClass item : locationsList) {
+                    if (!item.getAddedBy().equals("Morot") && item.getShared() == true) {
+                        filteredList.add(item);
+                    }
+                }
+                break;
+            case Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS:
+                for (LocationsProvider.LocationClass item : locationsList) {
+                    if (item.getAddedBy().equals("Morot")) {
+                        filteredList.add(item);
+                    }
+                }
+                break;
         }
+
         return filteredList;
     }
 
@@ -210,27 +214,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 //        goToAddPlaceActivity(latLng);
 
         //Generate randoms to make give random values to location when adding marker on map
-        final int min = 10, max = 100;
-        final int randomNumber = new Random().nextInt((max - min) + 1) + min;
-        Random randomOwner = new Random();
-        //End generate randoms
-
-        //Set values loacationitem
-        String name = "Rubrik" + randomNumber;
-        String date = (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString());
-        String image = "Imageurl" + randomNumber;
-        GeoPoint gp = new GeoPoint(latLng.latitude, latLng.longitude);
-        String owner = randomOwner.nextBoolean() ? Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS : Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS;
-
-        //Create locationitem
-        LocationsProvider.LocationClass locationToSave = new LocationsProvider.LocationClass();
-
-        //Add values to locationitem
-        locationToSave.setName(name);
-        locationToSave.setDate(date);
-        locationToSave.setImage(image);
-        locationToSave.setLocation(gp);
-        locationToSave.setOwner(owner);
+//        final int min = 10, max = 100;
+//        final int randomNumber = new Random().nextInt((max - min) + 1) + min;
+//        Random randomOwner = new Random();
+//        //End generate randoms
+//
+//        //Set values loacationitem
+//        String name = "Rubrik" + randomNumber;
+//        String date = (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString());
+//        String image = "Imageurl" + randomNumber;
+//        GeoPoint gp = new GeoPoint(latLng.latitude, latLng.longitude);
+//        String owner = randomOwner.nextBoolean() ? Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS : Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS;
+//
+//        //Create locationitem
+//        LocationsProvider.LocationClass locationToSave = new LocationsProvider.LocationClass();
+//
+//        //Add values to locationitem
+//        locationToSave.setName(name);
+//        locationToSave.setDateCreated(date);
+//        locationToSave.setPicture(image);
+//        locationToSave.setAdress(gp);
+//        locationToSave.setShared(owner);
 
         //Upload locationitem do database
 //        Task<DocumentReference> task = fireStore.collection(FIREBASE_LOCATIONS_COLLECTION).add(locationToSave);
