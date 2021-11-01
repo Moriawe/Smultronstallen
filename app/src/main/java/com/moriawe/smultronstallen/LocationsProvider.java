@@ -1,6 +1,8 @@
 package com.moriawe.smultronstallen;
 
 import android.content.Context;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -18,24 +20,30 @@ public interface LocationsProvider {
 
     // This is what LocationProvider returns from instance Example: LocationsProvider.getInstance(this).getLocations(locations -> {}
     static LocationsProvider getInstance(Context context) {
+        Log.d("Context in Locationsproveder", context.toString());
 //        if (BuildConfig.DEBUG) {
-//            return new MockedCats(context);
+//           return new MockedLocationsNotFromFirestore(context);
 //        } else {
             return new FireStoreLocations(context);
 //        }
     }
 
-    interface Callback { void onLocationsCallback(List<LocationClass> locations);}
+    interface Callback { void onLocations(List<LocationClass> locations);}
     void getLocations(Callback callback);
 
 
+    //Class FireStoreLocations
     class FireStoreLocations implements LocationsProvider, EventListener<QuerySnapshot> {
+        private static final String TAG = FireStoreLocations.class.getSimpleName();;
         FirebaseFirestore store;
         List<Callback> subscribers = new ArrayList<>();
+        Context receivedContext;
 
+        // FireStoreLocations Constructor
         FireStoreLocations(Context context) {
             store = FirebaseFirestore.getInstance();
             store.collection("Locations").addSnapshotListener(this);
+            receivedContext = context;
         }
 
         @Override
@@ -44,13 +52,35 @@ public interface LocationsProvider {
         }
 
         @Override
-        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-            //Add handle error
-            List<LocationClass> updates = parseDocuments(value.getDocuments());
-            for (Callback subscriber : subscribers) {
-                subscriber.onLocationsCallback(updates);
+        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException e) {
+
+            if (e != null) {
+
+                Log.w(TAG, "Listen failed.", e);
+
+                return;
+
             }
-        }
+
+            if (value != null) {
+
+                Log.d(TAG, "Listen succeeded"); //Log.d(TAG, "Current data: " + value.getDocuments());
+                Toast.makeText(receivedContext, "Listen succeeded", Toast.LENGTH_SHORT).show();
+
+                List<LocationClass> updates = parseDocuments(value.getDocuments());
+                for (Callback subscriber : subscribers) {
+
+                    subscriber.onLocations(updates);
+
+                }
+
+            } else {
+
+                Log.d(TAG, "Listen succeeded but current data is null");
+
+            }
+
+        }// end onEvent
 
         private List<LocationClass> parseDocuments(List<DocumentSnapshot> documents) {
             List<LocationClass> locations = new ArrayList<>();
@@ -73,15 +103,18 @@ public interface LocationsProvider {
     }//end LocationsProvider
 
 
-    //If we want to provide
-//    class MockedCats implements CatLocationProvider {
-//        public MockedCats(Context context) {
-//        }
-//        @Override
-//        public void getCatLocations(Callback callback) {
-//            callback.onCats(new ArrayList<>());
-//        }
-//    }//End mocked cats
+    //If we want to provide something  else
+    /*
+    class MockedLocationsNotFromFirestore implements LocationsProvider {
+        MockedLocationsNotFromFirestore(Context context) {
+
+        }
+        @Override
+        public void getLocations(Callback callback) {
+
+        }
+    }
+    */
 
 
     static class LocationClass {
@@ -105,6 +138,6 @@ public interface LocationsProvider {
 
         public String getOwner() { return owner; }
         public void setOwner(String owner) { this.owner = owner; }
-    }
+    }//end LocationClass
 
-}
+}//end interface LocationsProvider

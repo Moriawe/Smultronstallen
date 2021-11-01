@@ -27,6 +27,7 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
     private ListAdapter listAdapter;
     private RecyclerView.LayoutManager listLayoutManager;
     private MenuViewModel menuChoiceViewModel;
+//    private Boolean;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,9 +49,9 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
             }
         });
 
-        menuChoiceViewModel.getSelectedBtnValueChange().observe(getViewLifecycleOwner(), filterLocationsChoice -> {
-            Toast.makeText(getContext(), "change observer" + filterLocationsChoice, Toast.LENGTH_SHORT).show();
-            LocationsProvider.getInstance(getContext()).getLocations(locations -> {
+        LocationsProvider.getInstance(getContext()).getLocations(locations -> {
+            menuChoiceViewModel.getSelectedBtnValue().observe(getViewLifecycleOwner(), filterLocationsChoice -> {
+                Toast.makeText(getContext(), "change observer " + filterLocationsChoice, Toast.LENGTH_SHORT).show();
                 List<LocationsProvider.LocationClass> sortedList = new ArrayList<>();
                 switch (filterLocationsChoice) {
                     case Constants.MENU_BTN_CHOICE_ALL_LOCATIONS:
@@ -65,8 +66,8 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
                 }
                 createListAdaptedToRecyclerView(sortedList);
                 buildRecyclerView();
-            });//end Provider
-        });
+            });//end ChoiceViewModel
+        });//end LocationsProvider
 
         return view;
 
@@ -96,7 +97,7 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
     private void createListAdaptedToRecyclerView(List<LocationsProvider.LocationClass> locations) {
         locationsList = new ArrayList<>();
         for (LocationsProvider.LocationClass location : locations) {
-            locationsList.add(new ListItem(location.getName(), location.getDate(), location.getImage(), location.getLocation().toString()));
+            locationsList.add(new ListItem(location.getName(), location.getDate(), location.getImage(), location.getLocation()));
         }
     }
 
@@ -114,8 +115,9 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
     @Override
     public void onItemClick(ListItem item) {
         //To do? get location data from listitemclick, close fragment and move mapCamera to clicked location or marker?
-        Toast.makeText(getContext(), item.getTextGeoPoint(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), item.getTextGeoPoint().toString(), Toast.LENGTH_SHORT).show();
         Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
+        menuChoiceViewModel.setShowHideListValueFromListFragment(false);
         //Hide list
     }
 

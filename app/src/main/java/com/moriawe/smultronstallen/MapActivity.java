@@ -3,45 +3,30 @@ package com.moriawe.smultronstallen;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.snackbar.Snackbar;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
 import com.google.firebase.auth.FirebaseAuth;
-import com.moriawe.smultronstallen.databinding.ActivityMainBinding;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.view.KeyEvent;
 
 import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 //Google Maps
@@ -55,22 +40,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-import com.moriawe.smultronstallen.databinding.ActivityMapBinding;
 
 //Search in map
-import android.location.Address;
-import android.location.Geocoder;
 import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.FragmentActivity;
 
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -111,11 +89,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //Set initial value on ListFragment to hidden
         initMenuFragment();
 
+        //Observes showHideListMenuBtn-click
+        menuChoiceViewModel.getShowHideListValue().observe(this, showHideList -> {
+            showHideList(showHideList);
+        });
 
-        //Observes menuBtnClicks, sorts Markers (Alla, Egna, Privata) when button is clicked in MenuFragment
-        menuChoiceViewModel.getSelectedBtnValueChange().observe(this, filterLocationsChoice -> {
-            //Provider, render markers on map, provides and listen to updates from the FirebaseCollection, updates markers on map when data is changed on Firebase
-            LocationsProvider.getInstance(this).getLocations(locations -> {
+
+        LocationsProvider.getInstance(this).getLocations(locations -> {
+            menuChoiceViewModel.getSelectedBtnValue().observe(this, filterLocationsChoice -> {
                 List<LocationsProvider.LocationClass> sortedList = new ArrayList<>();
                 switch (filterLocationsChoice) {
                     case Constants.MENU_BTN_CHOICE_ALL_LOCATIONS:
@@ -128,6 +109,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         sortedList.addAll(filterAllFriendsOwn(locations, Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS));
                         break;
                 }
+
                 //Updates map
                 mapFragment.getMapAsync(googleMap -> {
                     googleMap.clear();
@@ -140,9 +122,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                 });
 
-            });//end LocationsProvider
-        });//end menuChoiceViewModel
+            });//end menuChoiceViewModel
 
+        });//end LocationsProvider
 
 
 
@@ -185,17 +167,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return filteredList;
     }
 
-    //Show hide listfragment method is called from MenuFragment
-        void showHideList() {
-        fragTransaction = fragmentManager.beginTransaction();
-        fragTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        if (menuFragment.isHidden()) {
-            fragTransaction.show(menuFragment);
-        } else {
-            fragTransaction.hide(menuFragment);
-        }
-        fragTransaction.commit();
-    }//end addShowHideListener
+
 
     //Runs map and moves camera to current location if permission is granted.
     public void onMapReady(GoogleMap googleMap) {
@@ -384,12 +356,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+
+
     public void initMenuFragment() {
         menuFragment = (ListFragment) fragmentManager.findFragmentById(R.id.listFragment);
         fragTransaction = fragmentManager.beginTransaction();
-        fragTransaction.hide(menuFragment);
+//        fragTransaction.hide(menuFragment);
         fragTransaction.commit();
     }
+
+    //Show hide listfragment method is called from MenuFragment
+    void showHideList(Boolean showHide) {
+        fragTransaction = fragmentManager.beginTransaction();
+        fragTransaction.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        if (showHide) {
+            fragTransaction.hide(menuFragment);
+        } else {
+            fragTransaction.show(menuFragment);
+        }
+        fragTransaction.commit();
+    }//end addShowHideListener
 
     //Helper methods converters, toasts
     private static LatLng convertGeoToLatLng(GeoPoint gp) {
