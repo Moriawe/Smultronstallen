@@ -203,7 +203,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         markerOption.position(convertGeoToLatLng(sortedLocation.getAdress()));
                         markerOption.title(sortedLocation.getName());
                         markerOption.snippet(sortedLocation.getComment());
-                        //markerOption.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_logo_text)); // If we place an icon in Smultronstalle.java we can fetch it from there instead. Has to be BITMAP [Jennie]
+                        markerOption.icon(BitmapDescriptorFactory.fromResource(R.drawable.straw_marker_small)); // If we place an icon in Smultronstalle.java we can fetch it from there instead. Has to be BITMAP [Jennie]
                         mMap.addMarker(markerOption);
                     }
                 });
