@@ -60,6 +60,7 @@ public class AddPlaceActivity extends Activity {
     String nameText;
     String commentsText;
     GeoPoint adress;
+    String adressA;
 
     //GeoPoint testGeoFromMapActivity;
 
@@ -68,7 +69,6 @@ public class AddPlaceActivity extends Activity {
     // Lat/long to use in getAdress method.
     double latitude;
     double longitude;
-
 
     // Views in XML
     TextView nyttStalle;
@@ -90,7 +90,7 @@ public class AddPlaceActivity extends Activity {
         int height = dm.heightPixels;
 
         // Sets size for pop-up window
-        getWindow().setLayout((int)(width*.75), (int)(height*.75));
+        getWindow().setLayout((int)(width*.9), (int)(height*.75));
 
         // set's window in the center of the screen
         WindowManager.LayoutParams params = getWindow().getAttributes();
@@ -119,18 +119,6 @@ public class AddPlaceActivity extends Activity {
         longitude = latLngArr.get(1);
         adress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
-        //Pernilla shortened geopoint so it would fit in textview whilst working on activity_add_place. //TODO: Remove the whole thing when geocoder is working
-        float adressLong = (float) adress.getLongitude();
-        float adressLat = (float) adress.getLatitude();
-        String adressA = adressLat + ", " + adressLong;
-
-
-        // TestString from Tobbe
-        //Put lattngarrdata in geopoint
-        //testGeoFromMapActivity = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
-        //Show created geopoint in toast
-        //Toast.makeText(this, testGeoFromMapActivity.toString(), Toast.LENGTH_SHORT).show();
-
 
         // Views in XML
         nyttStalle = (TextView) findViewById(R.id.nyttStalle);
@@ -143,10 +131,6 @@ public class AddPlaceActivity extends Activity {
         //Sets default image to logo
         imageView.setImageResource(R.drawable.ic_logo_text);
 
-        // Writes out the text seen on top. TODO change Geopoint to a correct adress if possible [Jennie]
-        nyttStalle.setText (adressA);
-                //("Lägg till ett nytt Smultronställe på ´\n´" + adress); //Pernilla shortened text to fit in activity_add_place before geocoding is working
-
         //launch gallery and make images clickable
         Button gallery = findViewById(R.id.gallery_btn);
         gallery.setOnClickListener(new View.OnClickListener() {
@@ -157,8 +141,6 @@ public class AddPlaceActivity extends Activity {
             }
         });
         getAddressFromGeo();
-
-
     }
 
     // Method that runs when you push the SUBMIT button in the activity.
@@ -239,13 +221,11 @@ public class AddPlaceActivity extends Activity {
             String postalCode = addresses.get(0).getPostalCode();
             String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
 
-            nyttStalle.setText("Lägg till ett nytt Smultronställe på ´\n´" + address);
+            nyttStalle.setText(address);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
 
     }
 

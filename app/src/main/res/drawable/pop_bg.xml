@@ -5,7 +5,7 @@
     <!-- Changed to lighter pink by Pernilla -->
 
     <gradient
-        android:startColor="#ffffff"
+        android:startColor="#f0dbea"
         android:endColor="@color/pink_primary"
         android:angle="270"
         />
