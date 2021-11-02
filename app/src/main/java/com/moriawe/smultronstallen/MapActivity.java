@@ -107,6 +107,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         MarkerOptions markerOption = new MarkerOptions();
                         markerOption.position(convertGeoToLatLng(sortedLocation.getAdress()));
                         markerOption.title(sortedLocation.getName());
+                        markerOption.snippet(sortedLocation.getComment());
                         googleMap.addMarker(markerOption);
                     }
                 });
@@ -204,6 +205,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 onLongClick(latLng);
             }
         });
+
+        // Sets the custom infoWindow [Jennie]
+        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter((MapActivity.this)));
 
     }
 
