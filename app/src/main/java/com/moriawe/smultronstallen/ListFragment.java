@@ -138,7 +138,7 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
         Toast.makeText(getContext(), item.getTextGeoPoint().toString(), Toast.LENGTH_SHORT).show();
         Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
         menuChoiceViewModel.setShowHideListValueFromListFragment(false);
-        //Hide list
+        menuChoiceViewModel.setSelectLocationFromList(item.getTextGeoPoint());
     }
 
 }

@@ -71,6 +71,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     SearchView searchView;
     private ImageView mGps;
 
+    private List<Marker> markersList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,11 +194,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             menuChoiceViewModel.getSelectedBtnValue().observe(this, filterLocationsChoice -> {
                 //Declaring empty array to store filtered list in
                 List<LocationsProvider.LocationClass> sortedList = new ArrayList<>();
+                markersList = new ArrayList<>();
                 //Adding filtered array from method: filterListMenuChoice()
                 sortedList.addAll(filterListMenuChoice(locations, filterLocationsChoice));
 
                 //Update map with filtered array
                 mapFragment.getMapAsync(mMap -> {
+                    markersList.clear();
+                    //Clear map before setting new markers
                     mMap.clear();
                     for (LocationsProvider.LocationClass sortedLocation : sortedList) {
                         MarkerOptions markerOption = new MarkerOptions();
@@ -205,7 +210,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         markerOption.snippet(sortedLocation.getComment());
                         markerOption.icon(BitmapDescriptorFactory.fromResource(R.drawable.straw_marker_small)); // If we place an icon in Smultronstalle.java we can fetch it from there instead. Has to be BITMAP [Jennie]
                         mMap.addMarker(markerOption);
+                        //Add markers to separate list
+                        markersList.add(mMap.addMarker(markerOption));
                     }
+                    //ListFragment-listener, selecting and move camera on map to clicked Location from ListFragment
+                    menuChoiceViewModel.getSelectLocationFromList().observe(this, geoPoint -> {
+                        if(geoPoint != null) {
+                            LatLng fromList = convertGeoToLatLng(geoPoint);
+                            for (Marker marker : markersList) {
+                                if(marker.getPosition().equals(fromList)) {
+                                    marker.showInfoWindow();
+                                    moveCamera(fromList, 15f);
+                                }
+                            }
+                        }
+                    });
+
                 });
             });//end menuChoiceViewModel
         });//end LocationsProvider

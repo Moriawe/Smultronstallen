@@ -4,12 +4,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.firebase.firestore.GeoPoint;
+
 //Enables data to be set and shared between activities/fragments
 public class MenuViewModel extends ViewModel {
 
     private final MutableLiveData<String> selectedBtnChoice = new MutableLiveData<String>(Constants.MENU_BTN_CHOICE_ALL_LOCATIONS);
     private final MutableLiveData<Boolean> showHideList = new MutableLiveData<Boolean>(true);
     private final MutableLiveData<Boolean> showHideListFromListFragment = new MutableLiveData<Boolean>(false);
+    private final MutableLiveData<GeoPoint> selectLocationFromList = new MutableLiveData<GeoPoint>();
 
 
     public void setSelectedMenuBtnValue(String filterLocationsChoice) {
@@ -33,6 +36,13 @@ public class MenuViewModel extends ViewModel {
     }
     public LiveData<Boolean> getShowHideListValueFromListFragment() {
         return showHideListFromListFragment;
+    }
+
+    public void setSelectLocationFromList(GeoPoint showHideListFragment) {
+        selectLocationFromList.setValue(showHideListFragment);
+    }
+    public LiveData<GeoPoint> getSelectLocationFromList() {
+        return selectLocationFromList;
     }
 }
 
