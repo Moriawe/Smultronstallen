@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.firebase.auth.FirebaseAuth;
 
 import android.Manifest;
@@ -202,6 +203,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         markerOption.position(convertGeoToLatLng(sortedLocation.getAdress()));
                         markerOption.title(sortedLocation.getName());
                         markerOption.snippet(sortedLocation.getComment());
+                        //markerOption.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_logo_text)); // If we place an icon in Smultronstalle.java we can fetch it from there instead. Has to be BITMAP [Jennie]
                         mMap.addMarker(markerOption);
                     }
                 });
