@@ -10,6 +10,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.firebase.auth.FirebaseAuth;
 
 import android.Manifest;
@@ -91,28 +93,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             showHideList(showHideList);
         });
 
-        //Get latest values from firebase, listening to updates
-        LocationsProvider.getInstance(this).getLocations(locations -> {
-            //Get selected value from menuBtns, listening to btnClicks
-            menuChoiceViewModel.getSelectedBtnValue().observe(this, filterLocationsChoice -> {
-                //Declaring empty array to store filtered list in
-                List<LocationsProvider.LocationClass> sortedList = new ArrayList<>();
-                //Adding filtered array from method: filterListMenuChoice()
-                sortedList.addAll(filterListMenuChoice(locations, filterLocationsChoice));
-
-                //Update map with filtered array
-                mapFragment.getMapAsync(googleMap -> {
-                    googleMap.clear();
-                    for (LocationsProvider.LocationClass sortedLocation : sortedList) {
-                        MarkerOptions markerOption = new MarkerOptions();
-                        markerOption.position(convertGeoToLatLng(sortedLocation.getAdress()));
-                        markerOption.title(sortedLocation.getName());
-                        markerOption.snippet(sortedLocation.getComment());
-                        googleMap.addMarker(markerOption);
-                    }
-                });
-            });//end menuChoiceViewModel
-        });//end LocationsProvider
 
 
         //Search in map and move camera to searched location
@@ -173,7 +153,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
 
-
     //Runs map and moves camera to current location if permission is granted.
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -206,50 +185,34 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        // Sets the custom infoWindow [Jennie]
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter((MapActivity.this)));
 
+        LocationsProvider.getInstance(this).getLocations(locations -> {
+            //Get selected value from menuBtns, listening to btnClicks
+            menuChoiceViewModel.getSelectedBtnValue().observe(this, filterLocationsChoice -> {
+                //Declaring empty array to store filtered list in
+                List<LocationsProvider.LocationClass> sortedList = new ArrayList<>();
+                //Adding filtered array from method: filterListMenuChoice()
+                sortedList.addAll(filterListMenuChoice(locations, filterLocationsChoice));
+
+                //Update map with filtered array
+                mapFragment.getMapAsync(mMap -> {
+                    mMap.clear();
+                    for (LocationsProvider.LocationClass sortedLocation : sortedList) {
+                        MarkerOptions markerOption = new MarkerOptions();
+                        markerOption.position(convertGeoToLatLng(sortedLocation.getAdress()));
+                        markerOption.title(sortedLocation.getName());
+                        markerOption.snippet(sortedLocation.getComment());
+                        markerOption.icon(BitmapDescriptorFactory.fromResource(R.drawable.straw_marker_small)); // If we place an icon in Smultronstalle.java we can fetch it from there instead. Has to be BITMAP [Jennie]
+                        mMap.addMarker(markerOption);
+                    }
+                });
+            });//end menuChoiceViewModel
+        });//end LocationsProvider
     }
 
-    //Jennie, notice commented out code in onLongClick-method to start AddPlaceActivity-intent sending LatLng values with the intent
     //Generates/sets values and uploading Location-item to firebase
     private void onLongClick(LatLng latLng) {
-        //Go to add event activity, sending LatLng with event
-//        goToAddPlaceActivity(latLng);
-
-        //Generate randoms to make give random values to location when adding marker on map
-//        final int min = 10, max = 100;
-//        final int randomNumber = new Random().nextInt((max - min) + 1) + min;
-//        Random randomOwner = new Random();
-//        //End generate randoms
-//
-//        //Set values loacationitem
-//        String name = "Rubrik" + randomNumber;
-//        String date = (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date()).toString());
-//        String image = "Imageurl" + randomNumber;
-//        GeoPoint gp = new GeoPoint(latLng.latitude, latLng.longitude);
-//        String owner = randomOwner.nextBoolean() ? Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS : Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS;
-//
-//        //Create locationitem
-//        LocationsProvider.LocationClass locationToSave = new LocationsProvider.LocationClass();
-//
-//        //Add values to locationitem
-//        locationToSave.setName(name);
-//        locationToSave.setDateCreated(date);
-//        locationToSave.setPicture(image);
-//        locationToSave.setAdress(gp);
-//        locationToSave.setShared(owner);
-
-        //Upload locationitem do database
-//        Task<DocumentReference> task = fireStore.collection(FIREBASE_LOCATIONS_COLLECTION).add(locationToSave);
-//        task.addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentReference> task) {
-//                onLocationSaveComplete(task);
-//            }
-//        });
-
-        //Go to add event activity, sending LatLng with event
         goToAddPlaceActivity(latLng);
     }//End onLongClick
 

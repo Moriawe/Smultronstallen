@@ -8,6 +8,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.location.Geocoder;
 import android.net.Uri;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -34,9 +36,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class AddPlaceActivity extends Activity {
 
@@ -57,7 +62,13 @@ public class AddPlaceActivity extends Activity {
     GeoPoint adress;
 
     //GeoPoint testGeoFromMapActivity;
+
     String addedBy;
+
+    // Lat/long to use in getAdress method.
+    double latitude;
+    double longitude;
+
 
     // Views in XML
     TextView nyttStalle;
@@ -104,6 +115,8 @@ public class AddPlaceActivity extends Activity {
         //Getting LatLng values from putextas as a ArrayList<Double>
         ArrayList<Double> latLngArr = (ArrayList<Double>) intent.getSerializableExtra("latLng");
         // Read in lat and long from map and puts into adress.
+        latitude = latLngArr.get(0);
+        longitude = latLngArr.get(1);
         adress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
         //Pernilla shortened geopoint so it would fit in textview whilst working on activity_add_place. //TODO: Remove the whole thing when geocoder is working
@@ -143,6 +156,7 @@ public class AddPlaceActivity extends Activity {
                 startActivityForResult(intent, 3);
             }
         });
+        getAddressFromGeo();
 
 
     }
@@ -206,6 +220,35 @@ public class AddPlaceActivity extends Activity {
         goBackToMap();
 
     }
+
+
+    // Fetches RL addresses from the lat/long coordinates.
+    private void getAddressFromGeo() {
+
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+
+            nyttStalle.setText("Lägg till ett nytt Smultronställe på ´\n´" + address);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
+
 
     // Checks what the switch is set to.
     private void checkVisibility() {
