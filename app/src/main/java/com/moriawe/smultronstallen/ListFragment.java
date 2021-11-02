@@ -19,7 +19,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListFragment extends Fragment implements ListAdapter.OnClickListItemListener{
+public class ListFragment extends Fragment implements ListAdapter.OnClickListItemListener {
 
     private View view;
     private ArrayList<ListItem> locationsList;
@@ -27,6 +27,7 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
     private ListAdapter listAdapter;
     private RecyclerView.LayoutManager listLayoutManager;
     private MenuViewModel menuChoiceViewModel;
+    public SpaceDecorator spaceDecorator;
 //    private Boolean;
 
     @Override
@@ -35,19 +36,6 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
         view = inflater.inflate(R.layout.fragment_list, container, false);
         menuChoiceViewModel = new ViewModelProvider(getActivity()).get(MenuViewModel.class);
 
-        EditText editText = view.findViewById(R.id.edittext);
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                filter(s.toString());
-            }
-        });
 
         //Get latest values from firebase, listening to updates
         LocationsProvider.getInstance(getContext()).getLocations(locations -> {
@@ -63,11 +51,25 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
             });//end ChoiceViewModel
         });//end LocationsProvider
 
+        EditText editText = view.findViewById(R.id.edittext);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                searchFilter(s.toString());
+            }
+        });
+
         return view;
 
-    }
+    }//end onCreateView
 
-    private void filter(String text) {
+    private void searchFilter(String text) {
         ArrayList<ListItem> filteredList = new ArrayList<>();
         for (ListItem item : locationsList) {
             if (item.getTextName().toLowerCase().contains(text.toLowerCase())) {
@@ -122,7 +124,11 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
         listAdapter = new ListAdapter(getContext(), locationsList, this);
         listRecyclerView.setLayoutManager(listLayoutManager);
         listRecyclerView.setItemAnimator(new DefaultItemAnimator());
-//        listRecyclerView.addItemDecoration(new ListItemMargin(getContext(), DividerItemDecoration.VERTICAL, 36));
+        if(spaceDecorator != null){
+            listRecyclerView.removeItemDecoration(spaceDecorator);
+        }
+        spaceDecorator = new SpaceDecorator(30);
+        listRecyclerView.addItemDecoration(spaceDecorator);
         listRecyclerView.setAdapter(listAdapter);
     }
 

@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.auth.FirebaseAuth;
 
 import android.Manifest;
@@ -172,7 +173,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
 
-
     //Runs map and moves camera to current location if permission is granted.
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -204,6 +204,29 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 onLongClick(latLng);
             }
         });
+
+        LocationsProvider.getInstance(this).getLocations(locations -> {
+            //Get selected value from menuBtns, listening to btnClicks
+            menuChoiceViewModel.getSelectedBtnValue().observe(this, filterLocationsChoice -> {
+                //Declaring empty array to store filtered list in
+                List<LocationsProvider.LocationClass> sortedList = new ArrayList<>();
+                //Adding filtered array from method: filterListMenuChoice()
+                sortedList.addAll(filterListMenuChoice(locations, filterLocationsChoice));
+
+                //Update map with filtered array
+                mapFragment.getMapAsync(mMap -> {
+                    mMap.clear();
+                    for (LocationsProvider.LocationClass sortedLocation : sortedList) {
+                        MarkerOptions markerOption = new MarkerOptions();
+                        markerOption.position(convertGeoToLatLng(sortedLocation.getAdress()));
+                        markerOption.title(sortedLocation.getName());
+                        mMap.addMarker(markerOption);
+                    }
+                });
+            });//end menuChoiceViewModel
+        });//end LocationsProvider
+
+
 
     }
 
