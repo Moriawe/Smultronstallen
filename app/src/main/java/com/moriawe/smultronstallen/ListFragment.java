@@ -49,21 +49,15 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
             }
         });
 
+        //Get latest values from firebase, listening to updates
         LocationsProvider.getInstance(getContext()).getLocations(locations -> {
+            //Get selected value from menuBtns, listening to btnClicks
             menuChoiceViewModel.getSelectedBtnValue().observe(getViewLifecycleOwner(), filterLocationsChoice -> {
-                Toast.makeText(getContext(), "change observer " + filterLocationsChoice, Toast.LENGTH_SHORT).show();
+                //Declaring empty array to store filtered list in
                 List<LocationsProvider.LocationClass> sortedList = new ArrayList<>();
-                switch (filterLocationsChoice) {
-                    case Constants.MENU_BTN_CHOICE_ALL_LOCATIONS:
-                        sortedList.addAll(locations);
-                        break;
-                    case Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS:
-                        sortedList.addAll(filterAllFriendsOwn(locations, Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS));
-                        break;
-                    case Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS:
-                        sortedList.addAll(filterAllFriendsOwn(locations, Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS));
-                        break;
-                }
+                //Adding filtered array from method: filterListMenuChoice()
+                sortedList.addAll(filterListMenuChoice(locations, filterLocationsChoice));
+
                 createListAdaptedToRecyclerView(sortedList);
                 buildRecyclerView();
             });//end ChoiceViewModel
@@ -83,13 +77,33 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
         listAdapter.filterList(filteredList);
     }
 
-    private List<LocationsProvider.LocationClass> filterAllFriendsOwn(List<LocationsProvider.LocationClass> locationsList, String text) {
+    private List<LocationsProvider.LocationClass> filterListMenuChoice(List<LocationsProvider.LocationClass> locationsList, String filterLocationsChoice) {
         List<LocationsProvider.LocationClass> filteredList = new ArrayList<>();
-        for (LocationsProvider.LocationClass item : locationsList) {
-            if (item.getOwner().toLowerCase().contains(text.toLowerCase())) {
-                filteredList.add(item);
-            }
+
+        switch (filterLocationsChoice) {
+            case Constants.MENU_BTN_CHOICE_ALL_LOCATIONS:
+                for (LocationsProvider.LocationClass item : locationsList) {
+                    if (item.getAddedBy().equals("Morot") || item.getShared() == true) {
+                        filteredList.add(item);
+                    }
+                }
+                break;
+            case Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS:
+                for (LocationsProvider.LocationClass item : locationsList) {
+                    if (!item.getAddedBy().equals("Morot") && item.getShared() == true) {
+                        filteredList.add(item);
+                    }
+                }
+                break;
+            case Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS:
+                for (LocationsProvider.LocationClass item : locationsList) {
+                    if (item.getAddedBy().equals("Morot")) {
+                        filteredList.add(item);
+                    }
+                }
+                break;
         }
+
         return filteredList;
     }
 
@@ -97,7 +111,7 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
     private void createListAdaptedToRecyclerView(List<LocationsProvider.LocationClass> locations) {
         locationsList = new ArrayList<>();
         for (LocationsProvider.LocationClass location : locations) {
-            locationsList.add(new ListItem(location.getName(), location.getDate(), location.getImage(), location.getLocation()));
+            locationsList.add(new ListItem(location.getName(), location.getDateCreated(), location.getPicture(), location.getAdress()));
         }
     }
 
