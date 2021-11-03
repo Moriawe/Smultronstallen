@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -65,9 +64,8 @@ public class AddPlaceActivity extends Activity {
     String nameText;
     String commentsText;
     GeoPoint adress;
-
-    //GeoPoint testGeoFromMapActivity;
     String addedBy;
+    String userID;
 
     // Lat/long to use in getAddress method.
     double latitude;
@@ -117,8 +115,8 @@ public class AddPlaceActivity extends Activity {
         db = FirebaseFirestore.getInstance();
 
         // Firebase Storage
-        storageRef = FirebaseStorage.getInstance().getReference();
-        databaseRef = FirebaseDatabase.getInstance().getReference();
+        storageRef = FirebaseStorage.getInstance().getReference("images_stalle/");
+        databaseRef = FirebaseDatabase.getInstance().getReference("images_stalle");
 
         // Makes an instance of Date&Time class
         dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
@@ -127,7 +125,15 @@ public class AddPlaceActivity extends Activity {
         // New object - Smultronstalle
         smultronstalle = new Smultronstalle();
 
-        //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getextra Intent?)
+        // Views in XML
+        nyttStalle = (TextView) findViewById(R.id.nyttStalle);
+        nameView = (EditText) findViewById(R.id.nameOfPlaceET);
+        commentsView = (EditText) findViewById(R.id.commentsOfPlaceET);
+        submitButton = (Button) findViewById(R.id.submitButton);
+        shareSwitch = (Switch) findViewById(R.id.share_switch);
+
+
+        //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getexta Intent?)
         Intent intent = getIntent();
         //Getting LatLng values from putextas as a ArrayList<Double>
         ArrayList<Double> latLngArr = (ArrayList<Double>) intent.getSerializableExtra("latLng");
@@ -136,6 +142,7 @@ public class AddPlaceActivity extends Activity {
         longitude = latLngArr.get(1);
         adress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
+        smultronstalle.setAdress(adress); // comes from the intent from MapActivity
 
         // Views in XML
         nyttStalle = (TextView) findViewById(R.id.nyttStalle);
@@ -164,7 +171,7 @@ public class AddPlaceActivity extends Activity {
 
             // PART 2 - FIND CURRENT USER AND MAKE A OBJECT OF APPUSER WITH CURRENT USER INFO
             // Get's  the current users ID
-            String userID = mAuth.getCurrentUser().getUid();
+            userID = mAuth.getCurrentUser().getUid();
 
             // Tells the program where to look for information. In the collection AppUsers, the document named "userID"
             db.collection("AppUsers").document(userID)
@@ -188,10 +195,11 @@ public class AddPlaceActivity extends Activity {
         // PART 3 - GET INFO ABOUT THE NEW SMULTRONSTALLE AND PUT IT INTO OBJECT.
         smultronstalle.setName(nameText);
         smultronstalle.setComment(commentsText);
-        smultronstalle.setAdress(adress); // comes from the intent from MapActivity
+        //smultronstalle.setAdress(adress); // comes from the intent from MapActivity
         smultronstalle.setDateCreated(dtf.format(now));
         smultronstalle.setAddedBy(addedBy);
         smultronstalle.setPicture(namePicture);
+        smultronstalle.setUserID(userID);
         //smultronstalle.setShared(); - get's set in the CheckVisibility method
 
         // PART 4 - LOAD THE OBJECT INTO THE DATABASE
@@ -327,7 +335,7 @@ public class AddPlaceActivity extends Activity {
     //TODO: Add a progressbar [Pernilla]
     private void uploadPicture() {
         if(pictureUri !=null) {
-            StorageReference fileReference = storageRef.child("ImageStalle/" + System.currentTimeMillis()
+            StorageReference fileReference = storageRef.child(System.currentTimeMillis()
             + "." + getFileExtension(pictureUri));
 
             fileReference.putFile(pictureUri)

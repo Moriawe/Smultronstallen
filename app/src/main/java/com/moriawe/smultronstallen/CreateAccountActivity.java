@@ -92,8 +92,8 @@ public class CreateAccountActivity extends AppCompatActivity {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "createUserWithEmail:success");
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                goToMap(user); // Changed places on goToMap and CreateNewUser since there was a delay when pushing the button [Jennie]
                                 createNewUser();
+                                goToMap(user); // Changed places on goToMap and CreateNewUser since there was a delay when pushing the button [Jennie]
                             } else {
                                 // If sign in fails, display a message to the user.
                                 Log.w(TAG, "createUserWithEmail:failure", task.getException());
