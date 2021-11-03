@@ -19,14 +19,15 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListFragment extends Fragment implements ListAdapter.OnClickListItemListener{
+public class ListFragment extends Fragment implements ListAdapter.OnClickListItemListener {
 
     private View view;
-    private ArrayList<ListItem> locationsList;
+    private List<LocationsProvider.LocationClass> locationsList;
     private RecyclerView listRecyclerView;
     private ListAdapter listAdapter;
     private RecyclerView.LayoutManager listLayoutManager;
     private MenuViewModel menuChoiceViewModel;
+    public SpaceDecorator spaceDecorator;
 //    private Boolean;
 
     @Override
@@ -34,6 +35,21 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
         super.onCreate(savedInstanceState);
         view = inflater.inflate(R.layout.fragment_list, container, false);
         menuChoiceViewModel = new ViewModelProvider(getActivity()).get(MenuViewModel.class);
+
+
+        //Get latest values from firebase, listening to updates
+        LocationsProvider.getInstance(getContext()).getLocations(locations -> {
+            //Get selected value from menuBtns, listening to btnClicks
+            menuChoiceViewModel.getSelectedBtnValue().observe(getViewLifecycleOwner(), filterLocationsChoice -> {
+                //Declaring empty array to store filtered list in
+                locationsList = new ArrayList<>();
+                //Adding filtered array from method: filterListMenuChoice()
+                locationsList.addAll(filterListMenuChoice(locations, filterLocationsChoice));
+//                locationsList.addAll(sortedList);
+//                createListAdaptedToRecyclerView(sortedList);
+                buildRecyclerView();
+            });//end ChoiceViewModel
+        });//end LocationsProvider
 
         EditText editText = view.findViewById(R.id.edittext);
         editText.addTextChangedListener(new TextWatcher() {
@@ -45,32 +61,18 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
             }
             @Override
             public void afterTextChanged(Editable s) {
-                filter(s.toString());
+                searchFilter(s.toString());
             }
         });
 
-        //Get latest values from firebase, listening to updates
-        LocationsProvider.getInstance(getContext()).getLocations(locations -> {
-            //Get selected value from menuBtns, listening to btnClicks
-            menuChoiceViewModel.getSelectedBtnValue().observe(getViewLifecycleOwner(), filterLocationsChoice -> {
-                //Declaring empty array to store filtered list in
-                List<LocationsProvider.LocationClass> sortedList = new ArrayList<>();
-                //Adding filtered array from method: filterListMenuChoice()
-                sortedList.addAll(filterListMenuChoice(locations, filterLocationsChoice));
-
-                createListAdaptedToRecyclerView(sortedList);
-                buildRecyclerView();
-            });//end ChoiceViewModel
-        });//end LocationsProvider
-
         return view;
 
-    }
+    }//end onCreateView
 
-    private void filter(String text) {
-        ArrayList<ListItem> filteredList = new ArrayList<>();
-        for (ListItem item : locationsList) {
-            if (item.getTextName().toLowerCase().contains(text.toLowerCase())) {
+    private void searchFilter(String text) {
+        List<LocationsProvider.LocationClass> filteredList = new ArrayList<>();
+        for (LocationsProvider.LocationClass item : locationsList) {
+            if (item.getName().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(item);
             }
         }
@@ -108,12 +110,12 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
     }
 
 
-    private void createListAdaptedToRecyclerView(List<LocationsProvider.LocationClass> locations) {
-        locationsList = new ArrayList<>();
-        for (LocationsProvider.LocationClass location : locations) {
-            locationsList.add(new ListItem(location.getName(), location.getDateCreated(), location.getPicture(), location.getAdress()));
-        }
-    }
+//    private void createListAdaptedToRecyclerView(List<LocationsProvider.LocationClass> locations) {
+//        locationsList = new ArrayList<>();
+//        for (LocationsProvider.LocationClass location : locations) {
+//            locationsList.add(new ListItem(location.getName(), location.getDateCreated(), location.getPicture(), location.getAdress()));
+//        }
+//    }
 
     private void buildRecyclerView() {
         listRecyclerView = view.findViewById(R.id.recycler_view);
@@ -122,17 +124,37 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
         listAdapter = new ListAdapter(getContext(), locationsList, this);
         listRecyclerView.setLayoutManager(listLayoutManager);
         listRecyclerView.setItemAnimator(new DefaultItemAnimator());
-//        listRecyclerView.addItemDecoration(new ListItemMargin(getContext(), DividerItemDecoration.VERTICAL, 36));
+        if(spaceDecorator != null){
+            listRecyclerView.removeItemDecoration(spaceDecorator);
+        }
+        spaceDecorator = new SpaceDecorator(30);
+        listRecyclerView.addItemDecoration(spaceDecorator);
         listRecyclerView.setAdapter(listAdapter);
     }
 
     @Override
-    public void onItemClick(ListItem item) {
+    public void onItemClick(LocationsProvider.LocationClass item) {
         //To do? get location data from listitemclick, close fragment and move mapCamera to clicked location or marker?
-        Toast.makeText(getContext(), item.getTextGeoPoint().toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), item.getAdress().toString(), Toast.LENGTH_SHORT).show();
         Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
         menuChoiceViewModel.setShowHideListValueFromListFragment(false);
-        //Hide list
+        menuChoiceViewModel.setSelectLocationFromList(item.getAdress());
+    }
+
+    @Override
+    public void onChatItemClick(LocationsProvider.LocationClass item) {
+        Toast.makeText(getContext(), item.getAdress().toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
+        menuChoiceViewModel.setShowHideListValueFromListFragment(false);
+        menuChoiceViewModel.setSelectLocationFromList(item.getAdress());
+    }
+
+    @Override
+    public void onAbsenceItemClick(LocationsProvider.LocationClass item) {
+        Toast.makeText(getContext(), item.getAdress().toString(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
+        menuChoiceViewModel.setShowHideListValueFromListFragment(false);
+        menuChoiceViewModel.setSelectLocationFromList(item.getAdress());
     }
 
 }
