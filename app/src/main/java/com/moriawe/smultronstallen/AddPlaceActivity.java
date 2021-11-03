@@ -2,16 +2,13 @@ package com.moriawe.smultronstallen;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.location.Geocoder;
-import android.net.Uri;
 import android.location.Address;
-import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -28,12 +25,16 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 
 import java.io.IOException;
@@ -42,6 +43,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 public class AddPlaceActivity extends Activity {
 
@@ -60,13 +62,11 @@ public class AddPlaceActivity extends Activity {
     String nameText;
     String commentsText;
     GeoPoint adress;
-    String adressA;
 
     //GeoPoint testGeoFromMapActivity;
-
     String addedBy;
 
-    // Lat/long to use in getAdress method.
+    // Lat/long to use in getAddress method.
     double latitude;
     double longitude;
 
@@ -76,7 +76,17 @@ public class AddPlaceActivity extends Activity {
     EditText commentsView;
     Button submitButton;
     Switch shareSwitch;
+    ImageView addPicture;
+    Button buttonGallery;
 
+    // Add picture
+    public Uri pictureUri;
+    private static final int PICK_IMAGE_REQUEST = 1;
+    String namePicture;
+
+    // Firebase storage
+    private StorageReference storageRef;
+    private DatabaseReference databaseRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +113,10 @@ public class AddPlaceActivity extends Activity {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
+        // Firebase Storage
+        storageRef = FirebaseStorage.getInstance().getReference();
+        databaseRef = FirebaseDatabase.getInstance().getReference();
+
         // Makes an instance of Date&Time class
         dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         now = LocalDateTime.now();
@@ -110,11 +124,11 @@ public class AddPlaceActivity extends Activity {
         // New object - Smultronstalle
         smultronstalle = new Smultronstalle();
 
-        //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getexta Intent?)
+        //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getextra Intent?)
         Intent intent = getIntent();
         //Getting LatLng values from putextas as a ArrayList<Double>
         ArrayList<Double> latLngArr = (ArrayList<Double>) intent.getSerializableExtra("latLng");
-        // Read in lat and long from map and puts into adress.
+        // Read in lat and long from map and puts into address.
         latitude = latLngArr.get(0);
         longitude = latLngArr.get(1);
         adress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
@@ -126,20 +140,16 @@ public class AddPlaceActivity extends Activity {
         commentsView = (EditText) findViewById(R.id.commentsOfPlaceET);
         submitButton = (Button) findViewById(R.id.submitButton);
         shareSwitch = (Switch) findViewById(R.id.share_switch);
-        ImageView imageView = (ImageView) findViewById(R.id.new_place_image);
+        addPicture = (ImageView) findViewById(R.id.new_place_image);
+        buttonGallery = (Button) findViewById(R.id.gallery_btn);
 
-        //Sets default image to logo
-        imageView.setImageResource(R.drawable.ic_logo_text);
+        // Sets default image to logo
+        addPicture.setImageResource(R.drawable.ic_logo_text);
 
-        //launch gallery and make images clickable
-        Button gallery = findViewById(R.id.gallery_btn);
-        gallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, 3);
-            }
-        });
+        // Launch gallery and run choosePicture() - go to gallery
+        buttonGallery.setOnClickListener(view -> choosePicture());
+
+        //
         getAddressFromGeo();
     }
 
@@ -178,6 +188,7 @@ public class AddPlaceActivity extends Activity {
         smultronstalle.setAdress(adress); // comes from the intent from MapActivity
         smultronstalle.setDateCreated(dtf.format(now));
         smultronstalle.setAddedBy(addedBy);
+        smultronstalle.setPicture(namePicture);
         //smultronstalle.setShared(); - get's set in the CheckVisibility method
 
         // PART 4 - LOAD THE OBJECT INTO THE DATABASE
@@ -203,7 +214,6 @@ public class AddPlaceActivity extends Activity {
 
     }
 
-
     // Fetches RL addresses from the lat/long coordinates.
     private void getAddressFromGeo() {
 
@@ -220,6 +230,10 @@ public class AddPlaceActivity extends Activity {
             String country = addresses.get(0).getCountryName();
             String postalCode = addresses.get(0).getPostalCode();
             String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+            String streetName = addresses.get(0).getThoroughfare();
+            String streetNumber = addresses.get(0).getSubThoroughfare();
+            String area = addresses.get(0).getSubLocality();
+            String addressLess = streetName + " " + streetNumber + ", " + area; //TODO: prints null if null. Should be fixed. [Pernilla]
 
             nyttStalle.setText(address);
 
@@ -228,7 +242,6 @@ public class AddPlaceActivity extends Activity {
         }
 
     }
-
 
     // Checks what the switch is set to.
     private void checkVisibility() {
@@ -277,17 +290,50 @@ public class AddPlaceActivity extends Activity {
 
     }
 
+
+
+    // Launch gallery and make images clickable
+    private void choosePicture() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
     // Pick an image from gallery and put it into image view
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         //Checks if user clicks an image, and not cancelling action.
-        if((resultCode == RESULT_OK) && (data !=null)) {
-            Uri selectedImage = data.getData();
-            ImageView imageView = findViewById(R.id.new_place_image);
-            imageView.setImageURI(selectedImage);
+        if((requestCode == PICK_IMAGE_REQUEST) && (resultCode == RESULT_OK) && (data !=null)) {
+            pictureUri = data.getData();
+            addPicture.setImageURI(pictureUri);
+            uploadPicture();
         }
     }
+
+
+
+    // Gives picture a unique name.
+    // Uploads Picture to Firebase Storage in folder "images".
+    //TODO: Add a progressbar [Pernilla]
+    private void uploadPicture() {
+        final String randomKey = UUID.randomUUID().toString();
+        StorageReference fileReference = storageRef.child("images/" + randomKey);
+
+        fileReference.putFile(pictureUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    Snackbar.make(findViewById(android.R.id.content),
+                            "Image Uploaded. ", Snackbar.LENGTH_LONG).show();
+                    namePicture = taskSnapshot.toString();
+                    String uploadId = databaseRef.push().getKey();
+                    databaseRef.child(uploadId).setValue(smultronstalle);
+                })
+
+                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(),
+                        "Failed to upload image", Toast.LENGTH_LONG).show());
+    }
+
 
 }
