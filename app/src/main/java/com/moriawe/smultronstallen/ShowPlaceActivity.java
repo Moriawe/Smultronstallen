@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -21,14 +21,10 @@ import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Text;
-
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+
 
 public class ShowPlaceActivity extends AppCompatActivity {
 
@@ -48,6 +44,8 @@ public class ShowPlaceActivity extends AppCompatActivity {
     // Lat/long to use in getAdress method.
     double latitude;
     double longitude;
+
+    String documentID;
 
     TextView titleTV;
     TextView addressTV;
@@ -110,8 +108,10 @@ public class ShowPlaceActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
+                                documentID = document.getId();
                                 smultronstalle = document.toObject(Smultronstalle.class);
                                 setText();
+                                checkUser();
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
@@ -120,53 +120,63 @@ public class ShowPlaceActivity extends AppCompatActivity {
                 });
     }
 
+
+    //Puts info in the TextViews
     private void setText() {
 
         titleTV.setText(smultronstalle.getName());
-        addressTV.setText(getAddressFromGeo());
+        addressTV.setText(smultronstalle.getAddressFromGeo(this));
         commentsTV.setText(smultronstalle.getComment());
 
     }
 
 
+    //Checks if the user is creator of place and then shows buttons, otherwise it hides them.
+    private void checkUser() {
 
-    // Fetches RL addresses from the lat/long coordinates.
-    private String getAddressFromGeo() {
+        String userID = mAuth.getCurrentUser().getUid();
 
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
-        String placeAdress;
-
-        try {
-
-            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String street = addresses.get(0).getThoroughfare();
-            String streetNum = addresses.get(0).getSubThoroughfare();
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName();
-
-            placeAdress = street + " " + streetNum;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            placeAdress = "";
+        if (userID.equals(smultronstalle.getUserID())) {
+            changeInfo.setVisibility(View.VISIBLE);
+            deletePlace.setVisibility(View.VISIBLE);
+        } else {
+            changeInfo.setVisibility(View.GONE);
+            deletePlace.setVisibility(View.GONE);
         }
 
-        return placeAdress;
+
+
     }
 
+
+    //ON CLICK METHODS
 
     public void closeActivity(View view) {
-        Intent intent = new Intent (this, MapActivity.class);
-        startActivity(intent);
-
+        finish();
     }
 
 
+    public void changeInfo(View view) {
+    }
+
+
+    public void deletePlace(View view) {
+
+        db.collection("Smultronstalle").document(documentID)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                        finish();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting document", e);
+                    }
+                });
+
+    }
 }
