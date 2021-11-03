@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.location.Geocoder;
 import android.location.Address;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -35,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 
 import java.io.IOException;
@@ -313,26 +316,40 @@ public class AddPlaceActivity extends Activity {
         }
     }
 
-
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
 
     // Gives picture a unique name.
-    // Uploads Picture to Firebase Storage in folder "images".
+    // Uploads Picture to Firebase Storage in folder "ImagesStalle".
     //TODO: Add a progressbar [Pernilla]
     private void uploadPicture() {
-        final String randomKey = UUID.randomUUID().toString();
-        StorageReference fileReference = storageRef.child("images/" + randomKey);
+        if(pictureUri !=null) {
+            StorageReference fileReference = storageRef.child("ImageStalle/" + System.currentTimeMillis()
+            + "." + getFileExtension(pictureUri));
 
-        fileReference.putFile(pictureUri)
-                .addOnSuccessListener(taskSnapshot -> {
-                    Snackbar.make(findViewById(android.R.id.content),
-                            "Image Uploaded. ", Snackbar.LENGTH_LONG).show();
-                    namePicture = taskSnapshot.toString();
-                    String uploadId = databaseRef.push().getKey();
-                    databaseRef.child(uploadId).setValue(smultronstalle);
-                })
+            fileReference.putFile(pictureUri)
+                    .addOnSuccessListener((new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(AddPlaceActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
+                            namePicture = taskSnapshot.getUploadSessionUri().toString();
 
-                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(),
-                        "Failed to upload image", Toast.LENGTH_LONG).show());
+                            String uploadId = databaseRef.push().getKey();
+                            databaseRef.child(uploadId).setValue(smultronstalle);
+                        }
+                    }))
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(AddPlaceActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }else{
+            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
