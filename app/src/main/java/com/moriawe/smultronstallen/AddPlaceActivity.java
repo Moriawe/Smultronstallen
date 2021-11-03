@@ -1,11 +1,14 @@
 package com.moriawe.smultronstallen;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
-import android.location.Address;
 import android.location.Geocoder;
+import android.location.Address;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -13,9 +16,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.MimeTypeMap;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,11 +28,15 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 
 import java.io.IOException;
@@ -36,6 +45,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 public class AddPlaceActivity extends Activity {
 
@@ -53,15 +63,13 @@ public class AddPlaceActivity extends Activity {
     // Info about the new place
     String nameText;
     String commentsText;
+    GeoPoint adress;
     String addedBy;
     String userID;
 
-    //GeoPoint testGeoFromMapActivity;
-    GeoPoint adress;
-    // Lat/long to use in getAdress method.
+    // Lat/long to use in getAddress method.
     double latitude;
     double longitude;
-
 
     // Views in XML
     TextView nyttStalle;
@@ -69,7 +77,17 @@ public class AddPlaceActivity extends Activity {
     EditText commentsView;
     Button submitButton;
     Switch shareSwitch;
+    ImageView addPicture;
+    Button buttonGallery;
 
+    // Add picture
+    public Uri pictureUri;
+    private static final int PICK_IMAGE_REQUEST = 1;
+    String namePicture;
+
+    // Firebase storage
+    private StorageReference storageRef;
+    private DatabaseReference databaseRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +101,7 @@ public class AddPlaceActivity extends Activity {
         int height = dm.heightPixels;
 
         // Sets size for pop-up window
-        getWindow().setLayout((int)(width*.8), (int)(height*.7));
+        getWindow().setLayout((int)(width*.9), (int)(height*.75));
 
         // set's window in the center of the screen
         WindowManager.LayoutParams params = getWindow().getAttributes();
@@ -95,6 +113,10 @@ public class AddPlaceActivity extends Activity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
+        // Firebase Storage
+        storageRef = FirebaseStorage.getInstance().getReference("images_stalle/");
+        databaseRef = FirebaseDatabase.getInstance().getReference("images_stalle");
 
         // Makes an instance of Date&Time class
         dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
@@ -115,18 +137,31 @@ public class AddPlaceActivity extends Activity {
         Intent intent = getIntent();
         //Getting LatLng values from putextas as a ArrayList<Double>
         ArrayList<Double> latLngArr = (ArrayList<Double>) intent.getSerializableExtra("latLng");
-        // Read in lat and long from map and puts into adress.
+        // Read in lat and long from map and puts into address.
         latitude = latLngArr.get(0);
         longitude = latLngArr.get(1);
         adress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
         smultronstalle.setAdress(adress); // comes from the intent from MapActivity
 
-        // Writes out the text seen on top.
-        nyttStalle.setText("Lägg till ett nytt Smultronställe på ´\n´" + smultronstalle.getAddressFromGeo(this));
+        // Views in XML
+        nyttStalle = (TextView) findViewById(R.id.nyttStalle);
+        nameView = (EditText) findViewById(R.id.nameOfPlaceET);
+        commentsView = (EditText) findViewById(R.id.commentsOfPlaceET);
+        submitButton = (Button) findViewById(R.id.submitButton);
+        shareSwitch = (Switch) findViewById(R.id.share_switch);
+        addPicture = (ImageView) findViewById(R.id.new_place_image);
+        buttonGallery = (Button) findViewById(R.id.gallery_btn);
 
+        // Sets default image to logo
+        addPicture.setImageResource(R.drawable.ic_logo_text);
+
+        // Launch gallery and run choosePicture() - go to gallery
+        buttonGallery.setOnClickListener(view -> choosePicture());
+
+        //
+        getAddressFromGeo();
     }
-
 
     // Method that runs when you push the SUBMIT button in the activity.
     public void submitPlace(View view) {
@@ -154,7 +189,6 @@ public class AddPlaceActivity extends Activity {
         }
     }
 
-
     // Saves the new Smultronstalle to the database once we have picked out the User's name from the submitPlace-method
     private void savePlace() {
 
@@ -164,6 +198,7 @@ public class AddPlaceActivity extends Activity {
         //smultronstalle.setAdress(adress); // comes from the intent from MapActivity
         smultronstalle.setDateCreated(dtf.format(now));
         smultronstalle.setAddedBy(addedBy);
+        smultronstalle.setPicture(namePicture);
         smultronstalle.setUserID(userID);
         //smultronstalle.setShared(); - get's set in the CheckVisibility method
 
@@ -190,6 +225,34 @@ public class AddPlaceActivity extends Activity {
 
     }
 
+    // Fetches RL addresses from the lat/long coordinates.
+    private void getAddressFromGeo() {
+
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+            String streetName = addresses.get(0).getThoroughfare();
+            String streetNumber = addresses.get(0).getSubThoroughfare();
+            String area = addresses.get(0).getSubLocality();
+            String addressLess = streetName + " " + streetNumber + ", " + area; //TODO: prints null if null. Should be fixed. [Pernilla]
+
+            nyttStalle.setText(address);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     // Checks what the switch is set to.
     private void checkVisibility() {
@@ -206,7 +269,6 @@ public class AddPlaceActivity extends Activity {
         });
 
     }
-
 
     // Checks so that all (name and comments) fields are filled in.
     private boolean validateForm() {
@@ -238,5 +300,65 @@ public class AddPlaceActivity extends Activity {
             startActivity(goToMapActivityIntent);
 
     }
+
+
+
+    // Launch gallery and make images clickable
+    private void choosePicture() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    // Pick an image from gallery and put it into image view
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //Checks if user clicks an image, and not cancelling action.
+        if((requestCode == PICK_IMAGE_REQUEST) && (resultCode == RESULT_OK) && (data !=null)) {
+            pictureUri = data.getData();
+            addPicture.setImageURI(pictureUri);
+            uploadPicture();
+        }
+    }
+
+    private String getFileExtension(Uri uri) {
+        ContentResolver cR = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(cR.getType(uri));
+    }
+
+    // Gives picture a unique name.
+    // Uploads Picture to Firebase Storage in folder "ImagesStalle".
+    //TODO: Add a progressbar [Pernilla]
+    private void uploadPicture() {
+        if(pictureUri !=null) {
+            StorageReference fileReference = storageRef.child(System.currentTimeMillis()
+            + "." + getFileExtension(pictureUri));
+
+            fileReference.putFile(pictureUri)
+                    .addOnSuccessListener((new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Toast.makeText(AddPlaceActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
+                            namePicture = taskSnapshot.getUploadSessionUri().toString();
+
+                            String uploadId = databaseRef.push().getKey();
+                            databaseRef.child(uploadId).setValue(smultronstalle);
+                        }
+                    }))
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(AddPlaceActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }else{
+            Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 }

@@ -2,10 +2,11 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Colorset for the popup window -->
+    <!-- Changed to lighter pink by Pernilla -->
 
     <gradient
-        android:startColor="#E91E63"
-        android:endColor="#9C27B0"
+        android:startColor="#f0dbea"
+        android:endColor="@color/pink_primary"
         android:angle="270"
         />
 

@@ -7,39 +7,85 @@
     android:background="@drawable/pop_bg"
     tools:context=".AddPlaceActivity">
 
-    <TextView
+    <ImageView
+        android:id="@+id/new_place_image"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--<-comment out by Pernilla to have adress on its own line instead-->
+    <!--<TextView
         android:id="@+id/nyttStalle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toTopOf="@+id/nameOfPlaceET"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/new_place_image" />-->
+
+
+    <Button
+        android:id="@+id/gallery_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:gravity="left"
+
+        android:text="Load image &#xA;from gallery"
+        android:textSize="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/nyttStalle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/new_place_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/nyttStalle"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="96dp"
+        android:layout_marginBottom="5dp"
+        android:ems="10"
+        android:hint="@string/adress"
+        android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/nameOfPlaceET"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/nameOfPlaceET"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginTop="128dp"
+        android:layout_marginTop="156dp"
+        android:layout_marginBottom="5dp"
         android:ems="10"
-        android:hint="Namn"
+        android:hint="@string/headline"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/commentsOfPlaceET"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.837" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/commentsOfPlaceET"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginBottom="156dp"
+        android:layout_marginBottom="100dp"
         android:ems="10"
-        android:hint="Kommentarer"
+        android:hint="@string/comments"
         android:inputType="textLongMessage"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
