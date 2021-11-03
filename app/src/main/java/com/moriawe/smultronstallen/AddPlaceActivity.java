@@ -54,6 +54,7 @@ public class AddPlaceActivity extends Activity {
     String nameText;
     String commentsText;
     String addedBy;
+    String userID;
 
     //GeoPoint testGeoFromMapActivity;
     GeoPoint adress;
@@ -102,6 +103,13 @@ public class AddPlaceActivity extends Activity {
         // New object - Smultronstalle
         smultronstalle = new Smultronstalle();
 
+        // Views in XML
+        nyttStalle = (TextView) findViewById(R.id.nyttStalle);
+        nameView = (EditText) findViewById(R.id.nameOfPlaceET);
+        commentsView = (EditText) findViewById(R.id.commentsOfPlaceET);
+        submitButton = (Button) findViewById(R.id.submitButton);
+        shareSwitch = (Switch) findViewById(R.id.share_switch);
+
 
         //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getexta Intent?)
         Intent intent = getIntent();
@@ -112,25 +120,10 @@ public class AddPlaceActivity extends Activity {
         longitude = latLngArr.get(1);
         adress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
+        smultronstalle.setAdress(adress); // comes from the intent from MapActivity
 
-        // TestString from Tobbe
-        //Put lattngarrdata in geopoint
-        //testGeoFromMapActivity = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
-        //Show created geopoint in toast
-        //Toast.makeText(this, testGeoFromMapActivity.toString(), Toast.LENGTH_SHORT).show();
-
-
-        // Views in XML
-        nyttStalle = (TextView) findViewById(R.id.nyttStalle);
-        nameView = (EditText) findViewById(R.id.nameOfPlaceET);
-        commentsView = (EditText) findViewById(R.id.commentsOfPlaceET);
-        submitButton = (Button) findViewById(R.id.submitButton);
-        shareSwitch = (Switch) findViewById(R.id.share_switch);
-
-
-        // Writes out the text seen on top. TODO change Geopoint to a correct adress if possible [Jennie]
-        getAddressFromGeo();
-
+        // Writes out the text seen on top.
+        nyttStalle.setText("Lägg till ett nytt Smultronställe på ´\n´" + smultronstalle.getAddressFromGeo(this));
 
     }
 
@@ -143,7 +136,7 @@ public class AddPlaceActivity extends Activity {
 
             // PART 2 - FIND CURRENT USER AND MAKE A OBJECT OF APPUSER WITH CURRENT USER INFO
             // Get's  the current users ID
-            String userID = mAuth.getCurrentUser().getUid();
+            userID = mAuth.getCurrentUser().getUid();
 
             // Tells the program where to look for information. In the collection AppUsers, the document named "userID"
             db.collection("AppUsers").document(userID)
@@ -168,9 +161,10 @@ public class AddPlaceActivity extends Activity {
         // PART 3 - GET INFO ABOUT THE NEW SMULTRONSTALLE AND PUT IT INTO OBJECT.
         smultronstalle.setName(nameText);
         smultronstalle.setComment(commentsText);
-        smultronstalle.setAdress(adress); // comes from the intent from MapActivity
+        //smultronstalle.setAdress(adress); // comes from the intent from MapActivity
         smultronstalle.setDateCreated(dtf.format(now));
         smultronstalle.setAddedBy(addedBy);
+        smultronstalle.setUserID(userID);
         //smultronstalle.setShared(); - get's set in the CheckVisibility method
 
         // PART 4 - LOAD THE OBJECT INTO THE DATABASE
@@ -193,34 +187,6 @@ public class AddPlaceActivity extends Activity {
                 });
 
         goBackToMap();
-
-    }
-
-
-    // Fetches RL addresses from the lat/long coordinates.
-    private void getAddressFromGeo() {
-
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
-
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
-
-            nyttStalle.setText("Lägg till ett nytt Smultronställe på ´\n´" + address);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
 
     }
 
