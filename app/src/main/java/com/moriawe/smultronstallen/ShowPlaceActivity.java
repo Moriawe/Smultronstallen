@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ public class ShowPlaceActivity extends AppCompatActivity {
     TextView comments;
 
     ImageView icon;
+    ImageView kryss;
 
     Button changeInfo;
     Button deletePlace;
@@ -36,6 +38,7 @@ public class ShowPlaceActivity extends AppCompatActivity {
         comments = findViewById(R.id.commentsTV);
 
         icon = findViewById(R.id.iconIV);
+        kryss = findViewById(R.id.closeIV);
 
         changeInfo = findViewById(R.id.change_button);
         deletePlace = findViewById(R.id.delete_button);
@@ -52,4 +55,9 @@ public class ShowPlaceActivity extends AppCompatActivity {
 
     }
 
+    public void closeActivity(View view) {
+        Intent intent = new Intent (this, MapActivity.class);
+        startActivity(intent);
+
+    }
 }
