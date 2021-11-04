@@ -1,6 +1,8 @@
 package com.moriawe.smultronstallen;
 
-public class AppUser {
+import java.io.Serializable;
+
+public class AppUser implements Serializable {
 
     private String nickName;
     private String email;

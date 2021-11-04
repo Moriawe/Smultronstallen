@@ -6,4 +6,90 @@
     android:layout_height="match_parent"
     tools:context=".UserSettings">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="43dp"
+        tools:layout_editor_absoluteY="34dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nickname"
+        tools:layout_editor_absoluteX="43dp"
+        tools:layout_editor_absoluteY="218dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        tools:layout_editor_absoluteX="43dp"
+        tools:layout_editor_absoluteY="268dp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lösenord"
+        tools:layout_editor_absoluteX="43dp"
+        tools:layout_editor_absoluteY="322dp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vänner"
+        tools:layout_editor_absoluteX="43dp"
+        tools:layout_editor_absoluteY="381dp" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:text="Ändra"
+        android:textSize="8sp"
+        tools:layout_editor_absoluteX="318dp"
+        tools:layout_editor_absoluteY="211dp" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:text="Ändra"
+        android:textSize="8sp"
+        tools:layout_editor_absoluteX="70dp"
+        tools:layout_editor_absoluteY="162dp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:text="Ändra"
+        android:textSize="8sp"
+        tools:layout_editor_absoluteX="318dp"
+        tools:layout_editor_absoluteY="261dp" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:text="Ändra"
+        android:textSize="8sp"
+        tools:layout_editor_absoluteX="318dp"
+        tools:layout_editor_absoluteY="315dp" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="80dp"
+        android:layout_height="35dp"
+        android:text="Lägg till"
+        android:textSize="8sp"
+        tools:layout_editor_absoluteX="303dp"
+        tools:layout_editor_absoluteY="372dp" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

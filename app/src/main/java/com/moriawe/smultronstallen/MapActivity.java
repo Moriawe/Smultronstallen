@@ -44,6 +44,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
+import com.google.firebase.firestore.auth.User;
 
 //Search in map
 import androidx.appcompat.widget.SearchView;
@@ -74,6 +75,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private List<Marker> markersList;
 
+    private FirebaseAuth mAuth;
+    AppUser currentUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +88,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_map);
         searchView = findViewById(R.id.map_search_bar);
         mGps = (ImageView) findViewById(R.id.map_location_button);
+
+        // Reads in the CurrentUser that is logged in so that we can fetch name, email etc. Object of AppUser
+        mAuth = FirebaseAuth.getInstance();
+        if(getIntent().getExtras() != null) {
+             currentUser = (AppUser) getIntent().getSerializableExtra("CurrentUser");
+        }
 
         //Asking for permission to use gps and initializing map
         getLocationPermission();
@@ -127,24 +137,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private List<LocationsProvider.LocationClass> filterListMenuChoice(List<LocationsProvider.LocationClass> locationsList, String filterLocationsChoice) {
         List<LocationsProvider.LocationClass> filteredList = new ArrayList<>();
 
-        switch (filterLocationsChoice) {
+        String userID = mAuth.getCurrentUser().getUid(); //[Jennie] This is all the code needed to check if it's the right user
+
+            switch (filterLocationsChoice) {
             case Constants.MENU_BTN_CHOICE_ALL_LOCATIONS:
                 for (LocationsProvider.LocationClass item : locationsList) {
-                    if (item.getAddedBy().equals("Morot") || item.getShared() == true) {
+                    if item.getCreatorsUserID().equals(userID)|| item.getShared() == true) {
                         filteredList.add(item);
                     }
                 }
                 break;
             case Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS:
                 for (LocationsProvider.LocationClass item : locationsList) {
-                    if (!item.getAddedBy().equals("Morot") && item.getShared() == true) {
+                    if item.getCreatorsUserID().equals(userID) && item.getShared() == true) {
                         filteredList.add(item);
                     }
                 }
                 break;
             case Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS:
                 for (LocationsProvider.LocationClass item : locationsList) {
-                    if (item.getAddedBy().equals("Morot")) {
+                    if item.getCreatorsUserID().equals(userID) {
                         filteredList.add(item);
                     }
                 }
