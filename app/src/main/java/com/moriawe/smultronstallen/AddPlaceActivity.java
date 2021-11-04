@@ -114,6 +114,8 @@ public class AddPlaceActivity extends Activity {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        // Get's  the current users ID
+        creatorUserID = mAuth.getCurrentUser().getUid();
 
         // Firebase Storage
         storageRef = FirebaseStorage.getInstance().getReference("images_stalle/");
@@ -164,10 +166,6 @@ public class AddPlaceActivity extends Activity {
 
         // PART 1 - CHECK IF ALL IMPORTANT FIELDS (NAME AND COMMENTS) ARE FILLED IN
         if (validateForm()) {
-
-            // PART 2 - FIND CURRENT USER AND MAKE A OBJECT OF APPUSER WITH CURRENT USER INFO
-            // Get's  the current users ID
-            creatorUserID = mAuth.getCurrentUser().getUid();
 
             // Tells the program where to look for information. In the collection AppUsers, the document named "userID"
             db.collection("AppUsers").document(creatorUserID)

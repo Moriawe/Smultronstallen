@@ -148,7 +148,7 @@ public class Smultronstalle {
         return creatorsUserID;
     }
 
-    public void setCreatorsUserID(String userID) {
+    public void setCreatorsUserID(String creatorsUserID) {
         this.creatorsUserID = creatorsUserID;
     }
 }
