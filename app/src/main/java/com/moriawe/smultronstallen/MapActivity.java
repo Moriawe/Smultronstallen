@@ -148,7 +148,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 break;
             case Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS:
                 for (LocationsProvider.LocationClass item : locationsList) {
-                    if (item.getCreatorsUserID().equals(userID) && item.getShared() == true) {
+                    if (!item.getCreatorsUserID().equals(userID) && item.getShared() == true) {
                         filteredList.add(item);
                     }
                 }

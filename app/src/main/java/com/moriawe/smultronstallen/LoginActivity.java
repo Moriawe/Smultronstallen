@@ -67,6 +67,8 @@ public class LoginActivity extends AppCompatActivity {
         userPasswordET = findViewById(R.id.newPasswordET);
         CreateNewAccountTV = findViewById(R.id.CreateNewAccountTV);
 
+        userID = mAuth.getUid(); // Retrieves the userID from the current user.
+
     }
 
     //Actionbar Overflow menu Inflate
@@ -137,8 +139,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getCurrentUser() {
-        userID = mAuth.getUid(); // Retrieves the userID from the current user.
-
         db.collection("AppUsers").document(userID)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
