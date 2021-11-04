@@ -61,6 +61,7 @@ public class Smultronstalle {
             String street = addresses.get(0).getThoroughfare();
             String streetNum = addresses.get(0).getSubThoroughfare();
             String city = addresses.get(0).getLocality();
+            String subAdmin = addresses.get(0).getSubAdminArea();
             String state = addresses.get(0).getAdminArea();
             String country = addresses.get(0).getCountryName();
             String postalCode = addresses.get(0).getPostalCode();

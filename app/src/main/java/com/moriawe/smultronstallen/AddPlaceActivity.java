@@ -148,7 +148,7 @@ public class AddPlaceActivity extends Activity {
         geoAddress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
         smultronstalle.setGeoAddress(geoAddress); // set the geoaddress from the intent info
-        //smultronstalle.getAddressFromGeo(this); // gets the streetaddress from the coordinates and returns as string
+        nyttStalle.setText(smultronstalle.getAddressFromGeo(this)); // gets the streetaddress from the coordinates and returns as string
 
         // Sets default image to logo
         addPicture.setImageResource(R.drawable.ic_logo_text);
