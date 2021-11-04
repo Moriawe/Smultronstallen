@@ -125,7 +125,7 @@ public class ShowPlaceActivity extends AppCompatActivity {
     private void setText() {
 
         titleTV.setText(smultronstalle.getName());
-        addressTV.setText(smultronstalle.getAddressFromGeo(this));
+        addressTV.setText(smultronstalle.getAddress());
         commentsTV.setText(smultronstalle.getComment());
 
     }

@@ -22,7 +22,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -37,6 +40,9 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     DateTimeFormatter dtf;
     LocalDateTime now;
+
+    AppUser currentUser;
+    String userID;
 
     private EditText userEmailET;
     private EditText userPasswordET;
@@ -88,11 +94,17 @@ public class LoginActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        sendUserToMap(currentUser);
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+
+        if (firebaseUser != null) {
+            getCurrentUser();
+        } else {
+        Toast.makeText(this, "No such user", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    // Sign in user
+
+    // When user needs to Sign in with email and password and press SignIn button
     public void signIn(View view) {
 
         String email = userEmailET.getText().toString();
@@ -111,13 +123,12 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            sendUserToMap(user);
+                            FirebaseUser user = mAuth.getCurrentUser(); //TODO What does this do?! [Jennie]
+                            getCurrentUser();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                            sendUserToMap(null);
                         }
 
                     }
@@ -125,26 +136,24 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void getCurrentUser() {
+        userID = mAuth.getUid(); // Retrieves the userID from the current user.
 
-    // If the user is correctly logged in they are sent to MapActivity, otherwise there will be an error toast.
-    private void sendUserToMap(FirebaseUser user) {
+        db.collection("AppUsers").document(userID)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        currentUser = documentSnapshot.toObject(AppUser.class);
+                        updateLogIn();
+                    }
+                });
 
-        if (user != null) {
-
-            updateLogIn();
-            Intent goToMapActivityIntent = new Intent(this, MapActivity.class);
-            startActivity(goToMapActivityIntent);
-
-        } else {
-
-            Toast.makeText(this, "No such user", Toast.LENGTH_SHORT).show();
-        }
     }
+
 
     // Updates the users LastLoggedIn information
     private void updateLogIn() {
-
-        String userID = mAuth.getUid(); // Retrieves the userID from the current user.
 
         // Updates the AppUser/userID document with a new lastLoggedIn
         db.collection("AppUsers").document(userID)
@@ -163,6 +172,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
+        sendUserToMap(currentUser);
     }
 
 
@@ -187,6 +197,14 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+
+    // If the user is correctly logged in they are sent to MapActivity, otherwise there will be an error toast.
+    private void sendUserToMap(AppUser user) {
+        Intent goToMapActivityIntent = new Intent(this, MapActivity.class);
+        goToMapActivityIntent.putExtra("CurrentUser", user);
+        startActivity(goToMapActivityIntent);
     }
 
 

@@ -23,7 +23,7 @@ public class Smultronstalle {
 
     private boolean shared;
     private String addedBy;
-    private String userID;
+    private String creatorsUserID;
 
     // Empty constructor for the Firebase Firestore database
     public Smultronstalle() {
@@ -31,7 +31,7 @@ public class Smultronstalle {
     }
 
     // Constructor for creating objects/users in CreateAccount
-    public Smultronstalle(String name, String comment, String address, GeoPoint geoAddress, String dateCreated, boolean shared, String addedBy, String userID) {
+    public Smultronstalle(String name, String comment, String address, GeoPoint geoAddress, String dateCreated, boolean shared, String addedBy, String creatorsUserID) {
         this.name = name;
         this.comment = comment;
         this.address = address;
@@ -39,7 +39,7 @@ public class Smultronstalle {
         this.dateCreated = dateCreated;
         this.shared = shared;
         this.addedBy = addedBy;
-        this.userID = userID;
+        this.creatorsUserID = creatorsUserID;
     }
 
     // HELPERMETHOD - Returns the streetname and number back as a string from the smultronstalle address.
@@ -144,11 +144,11 @@ public class Smultronstalle {
         this.addedBy = addedBy;
     }
 
-    public String getUserID() {
-        return userID;
+    public String getCreatorsUserID() {
+        return creatorsUserID;
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setCreatorsUserID(String userID) {
+        this.creatorsUserID = creatorsUserID;
     }
 }
