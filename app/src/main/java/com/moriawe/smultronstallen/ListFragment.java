@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,9 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
     private MenuViewModel menuChoiceViewModel;
     public SpaceDecorator spaceDecorator;
 
+    private FirebaseAuth mAuth;
+    String currentUserID;
+
 
 //    private Boolean;
 
@@ -40,6 +45,10 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
         view = inflater.inflate(R.layout.fragment_list, container, false);
         menuChoiceViewModel = new ViewModelProvider(getActivity()).get(MenuViewModel.class);
 
+        mAuth = FirebaseAuth.getInstance();
+        currentUserID = mAuth.getCurrentUser().getUid();
+
+
 
         //Get latest values from firebase, listening to updates
         LocationsProvider.getInstance(getContext()).getLocations(locations -> {
@@ -48,8 +57,7 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
                 //Declaring empty array to store filtered list in
                 locationsList = new ArrayList<>();
                 //Adding filtered array from method: filterListMenuChoice()
-//                locationsList.addAll(filterListMenuChoice(locations, filterLocationsChoice));
-                locationsList.addAll(locations);
+                locationsList.addAll(filterListMenuChoice(locations, filterLocationsChoice));
 //                locationsList.addAll(sortedList);
 //                createListAdaptedToRecyclerView(sortedList);
                 buildRecyclerView();
@@ -84,43 +92,41 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
         listAdapter.filterList(filteredList);
     }
 
-//    private List<LocationsProvider.LocationClass> filterListMenuChoice(List<LocationsProvider.LocationClass> locationsList, String filterLocationsChoice) {
-//        List<LocationsProvider.LocationClass> filteredList = new ArrayList<>();
-//
-////        String userID = mAuth.getCurrentUser().getUid(); //[Jennie] This is all the code needed to check if it's the right user
-//
-//        switch (filterLocationsChoice) {
-//            case Constants.MENU_BTN_CHOICE_ALL_LOCATIONS:
-//                for (LocationsProvider.LocationClass item : locationsList) {
-//                    if (item.getCreatorsUserID().equals("4aQpxrZGRwZI2cjzxREz")|| item.getShared() == true) {
-//                        filteredList.add(item);
-//                    }
-//                }
-//                break;
-//            case Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS:
-//                for (LocationsProvider.LocationClass item : locationsList) {
-//                    if (item.getCreatorsUserID().equals("4aQpxrZGRwZI2cjzxREz") && item.getShared() == true) {
-//                        filteredList.add(item);
-//                    }
-//                }
-//                break;
-//            case Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS:
-//                for (LocationsProvider.LocationClass item : locationsList) {
-//                    if (item.getCreatorsUserID().equals("4aQpxrZGRwZI2cjzxREz")) {
-//                        filteredList.add(item);
-//                    }
-//                }
-//                break;
-//        }
-//
-//        return filteredList;
-//    }
+    private List<LocationsProvider.LocationClass> filterListMenuChoice(List<LocationsProvider.LocationClass> locationsList, String filterLocationsChoice) {
+        List<LocationsProvider.LocationClass> filteredList = new ArrayList<>();
+
+        switch (filterLocationsChoice) {
+            case Constants.MENU_BTN_CHOICE_ALL_LOCATIONS:
+                for (LocationsProvider.LocationClass item : locationsList) {
+                    if (item.getCreatorsUserID().equals(currentUserID)|| item.getShared() == true) {
+                        filteredList.add(item);
+                    }
+                }
+                break;
+            case Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS:
+                for (LocationsProvider.LocationClass item : locationsList) {
+                    if (!item.getCreatorsUserID().equals(currentUserID) && item.getShared() == true) {
+                        filteredList.add(item);
+                    }
+                }
+                break;
+            case Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS:
+                for (LocationsProvider.LocationClass item : locationsList) {
+                    if (item.getCreatorsUserID().equals(currentUserID)) {
+                        filteredList.add(item);
+                    }
+                }
+                break;
+        }
+
+        return filteredList;
+    }
 
 
 //    private void createListAdaptedToRecyclerView(List<LocationsProvider.LocationClass> locations) {
 //        locationsList = new ArrayList<>();
 //        for (LocationsProvider.LocationClass location : locations) {
-//            locationsList.add(new ListItem(location.getName(), location.getDateCreated(), location.getPicture(), location.getAdress()));
+//            locationsList.add(new ListItem(location.getName(), location.getDateCreated(), location.getPicture(), location.geoAddress()));
 //        }
 //    }
 
