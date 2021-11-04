@@ -86,23 +86,28 @@ public interface LocationsProvider {
         private List<LocationClass> parseDocuments(List<DocumentSnapshot> documents) {
             List<LocationClass> locations = new ArrayList<>();
             for (DocumentSnapshot document : documents) {
-                GeoPoint adress = document.getGeoPoint("adress");
+                GeoPoint geoAddress = document.getGeoPoint("geoAddress");
                 String name = document.getString("name");
                 String comment = document.getString("comment");
                 String picture = document.getString("picture");
                 String date = document.getString("dateCreated");
                 Boolean shared = document.getBoolean("shared");
                 String addedBy = document.getString("addedBy");
+                String address = document.getString("address");
+                String creatorsUserID = document.getString("creatorsUserID");
+
 
                 LocationClass location = new LocationClass();
 
-                location.setAdress(adress);
+                location.setGeoAddress(geoAddress);
                 location.setName(name);
                 location.setComment(comment);
                 location.setPicture(picture);
                 location.setDateCreated(date);
                 location.setShared(shared);
                 location.setAddedBy(addedBy);
+                location.setAddress(address);
+                location.setCreatorsUserID(creatorsUserID);
 
                 //Add values to location item
                 locations.add(location);
@@ -127,20 +132,23 @@ public interface LocationsProvider {
 
 
     static class LocationClass {
-        private GeoPoint adress;
+        private GeoPoint geoAddress;
         private String name;
         private String comment;
 
+        private String address;
+
         private String picture;
         private String dateCreated;
-
         private Boolean shared;
+
         private String addedBy;
+        private String creatorsUserID;
+
 
         public String getComment() {
             return comment;
         }
-
         public void setComment(String comment) {
             this.comment = comment;
         }
@@ -148,7 +156,6 @@ public interface LocationsProvider {
         public String getAddedBy() {
             return addedBy;
         }
-
         public void setAddedBy(String addedBy) {
             this.addedBy = addedBy;
         }
@@ -162,11 +169,17 @@ public interface LocationsProvider {
         public String getName() { return name; }
         public void setName(String name) { this.name = name; }
 
-        public GeoPoint getAdress() { return adress; }
-        public void setAdress(GeoPoint adress) { this.adress = adress; }
+        public GeoPoint getGeoAddress() { return geoAddress; }
+        public void setGeoAddress(GeoPoint geoAddress) { this.geoAddress = geoAddress; }
 
         public Boolean getShared() { return shared; }
         public void setShared(Boolean shared) { this.shared = shared; }
-    }//end LocationClass
 
+        public String getCreatorsUserID() { return creatorsUserID; }
+        public void setCreatorsUserID(String creatorsUserID) { this.creatorsUserID = creatorsUserID; }
+
+        public String getAddress() { return address; }
+        public void setAddress(String address) { this.address = address; }
+
+    }//end LocationClass
 }//end interface LocationsProvider

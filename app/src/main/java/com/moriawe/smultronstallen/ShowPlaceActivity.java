@@ -136,7 +136,7 @@ public class ShowPlaceActivity extends AppCompatActivity {
 
         String userID = mAuth.getCurrentUser().getUid();
 
-        if (userID.equals(smultronstalle.getUserID())) {
+        if (userID.equals(smultronstalle.getCreatorsUserID())) {
             changeInfo.setVisibility(View.VISIBLE);
             deletePlace.setVisibility(View.VISIBLE);
         } else {

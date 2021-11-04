@@ -196,7 +196,7 @@ public class AddPlaceActivity extends Activity {
 
         smultronstalle.setDateCreated(dtf.format(now));
         smultronstalle.setAddedBy(addedBy);
-        smultronstalle.setUserID(userID);
+        smultronstalle.setCreatorsUserID(userID);
         //smultronstalle.setShared(); - get's set in the CheckVisibility method
 
         // PART 4 - LOAD THE OBJECT INTO THE DATABASE

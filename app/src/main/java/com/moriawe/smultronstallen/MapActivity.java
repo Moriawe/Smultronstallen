@@ -44,7 +44,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.auth.User;
 
 //Search in map
 import androidx.appcompat.widget.SearchView;
@@ -142,21 +141,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             switch (filterLocationsChoice) {
             case Constants.MENU_BTN_CHOICE_ALL_LOCATIONS:
                 for (LocationsProvider.LocationClass item : locationsList) {
-                    if item.getCreatorsUserID().equals(userID)|| item.getShared() == true) {
+                    if (item.getCreatorsUserID().equals(userID)|| item.getShared() == true) {
                         filteredList.add(item);
                     }
                 }
                 break;
             case Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS:
                 for (LocationsProvider.LocationClass item : locationsList) {
-                    if item.getCreatorsUserID().equals(userID) && item.getShared() == true) {
+                    if (item.getCreatorsUserID().equals(userID) && item.getShared() == true) {
                         filteredList.add(item);
                     }
                 }
                 break;
             case Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS:
                 for (LocationsProvider.LocationClass item : locationsList) {
-                    if item.getCreatorsUserID().equals(userID) {
+                    if (item.getCreatorsUserID().equals(userID)) {
                         filteredList.add(item);
                     }
                 }
@@ -218,7 +217,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     // Reads in markers and places them with Title, Comment and Icon in Infowindow
                     for (LocationsProvider.LocationClass sortedLocation : sortedList) {
                         MarkerOptions markerOption = new MarkerOptions();
-                        markerOption.position(convertGeoToLatLng(sortedLocation.getAdress()));
+                        markerOption.position(convertGeoToLatLng(sortedLocation.getGeoAddress()));
                         markerOption.title(sortedLocation.getName());
                         markerOption.snippet(sortedLocation.getComment());
                         markerOption.icon(BitmapDescriptorFactory.fromResource(R.drawable.straw_marker_small)); // If we place an icon in Smultronstalle.java we can fetch it from there instead. Has to be BITMAP [Jennie]
