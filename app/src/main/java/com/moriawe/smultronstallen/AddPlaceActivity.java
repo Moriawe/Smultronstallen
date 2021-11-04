@@ -63,7 +63,8 @@ public class AddPlaceActivity extends Activity {
     // Info about the new place
     String nameText;
     String commentsText;
-    GeoPoint adress;
+    String address;
+    GeoPoint geoAddress;
     String addedBy;
     String userID;
 
@@ -131,6 +132,10 @@ public class AddPlaceActivity extends Activity {
         commentsView = (EditText) findViewById(R.id.commentsOfPlaceET);
         submitButton = (Button) findViewById(R.id.submitButton);
         shareSwitch = (Switch) findViewById(R.id.share_switch);
+        addPicture = (ImageView) findViewById(R.id.new_place_image);
+        buttonGallery = (Button) findViewById(R.id.gallery_btn);
+
+
 
 
         //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getexta Intent?)
@@ -140,18 +145,10 @@ public class AddPlaceActivity extends Activity {
         // Read in lat and long from map and puts into address.
         latitude = latLngArr.get(0);
         longitude = latLngArr.get(1);
-        adress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
+        geoAddress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
-        smultronstalle.setAdress(adress); // comes from the intent from MapActivity
-
-        // Views in XML
-        nyttStalle = (TextView) findViewById(R.id.nyttStalle);
-        nameView = (EditText) findViewById(R.id.nameOfPlaceET);
-        commentsView = (EditText) findViewById(R.id.commentsOfPlaceET);
-        submitButton = (Button) findViewById(R.id.submitButton);
-        shareSwitch = (Switch) findViewById(R.id.share_switch);
-        addPicture = (ImageView) findViewById(R.id.new_place_image);
-        buttonGallery = (Button) findViewById(R.id.gallery_btn);
+        smultronstalle.setGeoAddress(geoAddress); // set the geoaddress from the intent info
+        nyttStalle.setText(smultronstalle.getAddressFromGeo(this)); // gets the streetaddress from the coordinates and returns as string
 
         // Sets default image to logo
         addPicture.setImageResource(R.drawable.ic_logo_text);
@@ -159,8 +156,6 @@ public class AddPlaceActivity extends Activity {
         // Launch gallery and run choosePicture() - go to gallery
         buttonGallery.setOnClickListener(view -> choosePicture());
 
-        //
-        getAddressFromGeo();
     }
 
     // Method that runs when you push the SUBMIT button in the activity.
@@ -193,12 +188,14 @@ public class AddPlaceActivity extends Activity {
     private void savePlace() {
 
         // PART 3 - GET INFO ABOUT THE NEW SMULTRONSTALLE AND PUT IT INTO OBJECT.
+        //First four reads what the user has typed in
         smultronstalle.setName(nameText);
         smultronstalle.setComment(commentsText);
-        //smultronstalle.setAdress(adress); // comes from the intent from MapActivity
+        smultronstalle.setAddress(address);
+        smultronstalle.setPicture(namePicture);
+
         smultronstalle.setDateCreated(dtf.format(now));
         smultronstalle.setAddedBy(addedBy);
-        smultronstalle.setPicture(namePicture);
         smultronstalle.setUserID(userID);
         //smultronstalle.setShared(); - get's set in the CheckVisibility method
 
@@ -225,34 +222,6 @@ public class AddPlaceActivity extends Activity {
 
     }
 
-    // Fetches RL addresses from the lat/long coordinates.
-    private void getAddressFromGeo() {
-
-        Geocoder geocoder;
-        List<Address> addresses;
-        geocoder = new Geocoder(this, Locale.getDefault());
-
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
-            String streetName = addresses.get(0).getThoroughfare();
-            String streetNumber = addresses.get(0).getSubThoroughfare();
-            String area = addresses.get(0).getSubLocality();
-            String addressLess = streetName + " " + streetNumber + ", " + area; //TODO: prints null if null. Should be fixed. [Pernilla]
-
-            nyttStalle.setText(address);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     // Checks what the switch is set to.
     private void checkVisibility() {
@@ -269,6 +238,7 @@ public class AddPlaceActivity extends Activity {
         });
 
     }
+
 
     // Checks so that all (name and comments) fields are filled in.
     private boolean validateForm() {
@@ -293,14 +263,11 @@ public class AddPlaceActivity extends Activity {
         return valid;
     }
 
+
     // Sends the user back to MapActivity after submitting a new place
     private void goBackToMap() {
-
-            Intent goToMapActivityIntent = new Intent(this, MapActivity.class);
-            startActivity(goToMapActivityIntent);
-
+        finish();
     }
-
 
 
     // Launch gallery and make images clickable
@@ -310,6 +277,7 @@ public class AddPlaceActivity extends Activity {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
+
 
     // Pick an image from gallery and put it into image view
     @Override
@@ -324,11 +292,13 @@ public class AddPlaceActivity extends Activity {
         }
     }
 
+
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(cR.getType(uri));
     }
+
 
     // Gives picture a unique name.
     // Uploads Picture to Firebase Storage in folder "ImagesStalle".

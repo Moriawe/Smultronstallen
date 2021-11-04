@@ -12,10 +12,11 @@ import java.util.Locale;
 
 public class Smultronstalle {
 
-    private GeoPoint adress;
+    private GeoPoint geoAddress;
 
     private String name;
     private String comment;
+    private String address;
     private String picture;
 
     private String dateCreated;
@@ -30,10 +31,11 @@ public class Smultronstalle {
     }
 
     // Constructor for creating objects/users in CreateAccount
-    public Smultronstalle(String name, String comment, GeoPoint adress, String dateCreated, boolean shared, String addedBy, String userID) {
+    public Smultronstalle(String name, String comment, String address, GeoPoint geoAddress, String dateCreated, boolean shared, String addedBy, String userID) {
         this.name = name;
         this.comment = comment;
-        this.adress = adress;
+        this.address = address;
+        this.geoAddress = geoAddress;
         this.dateCreated = dateCreated;
         this.shared = shared;
         this.addedBy = addedBy;
@@ -43,8 +45,8 @@ public class Smultronstalle {
     // HELPERMETHOD - Returns the streetname and number back as a string from the smultronstalle address.
     protected String getAddressFromGeo(Context context) {
 
-        double latitude = adress.getLatitude();
-        double longitude = adress.getLongitude();
+        double latitude = geoAddress.getLatitude();
+        double longitude = geoAddress.getLongitude();
 
         List<Address> addresses;
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
@@ -59,6 +61,7 @@ public class Smultronstalle {
             String street = addresses.get(0).getThoroughfare();
             String streetNum = addresses.get(0).getSubThoroughfare();
             String city = addresses.get(0).getLocality();
+            String subAdmin = addresses.get(0).getSubAdminArea();
             String state = addresses.get(0).getAdminArea();
             String country = addresses.get(0).getCountryName();
             String postalCode = addresses.get(0).getPostalCode();
@@ -77,12 +80,12 @@ public class Smultronstalle {
     // Getters & Setters
 
 
-    public GeoPoint getAdress() {
-        return adress;
+    public GeoPoint getGeoAddress() {
+        return geoAddress;
     }
 
-    public void setAdress(GeoPoint adress) {
-        this.adress = adress;
+    public void setGeoAddress(GeoPoint geoAddress) {
+        this.geoAddress = geoAddress;
     }
 
     public String getName() {
@@ -99,6 +102,14 @@ public class Smultronstalle {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getPicture() {
@@ -140,5 +151,4 @@ public class Smultronstalle {
     public void setUserID(String userID) {
         this.userID = userID;
     }
-
 }
