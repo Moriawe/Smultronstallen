@@ -6,8 +6,6 @@ import androidx.annotation.Nullable;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.location.Geocoder;
-import android.location.Address;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -39,13 +37,10 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+
 
 public class AddPlaceActivity extends Activity {
 
@@ -63,10 +58,10 @@ public class AddPlaceActivity extends Activity {
     // Info about the new place
     String nameText;
     String commentsText;
-    String address;
+    String addressText;
     GeoPoint geoAddress;
     String addedBy;
-    String userID;
+    String creatorUserID;
 
     // Lat/long to use in getAddress method.
     double latitude;
@@ -147,8 +142,8 @@ public class AddPlaceActivity extends Activity {
         longitude = latLngArr.get(1);
         geoAddress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
-        smultronstalle.setGeoAddress(geoAddress); // set the geoaddress from the intent info
         nyttStalle.setText(smultronstalle.getAddressFromGeo(this)); // gets the streetaddress from the coordinates and returns as string
+
 
         // Sets default image to logo
         addPicture.setImageResource(R.drawable.ic_logo_text);
@@ -166,10 +161,10 @@ public class AddPlaceActivity extends Activity {
 
             // PART 2 - FIND CURRENT USER AND MAKE A OBJECT OF APPUSER WITH CURRENT USER INFO
             // Get's  the current users ID
-            userID = mAuth.getCurrentUser().getUid();
+            creatorUserID = mAuth.getCurrentUser().getUid();
 
             // Tells the program where to look for information. In the collection AppUsers, the document named "userID"
-            db.collection("AppUsers").document(userID)
+            db.collection("AppUsers").document(creatorUserID)
                     .get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
@@ -191,12 +186,13 @@ public class AddPlaceActivity extends Activity {
         //First four reads what the user has typed in
         smultronstalle.setName(nameText);
         smultronstalle.setComment(commentsText);
-        smultronstalle.setAddress(address);
+        smultronstalle.setAddress(addressText);
+        smultronstalle.setGeoAddress(geoAddress); // set the geoaddress from the intent info
         smultronstalle.setPicture(namePicture);
 
         smultronstalle.setDateCreated(dtf.format(now));
         smultronstalle.setAddedBy(addedBy);
-        smultronstalle.setUserID(userID);
+        smultronstalle.setCreatorsUserID(creatorUserID);
         //smultronstalle.setShared(); - get's set in the CheckVisibility method
 
         // PART 4 - LOAD THE OBJECT INTO THE DATABASE
@@ -258,6 +254,14 @@ public class AddPlaceActivity extends Activity {
             valid = false;
         } else {
             commentsView.setError(null);
+        }
+
+        addressText = nyttStalle.getText().toString();
+        if (TextUtils.isEmpty(addressText)) {
+            nyttStalle.setError("Required.");
+            valid = false;
+        } else {
+            nyttStalle.setError(null);
         }
 
         return valid;
