@@ -76,7 +76,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     private FirebaseAuth mAuth;
     AppUser currentUser;
-
+    String currentUserID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +90,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         // Reads in the CurrentUser that is logged in so that we can fetch name, email etc. Object of AppUser
         mAuth = FirebaseAuth.getInstance();
+        currentUserID = mAuth.getCurrentUser().getUid();
+
         if(getIntent().getExtras() != null) {
              currentUser = (AppUser) getIntent().getSerializableExtra("CurrentUser");
         }
@@ -136,26 +138,24 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private List<LocationsProvider.LocationClass> filterListMenuChoice(List<LocationsProvider.LocationClass> locationsList, String filterLocationsChoice) {
         List<LocationsProvider.LocationClass> filteredList = new ArrayList<>();
 
-        String userID = mAuth.getCurrentUser().getUid(); //[Jennie] This is all the code needed to check if it's the right user
-
             switch (filterLocationsChoice) {
             case Constants.MENU_BTN_CHOICE_ALL_LOCATIONS:
                 for (LocationsProvider.LocationClass item : locationsList) {
-                    if (item.getCreatorsUserID().equals(userID)|| item.getShared() == true) {
+                    if (item.getCreatorsUserID().equals(currentUserID)|| item.getShared() == true) {
                         filteredList.add(item);
                     }
                 }
                 break;
             case Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS:
                 for (LocationsProvider.LocationClass item : locationsList) {
-                    if (!item.getCreatorsUserID().equals(userID) && item.getShared() == true) {
+                    if (!item.getCreatorsUserID().equals(currentUserID) && item.getShared() == true) {
                         filteredList.add(item);
                     }
                 }
                 break;
             case Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS:
                 for (LocationsProvider.LocationClass item : locationsList) {
-                    if (item.getCreatorsUserID().equals(userID)) {
+                    if (item.getCreatorsUserID().equals(currentUserID)) {
                         filteredList.add(item);
                     }
                 }
