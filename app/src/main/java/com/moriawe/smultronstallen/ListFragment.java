@@ -39,14 +39,6 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
     String currentUserID;
     String latestTimesStamp;
 
-//    DateTimeFormatter dtf;
-//    LocalDateTime now;
-
-
-
-//    private Boolean;
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,11 +49,8 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
         MapActivity activity = (MapActivity) getActivity();
-        latestTimesStamp = activity.getUser().getLastLoggedIn();
-        System.out.println("latestTimesStamp beginning" + latestTimesStamp);
-
-
-
+        latestTimesStamp = activity.getLatestTimestampFromMapActivity();
+        System.out.println("latestTimesStampe init list" + latestTimesStamp);
 
 
         //Get latest values from firebase, listening to updates
@@ -146,15 +135,14 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
                         filteredList.add(item);
                     }
                 }
-                Log.d("latestTimesStamp before sorthelper", latestTimesStamp);
+                Log.d("latestTimesStampe list", latestTimesStamp);
                 List<LocationsProvider.LocationClass> latestLocationsList = new ArrayList<>();
                 latestLocationsList.addAll(Helpers.getNewLocations(filteredList, latestTimesStamp));
                 latestLocationsList.size();
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
                 LocalDateTime now = LocalDateTime.now();
                 latestTimesStamp = dtf.format(now);
-
-                Log.d("latestTimesStamp after sorthelper" , latestTimesStamp);
+                Log.d("latestTimesStampe list" , latestTimesStamp);
                 filteredAndSortedList.addAll(latestLocationsList);
                 break;
         }

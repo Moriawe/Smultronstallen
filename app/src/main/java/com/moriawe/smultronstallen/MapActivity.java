@@ -50,6 +50,8 @@ import androidx.appcompat.widget.SearchView;
 
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +79,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private FirebaseAuth mAuth;
     AppUser currentUser;
     String currentUserID;
+    String latestTimesStamp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +94,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // Reads in the CurrentUser that is logged in so that we can fetch name, email etc. Object of AppUser
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
-
         if(getIntent().getExtras() != null) {
              currentUser = (AppUser) getIntent().getSerializableExtra("CurrentUser");
         }
+        latestTimesStamp = currentUser.getLastLoggedIn();
+        System.out.println("latestTimesStamp beginning" + latestTimesStamp);
 
 
         //Asking for permission to use gps and initializing map
@@ -161,6 +165,23 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     }
                 }
                 break;
+                case Constants.MENU_BTN_NOTIFICATIONS:
+                    for (LocationsProvider.LocationClass item : locationsList) {
+                        if (item.getCreatorsUserID().equals(currentUserID)) {
+                            filteredList.add(item);
+                        }
+                    }
+                    Log.d("latestTimesStamp before sorthelper", latestTimesStamp);
+                    List<LocationsProvider.LocationClass> latestLocationsList = new ArrayList<>();
+                    latestLocationsList.addAll(Helpers.getNewLocations(filteredList, latestTimesStamp));
+                    filteredList.clear();
+                    latestLocationsList.size();
+                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                    LocalDateTime now = LocalDateTime.now();
+                    latestTimesStamp = dtf.format(now);
+                    Log.d("latestTimesStamp after sorthelper" , latestTimesStamp);
+                    filteredList.addAll(latestLocationsList);
+                    break;
         }
 
         return filteredList;
@@ -444,5 +465,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public AppUser getUser() {
         return currentUser;
     }
+
+    public String getLatestTimestampFromMapActivity() {
+        return latestTimesStamp;
+    }
+
 
 }
