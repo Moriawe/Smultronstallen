@@ -96,6 +96,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
              currentUser = (AppUser) getIntent().getSerializableExtra("CurrentUser");
         }
 
+
         //Asking for permission to use gps and initializing map
         getLocationPermission();
 
@@ -438,6 +439,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         FirebaseAuth.getInstance().signOut();
         Toast.makeText(this, "Signed out", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class));
+    }
+
+    public AppUser getUser() {
+        return currentUser;
     }
 
 }

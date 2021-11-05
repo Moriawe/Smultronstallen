@@ -10,14 +10,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +37,11 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
 
     private FirebaseAuth mAuth;
     String currentUserID;
+    String latestTimesStamp;
+
+//    DateTimeFormatter dtf;
+//    LocalDateTime now;
+
 
 
 //    private Boolean;
@@ -47,14 +56,23 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
 
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
+        MapActivity activity = (MapActivity) getActivity();
+        latestTimesStamp = activity.getUser().getLastLoggedIn();
+        System.out.println("latestTimesStamp beginning" + latestTimesStamp);
+
+
 
 
 
         //Get latest values from firebase, listening to updates
         LocationsProvider.getInstance(getContext()).getLocations(locations -> {
+
             //Get selected value from menuBtns, listening to btnClicks
             menuChoiceViewModel.getSelectedBtnValue().observe(getViewLifecycleOwner(), filterLocationsChoice -> {
                 //Declaring empty array to store filtered list in
+
+//                Helpers.getNewLocations(locations);
+
                 locationsList = new ArrayList<>();
                 //Adding filtered array from method: filterListMenuChoice()
                 locationsList.addAll(filterListMenuChoice(locations, filterLocationsChoice));
@@ -89,11 +107,13 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
                 filteredList.add(item);
             }
         }
+//        Helpers.returnSortedArr(filteredList);
         listAdapter.filterList(filteredList);
     }
 
     private List<LocationsProvider.LocationClass> filterListMenuChoice(List<LocationsProvider.LocationClass> locationsList, String filterLocationsChoice) {
         List<LocationsProvider.LocationClass> filteredList = new ArrayList<>();
+        List<LocationsProvider.LocationClass> filteredAndSortedList = new ArrayList<>();
 
         switch (filterLocationsChoice) {
             case Constants.MENU_BTN_CHOICE_ALL_LOCATIONS:
@@ -102,6 +122,7 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
                         filteredList.add(item);
                     }
                 }
+                filteredAndSortedList.addAll(Helpers.returnSortedArr(filteredList));
                 break;
             case Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS:
                 for (LocationsProvider.LocationClass item : locationsList) {
@@ -109,6 +130,7 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
                         filteredList.add(item);
                     }
                 }
+                filteredAndSortedList.addAll(Helpers.returnSortedArr(filteredList));
                 break;
             case Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS:
                 for (LocationsProvider.LocationClass item : locationsList) {
@@ -116,10 +138,28 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
                         filteredList.add(item);
                     }
                 }
+                filteredAndSortedList.addAll(Helpers.returnSortedArr(filteredList));
+                break;
+            case Constants.MENU_BTN_NOTIFICATIONS:
+                for (LocationsProvider.LocationClass item : locationsList) {
+                    if (item.getCreatorsUserID().equals(currentUserID)) {
+                        filteredList.add(item);
+                    }
+                }
+                Log.d("latestTimesStamp before sorthelper", latestTimesStamp);
+                List<LocationsProvider.LocationClass> latestLocationsList = new ArrayList<>();
+                latestLocationsList.addAll(Helpers.getNewLocations(filteredList, latestTimesStamp));
+                latestLocationsList.size();
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
+                latestTimesStamp = dtf.format(now);
+
+                Log.d("latestTimesStamp after sorthelper" , latestTimesStamp);
+                filteredAndSortedList.addAll(latestLocationsList);
                 break;
         }
 
-        return filteredList;
+        return filteredAndSortedList;
     }
 
 

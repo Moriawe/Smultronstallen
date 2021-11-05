@@ -58,6 +58,20 @@
             android:layout_height="1dp"
             android:layout_weight="1" >
         </View>
+        <RadioButton android:id="@+id/notificationsListBtn"
+            android:text="SENASTE"
+            android:background="@drawable/custom_menu_button"
+            android:button="@android:color/transparent"
+            android:checked="false"
+            android:gravity="center"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:onClick="onRadioButtonClicked"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" >
+        </View>
         <ToggleButton android:id="@+id/showHideBtn"
             android:textOff="@string/arrow_down_show_list"
             android:textOn="@string/arrow_up_hide_list"

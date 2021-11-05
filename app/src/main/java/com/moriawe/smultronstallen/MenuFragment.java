@@ -36,6 +36,11 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         RadioButton personalListBtn = (RadioButton) view.findViewById(R.id.personalListBtn);
         personalListBtn.setOnClickListener(this);
 
+        RadioButton notificationsListBtn = (RadioButton) view.findViewById(R.id.notificationsListBtn);
+        notificationsListBtn.setOnClickListener(this);
+
+
+
         //ToggleButton, open or close LocationList
         showHideBtn = (ToggleButton) view.findViewById(R.id.showHideBtn);
 
@@ -72,6 +77,10 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
             case R.id.personalListBtn:
                 if (checked)
                     menuViewModel.setSelectedMenuBtnValue(Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS);
+                break;
+            case R.id.notificationsListBtn:
+                if (checked)
+                    menuViewModel.setSelectedMenuBtnValue(Constants.MENU_BTN_NOTIFICATIONS);
                 break;
         }
     }
