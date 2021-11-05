@@ -38,7 +38,7 @@
             android:exported="false"
             android:theme="@style/AppTheme.PopUp" />
         <activity
-            android:name=".UserSettings"
+            android:name=".UserSettingsActivity"
             android:exported="false" />
         <activity
             android:name=".CreateAccountActivity"

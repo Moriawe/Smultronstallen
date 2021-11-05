@@ -130,6 +130,7 @@
     <!-- Actionbar -->
     <string name="action_menu_logout">Logga ut</string>
     <string name="action_menu_info">Information</string>
+    <string name="action_menu_userinfo">User profile</string>
 
     <!-- Add new place -->
     <string name="comments">Kommentar</string>

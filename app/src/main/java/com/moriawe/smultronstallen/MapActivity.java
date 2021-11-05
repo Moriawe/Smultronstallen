@@ -75,7 +75,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private List<Marker> markersList;
 
     private FirebaseAuth mAuth;
-    AppUser currentUser;
+    static AppUser currentUser;
     String currentUserID;
 
     @Override
@@ -419,9 +419,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 return true;
             case R.id.action_info: //TODO: We need an activity with our information
                 return true;
+            case R.id.action_userinfo:
+                goToUserSettings();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void goToUserSettings() {
+        Intent intent = new Intent(this, UserSettingsActivity.class);
+        startActivity(intent);
     }
 
     // When the user press the InfoWindow
