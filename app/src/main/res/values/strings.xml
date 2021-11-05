@@ -136,9 +136,12 @@
     <string name="headline">Rubrik</string>
     <string name="adress">Adress</string>
 
-    <!-- Database keys -->
-<!--    <string name="MENU_BTN_CHOICE_ALL_LOCATIONS">all</string>-->
-<!--    <string name="MENU_BTN_CHOICE_PRIVATE_LOCATIONS">private</string>-->
-<!--    <string name="MENU_BTN_CHOICE_FRIENDS_LOCATIONS">friends</string>-->
+    <!-- User Settings -->
+    <string name="change">Ändra</string>
+    <string name="add">Lägg till</string>
+    <string name="save">Spara</string>
+    <string name="friends">Vänner</string>
+
+
 
 </resources>

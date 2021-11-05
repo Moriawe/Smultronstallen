@@ -4,92 +4,220 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UserSettings">
+    tools:context=".UserSettingsActivity">
+
+    <!-- Profile picture set -->
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/profile_picture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="43dp"
-        tools:layout_editor_absoluteY="34dp"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintBottom_toTopOf="@+id/button_change_profile_picture"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.138"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.681"
+        tools:srcCompat="@drawable/ic_user_list" />
+
+    <Button
+        android:id="@+id/button_change_profile_picture"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="68dp"
+        android:onClick="changeProfilePicture"
+        android:text="@string/change"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toTopOf="@+id/nick_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.176"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button_save_profile_picture"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:layout_marginBottom="68dp"
+        android:onClick="saveProfilePicture"
+        android:text="@string/save"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toTopOf="@+id/nick_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.176"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <!-- Nickname set -->
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/nick_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:text="Nickname"
-        tools:layout_editor_absoluteX="43dp"
-        tools:layout_editor_absoluteY="218dp" />
+        app:layout_constraintBottom_toTopOf="@+id/email"
+        app:layout_constraintEnd_toStartOf="@+id/button_change_nickname"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textView2"
+    <EditText
+        android:id="@+id/edit_nick_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="Nickname"
+        app:layout_constraintBottom_toTopOf="@+id/email"
+        app:layout_constraintEnd_toStartOf="@+id/button_change_nickname"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button_change_nickname"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="changeNickName"
+        android:text="@string/change"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toTopOf="@+id/button_change_email"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/button_save_nickname"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="saveNickName"
+        android:text="@string/save"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toTopOf="@+id/button_change_email"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <!-- Email set -->
+
+    <TextView
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         android:text="Email"
-        tools:layout_editor_absoluteX="43dp"
-        tools:layout_editor_absoluteY="268dp" />
+        app:layout_constraintBottom_toTopOf="@+id/password"
+        app:layout_constraintEnd_toStartOf="@+id/button_change_email"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textView3"
+    <EditText
+        android:id="@+id/edit_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="Email"
+        app:layout_constraintBottom_toTopOf="@+id/password"
+        app:layout_constraintEnd_toStartOf="@+id/button_change_email"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button_change_email"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="changeEmail"
+        android:text="@string/change"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toTopOf="@+id/button_change_password"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/button_save_email"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="saveEmail"
+        android:text="@string/save"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toTopOf="@+id/button_change_password"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <!-- Password set -->
+
+    <TextView
+        android:id="@+id/password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="384dp"
         android:text="Lösenord"
-        tools:layout_editor_absoluteX="43dp"
-        tools:layout_editor_absoluteY="322dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_change_password"
+        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textView4"
+    <EditText
+        android:id="@+id/edit_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="383dp"
+        android:text="Lösenord"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_change_password"
+        app:layout_constraintHorizontal_bias="0.486"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button_change_password"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="375dp"
+        android:onClick="changePassword"
+        android:text="@string/change"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/button_save_password"
+        android:layout_width="65dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="375dp"
+        android:onClick="savePassword"
+        android:text="@string/save"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <!-- Friends set
+
+    <TextView
+        android:id="@+id/friends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="328dp"
         android:text="Vänner"
-        tools:layout_editor_absoluteX="43dp"
-        tools:layout_editor_absoluteY="381dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_add_friends"
+        app:layout_constraintHorizontal_bias="0.511"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="65dp"
-        android:layout_height="35dp"
-        android:text="Ändra"
-        android:textSize="8sp"
-        tools:layout_editor_absoluteX="318dp"
-        tools:layout_editor_absoluteY="211dp" />
-
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="65dp"
-        android:layout_height="35dp"
-        android:text="Ändra"
-        android:textSize="8sp"
-        tools:layout_editor_absoluteX="70dp"
-        tools:layout_editor_absoluteY="162dp" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="65dp"
-        android:layout_height="35dp"
-        android:text="Ändra"
-        android:textSize="8sp"
-        tools:layout_editor_absoluteX="318dp"
-        tools:layout_editor_absoluteY="261dp" />
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="65dp"
-        android:layout_height="35dp"
-        android:text="Ändra"
-        android:textSize="8sp"
-        tools:layout_editor_absoluteX="318dp"
-        tools:layout_editor_absoluteY="315dp" />
-
-    <Button
-        android:id="@+id/button4"
+        android:id="@+id/button_add_friends"
         android:layout_width="80dp"
         android:layout_height="35dp"
-        android:text="Lägg till"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="324dp"
+        android:onClick="addFriends"
+        android:text="@string/add"
         android:textSize="8sp"
-        tools:layout_editor_absoluteX="303dp"
-        tools:layout_editor_absoluteY="372dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" /> -->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
