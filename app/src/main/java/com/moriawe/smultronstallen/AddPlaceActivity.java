@@ -3,6 +3,7 @@ package com.moriawe.smultronstallen;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.MimeTypeMap;
@@ -90,6 +92,7 @@ public class AddPlaceActivity extends Activity {
     private StorageReference storageRef;
     private DatabaseReference databaseRef;
 
+    @SuppressLint("ClickableViewAccessibility") //Has to do with visual impairment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,7 +141,20 @@ public class AddPlaceActivity extends Activity {
         buttonGallery = (Button) findViewById(R.id.gallery_btn);
 
 
+        // Scroll in comments view
+        commentsView.setOnTouchListener(new View.OnTouchListener() {
 
+            public boolean onTouch(View v, MotionEvent event) {
+                if (commentsView.hasFocus()) {
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_SCROLL) {
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
 
         //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getexta Intent?)
         Intent intent = getIntent();

@@ -142,7 +142,8 @@
     <string name="add">Lägg till</string>
     <string name="save">Spara</string>
     <string name="friends">Vänner</string>
-
+    <string name="gallery_load">Load image \nfrom gallery</string>
+    <string name="headline_helper">Max 35 tecken</string>
 
 
 </resources>
