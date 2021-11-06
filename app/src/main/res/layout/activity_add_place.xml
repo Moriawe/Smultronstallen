@@ -126,8 +126,7 @@
                     android:maxLines="5"
                     android:overScrollMode="always"
                     android:scrollbarStyle="outsideInset"
-                    android:scrollbars="vertical"
-                    android:paddingTop="40dp"/>
+                    android:scrollbars="vertical" />
 
             </com.google.android.material.textfield.TextInputLayout>
         </androidx.core.widget.NestedScrollView>
