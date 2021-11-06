@@ -7,34 +7,45 @@
     android:fitsSystemWindows="true"
     tools:context=".ListFragment">
 
+
+
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:paddingTop="100dp">
 
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-44dp">
 
         <EditText
+            android:textColorHint="@drawable/selector"
+            android:textAlignment="center"
             android:id="@+id/edittext"
-            android:background="@drawable/smultron_search_bar"
-            android:drawableLeft="@drawable/ic_search_black_24dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="65dp"
+            android:background="@color/search"
+            android:clickable="true"
+            android:drawableRight="@drawable/ic_search_black_24dp"
+            android:paddingStart="29dp"
+            android:paddingEnd="29dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:hint="Search here"
             android:imeOptions="actionDone"
-            android:clickable="true"
-            android:focusableInTouchMode="true"
             android:singleLine="true"
-            android:focusable="true" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
-<!--        <ListView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:id="@+id/listView" />-->
+
+        <!--        <ListView-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:id="@+id/listView" />-->
 
         <androidx.recyclerview.widget.RecyclerView
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

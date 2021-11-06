@@ -28,6 +28,7 @@ import android.view.MenuItem;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 //Google Maps
@@ -81,6 +82,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     String currentUserID;
     String latestTimesStamp;
 
+    List<LocationsProvider.LocationClass> latestLocationsList;
+    String notificationsValue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,8 +102,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
              currentUser = (AppUser) getIntent().getSerializableExtra("CurrentUser");
         }
         latestTimesStamp = currentUser.getLastLoggedIn();
-        System.out.println("latestTimesStamp beginning" + latestTimesStamp);
-
+        System.out.println("latestTimesStamp beginning in map" + latestTimesStamp);
 
         //Asking for permission to use gps and initializing map
         getLocationPermission();
@@ -166,20 +169,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
                 break;
                 case Constants.MENU_BTN_NOTIFICATIONS:
-                    for (LocationsProvider.LocationClass item : locationsList) {
-                        if (item.getCreatorsUserID().equals(currentUserID)) {
-                            filteredList.add(item);
-                        }
-                    }
-                    Log.d("latestTimesStamp before sorthelper", latestTimesStamp);
-                    List<LocationsProvider.LocationClass> latestLocationsList = new ArrayList<>();
-                    latestLocationsList.addAll(Helpers.getNewLocations(filteredList, latestTimesStamp));
-                    filteredList.clear();
-                    latestLocationsList.size();
-                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-                    LocalDateTime now = LocalDateTime.now();
-                    latestTimesStamp = dtf.format(now);
-                    Log.d("latestTimesStamp after sorthelper" , latestTimesStamp);
                     filteredList.addAll(latestLocationsList);
                     break;
         }
@@ -223,6 +212,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter((MapActivity.this)));
 
         LocationsProvider.getInstance(this).getLocations(locations -> {
+            latestLocationsList = new ArrayList<>();
+            latestLocationsList.addAll(Helpers.getNewLocations(Helpers.getSharedFriends(locations), latestTimesStamp));
+            notificationsValue = Integer.toString(latestLocationsList.size());
+            menuChoiceViewModel.setNotificationCount(notificationsValue);
+            System.out.println("Leength" + notificationsValue);
+
+
             //Get selected value from menuBtns, listening to btnClicks
             menuChoiceViewModel.getSelectedBtnValue().observe(this, filterLocationsChoice -> {
                 //Declaring empty array to store filtered list in
@@ -468,6 +464,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     public String getLatestTimestampFromMapActivity() {
         return latestTimesStamp;
+    }
+    public String getLatestNotificationCountFromMapActivity() {
+        return notificationsValue;
     }
 
 

@@ -15,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -35,10 +37,11 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
     private MenuViewModel menuChoiceViewModel;
     public SpaceDecorator spaceDecorator;
 
+    List<LocationsProvider.LocationClass> latestLocationsList;
+
     private FirebaseAuth mAuth;
     String currentUserID;
     String latestTimesStamp;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,23 +53,18 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
         currentUserID = mAuth.getCurrentUser().getUid();
         MapActivity activity = (MapActivity) getActivity();
         latestTimesStamp = activity.getLatestTimestampFromMapActivity();
-        System.out.println("latestTimesStampe init list" + latestTimesStamp);
-
 
         //Get latest values from firebase, listening to updates
         LocationsProvider.getInstance(getContext()).getLocations(locations -> {
+            latestLocationsList = new ArrayList<>();
+            latestLocationsList.addAll(Helpers.getNewLocations(Helpers.getSharedFriends(locations), latestTimesStamp));
 
             //Get selected value from menuBtns, listening to btnClicks
             menuChoiceViewModel.getSelectedBtnValue().observe(getViewLifecycleOwner(), filterLocationsChoice -> {
                 //Declaring empty array to store filtered list in
-
-//                Helpers.getNewLocations(locations);
-
                 locationsList = new ArrayList<>();
                 //Adding filtered array from method: filterListMenuChoice()
                 locationsList.addAll(filterListMenuChoice(locations, filterLocationsChoice));
-//                locationsList.addAll(sortedList);
-//                createListAdaptedToRecyclerView(sortedList);
                 buildRecyclerView();
             });//end ChoiceViewModel
         });//end LocationsProvider
@@ -130,25 +128,22 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
                 filteredAndSortedList.addAll(Helpers.returnSortedArr(filteredList));
                 break;
             case Constants.MENU_BTN_NOTIFICATIONS:
-                for (LocationsProvider.LocationClass item : locationsList) {
-                    if (item.getCreatorsUserID().equals(currentUserID)) {
-                        filteredList.add(item);
-                    }
-                }
-                Log.d("latestTimesStampe list", latestTimesStamp);
-                List<LocationsProvider.LocationClass> latestLocationsList = new ArrayList<>();
-                latestLocationsList.addAll(Helpers.getNewLocations(filteredList, latestTimesStamp));
-                latestLocationsList.size();
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-                LocalDateTime now = LocalDateTime.now();
-                latestTimesStamp = dtf.format(now);
-                Log.d("latestTimesStampe list" , latestTimesStamp);
-                filteredAndSortedList.addAll(latestLocationsList);
+                    filteredAndSortedList.addAll(latestLocationsList);
                 break;
         }
 
         return filteredAndSortedList;
     }
+
+//    public List<LocationsProvider.LocationClass> getSharedFriends (List<LocationsProvider.LocationClass> list) {
+//        List<LocationsProvider.LocationClass> filteredList = new ArrayList<>();
+//        for (LocationsProvider.LocationClass item : list) {
+////            if (!item.getCreatorsUserID().equals(currentUserID)) {
+//                filteredList.add(item);
+////            }
+//        }
+//        return filteredList;
+//    }
 
 
 //    private void createListAdaptedToRecyclerView(List<LocationsProvider.LocationClass> locations) {

@@ -15,7 +15,7 @@ public class Helpers {
     public static class SortByDate implements Comparator<LocationsProvider.LocationClass> {
         @Override
         public int compare(LocationsProvider.LocationClass a, LocationsProvider.LocationClass b) {
-            return a.getDateCreated().compareTo(b.getDateCreated());
+            return b.getDateCreated().compareTo(a.getDateCreated());
         }
     }
 
@@ -25,7 +25,7 @@ public class Helpers {
     }
 
     public static List<LocationsProvider.LocationClass> getNewLocations(List<LocationsProvider.LocationClass> locations, String latestTimeStamp) {
-        Log.d("latestTimeStamp in helper", latestTimeStamp);
+//        Log.d("latestTimeStamp in helper", latestTimeStamp);
         List<LocationsProvider.LocationClass> futureLocations = new ArrayList<>();
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"); // here use your response date format
 //        locations.clear();
@@ -55,10 +55,21 @@ public class Helpers {
         for (LocationsProvider.LocationClass date : futureLocations) {
             System.out.println("muu" + date.getDateCreated());
         }
+
         Log.d("futureLocations size", String.valueOf(futureLocations.size()));
         Log.d("futureLocations return" , futureLocations.toString());
 //        System.out.println("muu" + futureLocations);
         return futureLocations;
+    }
+
+    public static List<LocationsProvider.LocationClass> getSharedFriends (List<LocationsProvider.LocationClass> list) {
+        List<LocationsProvider.LocationClass> filteredList = new ArrayList<>();
+        for (LocationsProvider.LocationClass item : list) {
+//            if (!item.getCreatorsUserID().equals(currentUserID)) {
+            filteredList.add(item);
+//            }
+        }
+        return filteredList;
     }
 
 }

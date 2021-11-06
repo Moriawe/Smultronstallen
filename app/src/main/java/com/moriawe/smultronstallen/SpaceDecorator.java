@@ -23,8 +23,8 @@ public class SpaceDecorator extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
                                RecyclerView.State state) {
-        outRect.bottom = mSpaceHeight;
-//        outRect.top = mSpaceHeight;
+//        outRect.bottom = mSpaceHeight;
+        outRect.top = mSpaceHeight;
 //        outRect.left = mSpaceHeight;
 //        outRect.right = mSpaceHeight;
     }

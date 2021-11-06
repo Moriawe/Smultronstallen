@@ -1,5 +1,6 @@
 package com.moriawe.smultronstallen;
 
+import android.app.Notification;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -18,13 +20,16 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
     public ToggleButton showHideBtn;
 
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
 
+
         //MenuViewModel enables us to send data between activities/fragments,
         //livedata with observer-functionality(update UI in activities/fragments when value is changed)
         menuViewModel = new ViewModelProvider(requireActivity()).get(MenuViewModel.class);
+
 
         //Radiobuttons, enables you to see which button(choices Alla, Egna, Privata) is highlighted/clicked
         RadioButton completeListBtn = (RadioButton) view.findViewById(R.id.completeListBtn);
@@ -33,11 +38,16 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         RadioButton friendsListBtn = (RadioButton) view.findViewById(R.id.friendsListBtn);
         friendsListBtn.setOnClickListener(this);
 
+
         RadioButton personalListBtn = (RadioButton) view.findViewById(R.id.personalListBtn);
         personalListBtn.setOnClickListener(this);
 
+
         RadioButton notificationsListBtn = (RadioButton) view.findViewById(R.id.notificationsListBtn);
         notificationsListBtn.setOnClickListener(this);
+        menuViewModel.getNotificationCount().observe(getViewLifecycleOwner(), notificationCount -> {
+            notificationsListBtn.setText("NYA: " + notificationCount);
+        });
 
 
 

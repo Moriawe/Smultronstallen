@@ -16,4 +16,7 @@
 
     <color name="contact_name">#333333</color>
     <color name="contact_number">#8c8c8c</color>
+    <color name="hint">#8c8c8c</color>
+    <color name="search">#F9F1F7</color>
+
 </resources>
