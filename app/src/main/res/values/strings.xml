@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Smultronstallen</string>
+    <string name="app_name">Smultronställen</string>
 
     <!-- Database keys -->
     <string name="NAME_KEY">NickName</string>
