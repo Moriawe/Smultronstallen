@@ -1,6 +1,7 @@
 package com.moriawe.smultronstallen;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -52,6 +53,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.action_bar_gradient));
+        actionBar.setElevation(0);
+
         setContentView(R.layout.activity_login);
 
         // Initialize Firebase Auth

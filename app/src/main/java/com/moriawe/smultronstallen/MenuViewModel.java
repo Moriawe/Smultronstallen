@@ -14,15 +14,15 @@ public class MenuViewModel extends ViewModel {
     private final MutableLiveData<Boolean> showHideListFromListFragment = new MutableLiveData<Boolean>(false);
     private final MutableLiveData<GeoPoint> selectLocationFromList = new MutableLiveData<GeoPoint>();
 
-    private final MutableLiveData<String> notificationCount = new MutableLiveData<String>();
+    private final MutableLiveData<Integer> notificationCount = new MutableLiveData<Integer>();
 
 
 
-    public void setNotificationCount(String count) {
+    public void setNotificationCount(Integer count) {
         notificationCount.setValue(count);
     }
 
-    public LiveData<String> getNotificationCount() {
+    public LiveData<Integer> getNotificationCount() {
         return notificationCount;
     }
 

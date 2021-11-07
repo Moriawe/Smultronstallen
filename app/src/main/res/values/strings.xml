@@ -116,6 +116,9 @@
     </string>
     <string name="title_activity_maps">MapsActivity</string>
 
+    <!-- Main Activity -->
+    <string name="login_btn">Logga in</string>
+
     <!-- Map -->
     <string name="map_search_hint">Sök gata, Adress,Område</string>
 
@@ -135,6 +138,10 @@
     <string name="comments">Kommentar</string>
     <string name="headline">Rubrik</string>
     <string name="adress">Adress</string>
+
+    <!-- List -->
+    <string name="search_list">SÖK..</string>
+
 
     <!-- Database keys -->
 <!--    <string name="MENU_BTN_CHOICE_ALL_LOCATIONS">all</string>-->

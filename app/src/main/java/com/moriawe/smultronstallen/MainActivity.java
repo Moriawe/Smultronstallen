@@ -1,5 +1,6 @@
 package com.moriawe.smultronstallen;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -18,6 +19,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.action_bar_white));
+        actionBar.setElevation(0);
+
         setContentView(R.layout.activity_main);
 
         //Capture gotToLogin-btn, set a click-listener on it

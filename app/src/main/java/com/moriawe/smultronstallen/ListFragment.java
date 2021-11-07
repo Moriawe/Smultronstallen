@@ -66,34 +66,45 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
                 //Adding filtered array from method: filterListMenuChoice()
                 locationsList.addAll(filterListMenuChoice(locations, filterLocationsChoice));
                 buildRecyclerView();
+
+                EditText editText = view.findViewById(R.id.edittext);
+                editText.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    }
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        searchFilter(s.toString(), filterLocationsChoice);
+                    }
+                });
             });//end ChoiceViewModel
         });//end LocationsProvider
 
-        EditText editText = view.findViewById(R.id.edittext);
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                searchFilter(s.toString());
-            }
-        });
+
 
         return view;
 
     }//end onCreateView
 
-    private void searchFilter(String text) {
+    private void searchFilter(String text, String filterLocationsChoice) {
         List<LocationsProvider.LocationClass> filteredList = new ArrayList<>();
-        for (LocationsProvider.LocationClass item : locationsList) {
-            if (item.getName().toLowerCase().contains(text.toLowerCase())) {
-                filteredList.add(item);
+        if (filterLocationsChoice.equals(Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS)) {
+            for (LocationsProvider.LocationClass item : locationsList) {
+                if (item.getName().toLowerCase().contains(text.toLowerCase()) || item.getAddedBy().toLowerCase().contains(text.toLowerCase())) {
+                    filteredList.add(item);
+                }
+            }
+        } else {
+            for (LocationsProvider.LocationClass item : locationsList) {
+                if (item.getName().toLowerCase().contains(text.toLowerCase())) {
+                    filteredList.add(item);
+                }
             }
         }
+
 //        Helpers.returnSortedArr(filteredList);
         listAdapter.filterList(filteredList);
     }
@@ -163,7 +174,7 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
         if(spaceDecorator != null){
             listRecyclerView.removeItemDecoration(spaceDecorator);
         }
-        spaceDecorator = new SpaceDecorator(30);
+        spaceDecorator = new SpaceDecorator(50);
         listRecyclerView.addItemDecoration(spaceDecorator);
         listRecyclerView.setAdapter(listAdapter);
     }
@@ -171,26 +182,21 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
     @Override
     public void onItemClick(LocationsProvider.LocationClass item) {
         //To do? get location data from listitemclick, close fragment and move mapCamera to clicked location or marker?
+//        Toast.makeText(getContext(), item.getGeoAddress().toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
+//        menuChoiceViewModel.setShowHideListValueFromListFragment(false);
+//        menuChoiceViewModel.setSelectLocationFromList(item.getGeoAddress());
+
+    }
+
+    @Override
+    public void onSmultronImageClick(LocationsProvider.LocationClass item) {
         Toast.makeText(getContext(), item.getGeoAddress().toString(), Toast.LENGTH_SHORT).show();
         Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
         menuChoiceViewModel.setShowHideListValueFromListFragment(false);
         menuChoiceViewModel.setSelectLocationFromList(item.getGeoAddress());
     }
 
-    @Override
-    public void onChatItemClick(LocationsProvider.LocationClass item) {
-        Toast.makeText(getContext(), item.getGeoAddress().toString(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
-        menuChoiceViewModel.setShowHideListValueFromListFragment(false);
-        menuChoiceViewModel.setSelectLocationFromList(item.getGeoAddress());
-    }
 
-    @Override
-    public void onAbsenceItemClick(LocationsProvider.LocationClass item) {
-        Toast.makeText(getContext(), item.getGeoAddress().toString(), Toast.LENGTH_SHORT).show();
-        Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
-        menuChoiceViewModel.setShowHideListValueFromListFragment(false);
-        menuChoiceViewModel.setSelectLocationFromList(item.getGeoAddress());
-    }
 
 }

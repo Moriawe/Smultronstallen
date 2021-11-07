@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/layout_bg_listlocation"
+    android:animateLayoutChanges="true"
     android:clickable="true"
     android:paddingBottom="@dimen/row_padding"
     android:paddingLeft="@dimen/activity_margin"
@@ -11,45 +12,69 @@
     >
 
     <ImageView
-        android:id="@+id/thumbnail"
+        android:id="@+id/goToSmultron"
         android:layout_width="@dimen/thumbnail"
         android:layout_height="@dimen/thumbnail"
-        android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/row_padding"
-        android:src="@drawable/ic_user_list" />
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_logo_no_text" />
+<!--            android:layout_centerVertical="true"-->
 
     <TextView
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0dp"
         android:id="@+id/textViewName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/thumbnail"
         android:fontFamily="sans-serif-medium"
-        android:textColor="@color/contact_name"
-        android:textSize="@dimen/contact_name" />
+        android:textColor="@color/turquoise_primary"
+        android:textSize="@dimen/list_item_title"
+        android:text="Name"
+        android:layout_marginBottom="-1dp"
+        />
 
     <TextView
-        android:id="@+id/textViewDate"
+        android:id="@+id/textViewAddedBy"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0dp"
+        android:fontFamily="sans-serif-medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewName"
-        android:layout_toRightOf="@id/thumbnail"
-        android:textColor="@color/contact_number"
-        android:textSize="@dimen/contact_number" />
+        android:textColor="@color/pink_primary"
+        android:textSize="@dimen/list_item_user"
+        android:text="Tobias"
+        android:layout_marginBottom="7dp"/>
+
     <TextView
-        android:id="@+id/textViewImage"
+        android:id="@+id/textViewDate"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0dp"
+        android:textStyle="italic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewAddedBy"
+        android:textColor="@color/list_item_date"
+        android:text="2992 3322 33"
+        android:textSize="@dimen/list_item_date"
+        android:paddingBottom="11dp"/>
+
+
+    <TextView
+        android:id="@+id/textViewLimitedComment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewDate"
-        android:layout_toRightOf="@id/thumbnail"
-        android:textColor="@color/contact_number"
-        android:textSize="@dimen/contact_number" />
+        android:textSize="@dimen/list_item_date"
+        android:text="Gnjnefjnwffe few efwkefkwkmkfew efw kfemkfmef ekefwmfkifewikjfie"/>
+
     <TextView
-        android:id="@+id/textViewGeoPoint"
+        android:id="@+id/textViewFullComment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textViewImage"
-        android:layout_toRightOf="@id/thumbnail"
-        android:textColor="@color/contact_number"
-        android:textSize="@dimen/contact_number" />
+        android:layout_below="@id/textViewLimitedComment"
+        android:textSize="@dimen/list_item_date"
+        android:visibility="gone" />
+
 
 </RelativeLayout>

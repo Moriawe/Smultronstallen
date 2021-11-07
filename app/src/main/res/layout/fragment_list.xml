@@ -19,19 +19,21 @@
         tools:layout_editor_absoluteY="-44dp">
 
         <EditText
+            android:textColor="@color/turquoise_primary"
             android:textColorHint="@drawable/selector"
             android:textAlignment="center"
+            android:textSize="18dp"
             android:id="@+id/edittext"
             android:layout_width="match_parent"
-            android:layout_height="65dp"
+            android:layout_height="48dp"
             android:background="@color/search"
             android:clickable="true"
             android:drawableRight="@drawable/ic_search_black_24dp"
-            android:paddingStart="29dp"
+            android:paddingStart="55dp"
             android:paddingEnd="29dp"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:hint="Search here"
+            android:hint="@string/search_list"
             android:imeOptions="actionDone"
             android:singleLine="true"
             app:layout_constraintTop_toTopOf="parent"
@@ -44,6 +46,7 @@
         <!--            android:id="@+id/listView" />-->
 
         <androidx.recyclerview.widget.RecyclerView
+            android:background="@color/black_transparent"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:id="@+id/recycler_view"

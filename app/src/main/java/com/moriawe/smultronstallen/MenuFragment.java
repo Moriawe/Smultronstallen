@@ -1,6 +1,7 @@
 package com.moriawe.smultronstallen;
 
 import android.app.Notification;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -46,6 +47,11 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         RadioButton notificationsListBtn = (RadioButton) view.findViewById(R.id.notificationsListBtn);
         notificationsListBtn.setOnClickListener(this);
         menuViewModel.getNotificationCount().observe(getViewLifecycleOwner(), notificationCount -> {
+            if (notificationCount >= 1) {
+                notificationsListBtn.setTextColor(Color.parseColor("#6EC6D9"));
+            } else {
+                notificationsListBtn.setTextColor(Color.parseColor("#FF000000"));
+            }
             notificationsListBtn.setText("NYA: " + notificationCount);
         });
 

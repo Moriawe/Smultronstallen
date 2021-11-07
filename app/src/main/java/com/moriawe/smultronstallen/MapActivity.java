@@ -3,6 +3,7 @@ package com.moriawe.smultronstallen;
 import static android.content.ContentValues.TAG;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -23,10 +24,12 @@ import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,11 +86,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     String latestTimesStamp;
 
     List<LocationsProvider.LocationClass> latestLocationsList;
-    String notificationsValue;
+    Integer notificationsValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.action_bar_gradient));
+        actionBar.setElevation(0);
+
+
         fireStore = FirebaseFirestore.getInstance();
         menuChoiceViewModel = new ViewModelProvider(this).get(MenuViewModel.class);
 
@@ -214,7 +223,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         LocationsProvider.getInstance(this).getLocations(locations -> {
             latestLocationsList = new ArrayList<>();
             latestLocationsList.addAll(Helpers.getNewLocations(Helpers.getSharedFriends(locations), latestTimesStamp));
-            notificationsValue = Integer.toString(latestLocationsList.size());
+            notificationsValue = latestLocationsList.size();
             menuChoiceViewModel.setNotificationCount(notificationsValue);
             System.out.println("Leength" + notificationsValue);
 
@@ -465,9 +474,5 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public String getLatestTimestampFromMapActivity() {
         return latestTimesStamp;
     }
-    public String getLatestNotificationCountFromMapActivity() {
-        return notificationsValue;
-    }
-
 
 }

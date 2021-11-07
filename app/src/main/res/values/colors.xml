@@ -2,6 +2,8 @@
 <resources>
 
     <color name="pink_primary">#D89FC8</color>
+    <color name="pink_primary_light">#E2B7D6</color>
+
     <color name="turquoise_primary">#6EC6D9</color>
 
     <color name="purple_200">#FFBB86FC</color>
@@ -12,11 +14,13 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="black_transparent">#99000000</color>
+    <color name="black_transparent">#80FFFFFF</color>
 
-    <color name="contact_name">#333333</color>
-    <color name="contact_number">#8c8c8c</color>
-    <color name="hint">#8c8c8c</color>
-    <color name="search">#F9F1F7</color>
+
+    <color name="list_item_date">#8c8c8c</color>
+    <color name="hint">#EACAE1</color>
+    <color name="search">#FCF7FB</color>
+    <color name="list_item_bg">#FEFDFE</color>
+
 
 </resources>
