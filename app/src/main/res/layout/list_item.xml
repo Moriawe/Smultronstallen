@@ -33,6 +33,7 @@
         android:layout_marginBottom="-1dp"
         />
 
+
     <TextView
         android:id="@+id/textViewAddedBy"
         android:includeFontPadding="false"
