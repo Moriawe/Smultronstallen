@@ -72,7 +72,7 @@ public class ShowPlaceActivity extends AppCompatActivity {
         now = LocalDateTime.now();
 
         // New object - Smultronstalle
-        smultronstalle = new Smultronstalle();
+        //smultronstalle = new Smultronstalle();
 
 
         titleTV = findViewById(R.id.headlineTV);
@@ -93,6 +93,7 @@ public class ShowPlaceActivity extends AppCompatActivity {
         longitude = latLngArr.get(1);
         geoAddress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
+
         findInfo();
 
     }
@@ -100,7 +101,7 @@ public class ShowPlaceActivity extends AppCompatActivity {
     private void findInfo() {
 
         db.collection("Smultronstalle")
-                .whereEqualTo("adress", geoAddress)
+                .whereEqualTo("geoAddress", geoAddress)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
