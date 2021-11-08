@@ -81,7 +81,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private List<Marker> markersList;
 
     private FirebaseAuth mAuth;
-    AppUser currentUser;
+    static AppUser currentUser;
     String currentUserID;
     String latestTimesStamp;
 
@@ -157,14 +157,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             switch (filterLocationsChoice) {
             case Constants.MENU_BTN_CHOICE_ALL_LOCATIONS:
                 for (LocationsProvider.LocationClass item : locationsList) {
-                    if (item.getCreatorsUserID().equals(currentUserID)|| item.getShared() == true) {
+                    if (item.getCreatorsUserID().equals(currentUserID)|| item.getShared()) {
                         filteredList.add(item);
                     }
                 }
                 break;
             case Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS:
                 for (LocationsProvider.LocationClass item : locationsList) {
-                    if (!item.getCreatorsUserID().equals(currentUserID) && item.getShared() == true) {
+                    if (!item.getCreatorsUserID().equals(currentUserID) && item.getShared()) {
                         filteredList.add(item);
                     }
                 }
@@ -230,10 +230,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             //Get selected value from menuBtns, listening to btnClicks
             menuChoiceViewModel.getSelectedBtnValue().observe(this, filterLocationsChoice -> {
                 //Declaring empty array to store filtered list in
-                List<LocationsProvider.LocationClass> sortedList = new ArrayList<>();
                 markersList = new ArrayList<>();
                 //Adding filtered array from method: filterListMenuChoice()
-                sortedList.addAll(filterListMenuChoice(locations, filterLocationsChoice));
+                List<LocationsProvider.LocationClass> sortedList = new ArrayList<>(filterListMenuChoice(locations, filterLocationsChoice));
 
                 //Update map with filtered array
                 mapFragment.getMapAsync(mMap -> {
@@ -442,9 +441,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 return true;
             case R.id.action_info: //TODO: We need an activity with our information
                 return true;
+            case R.id.action_userinfo:
+                goToUserSettings();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void goToUserSettings() {
+        Intent intent = new Intent(this, UserSettingsActivity.class);
+        startActivity(intent);
     }
 
     // When the user press the InfoWindow

@@ -16,6 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Smultronstallen"
+
         >
         <activity
             android:name=".ShowPlaceActivity"
@@ -37,7 +38,7 @@
             android:exported="false"
             android:theme="@style/AppTheme.PopUp" />
         <activity
-            android:name=".UserSettings"
+            android:name=".UserSettingsActivity"
             android:exported="false" />
         <activity
             android:name=".CreateAccountActivity"

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Smultronstallen</string>
+    <string name="app_name">Smultronställen</string>
 
     <!-- Database keys -->
     <string name="NAME_KEY">NickName</string>
@@ -133,15 +133,23 @@
     <!-- Actionbar -->
     <string name="action_menu_logout">Logga ut</string>
     <string name="action_menu_info">Information</string>
+    <string name="action_menu_userinfo">User profile</string>
 
     <!-- Add new place -->
     <string name="comments">Kommentar</string>
     <string name="headline">Rubrik</string>
     <string name="adress">Adress</string>
 
+    <!-- User Settings -->
+    <string name="change">Ändra</string>
+    <string name="add">Lägg till</string>
+    <string name="save">Spara</string>
+    <string name="friends">Vänner</string>
+    <string name="gallery_load">Load image \nfrom gallery</string>
+    <string name="headline_helper">Max 35 tecken</string>
+
     <!-- List -->
     <string name="search_list">SÖK..</string>
-
 
     <!-- Database keys -->
 <!--    <string name="MENU_BTN_CHOICE_ALL_LOCATIONS">all</string>-->
