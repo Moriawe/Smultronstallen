@@ -57,21 +57,15 @@ public class Smultronstalle {
 
             addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
 
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            //Fetches streetname and number
             String street = addresses.get(0).getThoroughfare();
             String streetNum = addresses.get(0).getSubThoroughfare();
-            String city = addresses.get(0).getLocality();
-            String subAdmin = addresses.get(0).getSubAdminArea();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName();
 
             placeAdress = street + " " + streetNum;
 
         } catch (IOException e) {
             e.printStackTrace();
-            placeAdress = "";
+            placeAdress = Double.toString(latitude) + Double.toString(longitude);
         }
 
         return placeAdress;

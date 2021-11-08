@@ -156,6 +156,20 @@ public class AddPlaceActivity extends Activity {
             }
         });
 
+        getAdress();
+
+        // Sets default image to logo
+        addPicture.setImageResource(R.drawable.ic_logo_text);
+
+        // Launch gallery and run choosePicture() - go to gallery
+        buttonGallery.setOnClickListener(view -> choosePicture());
+
+    }
+
+
+    // Get's the correct address and geopoint from the new place.
+    private void getAdress() {
+
         //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getexta Intent?)
         Intent intent = getIntent();
         //Getting LatLng values from putextas as a ArrayList<Double>
@@ -167,13 +181,6 @@ public class AddPlaceActivity extends Activity {
 
         smultronstalle.setGeoAddress(geoAddress); // set the geoaddress from the intent info
         nyttStalle.setText(smultronstalle.getAddressFromGeo(this)); // gets the streetaddress from the coordinates and returns as string
-
-
-        // Sets default image to logo
-        addPicture.setImageResource(R.drawable.ic_logo_text);
-
-        // Launch gallery and run choosePicture() - go to gallery
-        buttonGallery.setOnClickListener(view -> choosePicture());
 
     }
 
