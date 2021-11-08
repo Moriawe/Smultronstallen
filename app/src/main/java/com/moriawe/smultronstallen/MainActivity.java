@@ -42,29 +42,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(goToLoginIntent); //Start next activity(LoginActivity)
     }
 
-    //Actionbar Overflow menu Inflate
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        menu.findItem(R.id.action_logout).setVisible(false);
-
-        return true;
-    }
-
-    //Actionbar Overflow menu Click method
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        switch (item.getItemId()) {
-            case R.id.action_info:
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-
     // SIGN OUT METHOD
     private void signOut() {
         FirebaseAuth.getInstance().signOut();
