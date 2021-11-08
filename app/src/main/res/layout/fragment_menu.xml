@@ -57,7 +57,7 @@
             android:onClick="onRadioButtonClicked"/>
 
         <ToggleButton android:id="@+id/showHideBtn"
-            android:textColor="@color/pink_primary"
+            android:textColor="@color/turquoise_primary"
             android:textOff="@string/arrow_down_show_list"
             android:textOn="@string/arrow_up_hide_list"
             android:background="@drawable/custom_menu_toggle_button"
