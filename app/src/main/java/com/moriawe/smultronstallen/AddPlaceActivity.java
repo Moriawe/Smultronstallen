@@ -156,7 +156,7 @@ public class AddPlaceActivity extends Activity {
             }
         });
 
-        getAdress();
+        getAddress();
 
         // Sets default image to logo
         addPicture.setImageResource(R.drawable.ic_logo_text);
@@ -168,7 +168,7 @@ public class AddPlaceActivity extends Activity {
 
 
     // Get's the correct address and geopoint from the new place.
-    private void getAdress() {
+    private void getAddress() {
 
         //Get intent from MapActivity with LatLng values in array(cant send pure LatLngs in put getexta Intent?)
         Intent intent = getIntent();
