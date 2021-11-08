@@ -34,14 +34,14 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
-    String TAG = "Error in LoginActivity";
+    String TAG = "LoginActivity";
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     DateTimeFormatter dtf;
     LocalDateTime now;
 
-    AppUser currentUser;
+    AppUser loginUser;
     String userID;
 
     private EditText userEmailET;
@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         userPasswordET = findViewById(R.id.newPasswordET);
         CreateNewAccountTV = findViewById(R.id.CreateNewAccountTV);
 
-        userID = mAuth.getUid(); // Retrieves the userID from the current user.
+
 
     }
 
@@ -101,7 +101,8 @@ public class LoginActivity extends AppCompatActivity {
         if (firebaseUser != null) {
             getCurrentUser();
         } else {
-        Toast.makeText(this, "No such user", Toast.LENGTH_SHORT).show();
+            Log.w(TAG, "No user logged in");
+        //Toast.makeText(this, "No user logged in", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -125,7 +126,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser(); //TODO What does this do?! [Jennie]
+                            //FirebaseUser user = mAuth.getCurrentUser(); //TODO What does this do?! [Jennie]
                             getCurrentUser();
                         } else {
                             // If sign in fails, display a message to the user.
@@ -139,12 +140,15 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getCurrentUser() {
+
+        userID = mAuth.getUid(); // Retrieves the userID from the current user.
+
         db.collection("AppUsers").document(userID)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        currentUser = documentSnapshot.toObject(AppUser.class);
+                        loginUser = documentSnapshot.toObject(AppUser.class);
                         updateLogIn();
                     }
                 });
@@ -161,18 +165,19 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Toast.makeText(LoginActivity.this, "Time logged.", Toast.LENGTH_SHORT).show();
+                        Log.w(TAG, "New logintime logged in database");
+                        //Toast.makeText(LoginActivity.this, "Time logged.", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(LoginActivity.this, "ERROR! Time not logged.", Toast.LENGTH_SHORT).show();
-                        Log.w(TAG, e.toString());
+                        //Toast.makeText(LoginActivity.this, "ERROR! Time not logged.", Toast.LENGTH_SHORT).show();
+                        Log.w(TAG, "New logintime not logged / " + e.toString());
                     }
                 });
 
-        sendUserToMap(currentUser);
+        sendUserToMap(loginUser);
     }
 
 

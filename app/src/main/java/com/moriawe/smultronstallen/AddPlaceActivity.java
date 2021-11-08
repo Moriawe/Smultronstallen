@@ -56,23 +56,23 @@ public class AddPlaceActivity extends Activity {
     // Instances
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    DateTimeFormatter dtf;
-    LocalDateTime now;
+    private DateTimeFormatter dtf;
+    private LocalDateTime now;
 
     // Objects
-    Smultronstalle smultronstalle;
+    private Smultronstalle smultronstalle;
 
     // Info about the new place
-    String nameText;
-    String commentsText;
-    String addressText;
-    GeoPoint geoAddress;
-    String addedBy;
-    String creatorUserID;
+    private String nameText;
+    private String commentsText;
+    private String addressText;
+    private GeoPoint geoAddress;
+    private String addedBy;
+    private String creatorUserID;
 
     // Lat/long to use in getAddress method.
-    double latitude;
-    double longitude;
+    private double latitude;
+    private double longitude;
 
     // Views in XML
     TextView nyttStalle;
