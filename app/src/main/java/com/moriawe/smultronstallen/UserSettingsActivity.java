@@ -205,7 +205,7 @@ public class UserSettingsActivity extends AppCompatActivity {
         String newNickName = editNickName.getText().toString();
 
         if (TextUtils.isEmpty(newNickName)) {
-            editEmail.setError("Required.");
+            editNickName.setError("Required.");
         } else {
 
             settingsUser.setNickName(newNickName); //for reading into TextView
