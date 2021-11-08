@@ -178,7 +178,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
         if (max <= 5)
             return text.substring(0, max);
 
-        return text.substring(0, max - 2) + "..";
+        return "▼ " + text.substring(0, max - 2) + "...";
     }
 
 
