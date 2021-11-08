@@ -96,7 +96,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.action_bar_gradient));
         actionBar.setElevation(0);
 
-
         fireStore = FirebaseFirestore.getInstance();
         menuChoiceViewModel = new ViewModelProvider(this).get(MenuViewModel.class);
 
@@ -394,8 +393,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }
     }
-
-
 
     public void initMenuFragment() {
         menuFragment = (ListFragment) fragmentManager.findFragmentById(R.id.listFragment);
