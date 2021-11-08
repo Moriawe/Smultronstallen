@@ -14,7 +14,7 @@
                 </shape>
             </item>
             <!-- CONTENT LAYER -->
-            <item android:bottom="2dp" >
+            <item android:bottom="3dp" >
                 <shape>
                     <solid android:color="#FFFFFF" />
                 </shape>
@@ -36,7 +36,7 @@
                 </shape>
             </item>
             <!-- CONTENT LAYER -->
-            <item android:bottom="2dp" >
+            <item android:bottom="3dp" >
                 <shape>
                     <solid android:color="#FFFFFF" />
                 </shape>

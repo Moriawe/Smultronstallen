@@ -14,12 +14,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="-44dp">
 
         <EditText
-            android:textColor="@color/turquoise_primary"
+            android:textColor="@color/pink_primary"
             android:textColorHint="@drawable/selector"
             android:textAlignment="center"
             android:textSize="18dp"

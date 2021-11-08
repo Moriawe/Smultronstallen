@@ -3,16 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/custom_menu_bg"
     tools:context=".MenuFragment">
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/radioGroup"
+        android:background="@drawable/custom_menu_bg"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-
+        android:layout_marginBottom="1dp"
         android:orientation="horizontal">
 
         <RadioButton android:id="@+id/completeListBtn"
+            android:textColor="@color/menu_btn_text"
             android:text="@string/all_locations"
             android:background="@drawable/custom_menu_button"
             android:button="@android:color/transparent"
@@ -21,9 +24,11 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:onClick="onRadioButtonClicked"/>
+            android:onClick="onRadioButtonClicked"
+            />
 
         <RadioButton android:id="@+id/friendsListBtn"
+            android:textColor="@color/menu_btn_text"
             android:text="@string/friends_locations"
             android:background="@drawable/custom_menu_button"
             android:button="@android:color/transparent"
@@ -35,6 +40,7 @@
             android:onClick="onRadioButtonClicked"/>
 
         <RadioButton android:id="@+id/personalListBtn"
+            android:textColor="@color/menu_btn_text"
             android:text="@string/private_locations"
             android:background="@drawable/custom_menu_button"
             android:button="@android:color/transparent"
@@ -46,6 +52,7 @@
             android:onClick="onRadioButtonClicked"/>
 
         <RadioButton android:id="@+id/notificationsListBtn"
+            android:textColor="@color/menu_btn_text"
             android:text="NYA"
             android:background="@drawable/custom_menu_button"
             android:button="@android:color/transparent"

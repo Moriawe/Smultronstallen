@@ -17,6 +17,8 @@
     <color name="black_transparent">#80EACAE1</color>
 
 
+    <color name="menu_bottom_line">#EACAE1</color>
+    <color name="menu_btn_text">#5D5D5D</color>
     <color name="list_item_date">#8c8c8c</color>
     <color name="hint">#EACAE1</color>
     <color name="search">#FCF7FB</color>

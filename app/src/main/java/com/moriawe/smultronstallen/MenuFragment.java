@@ -50,7 +50,7 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
             if (notificationCount >= 1) {
                 notificationsListBtn.setTextColor(Color.parseColor("#6EC6D9"));
             } else {
-                notificationsListBtn.setTextColor(Color.parseColor("#FF000000"));
+                notificationsListBtn.setTextColor(Color.parseColor("#FF5D5D5D"));
             }
             notificationsListBtn.setText("NYA: " + notificationCount);
         });

@@ -62,6 +62,7 @@
 
 
     <TextView
+        android:textColor="@color/menu_btn_text"
         android:id="@+id/textViewLimitedComment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -70,6 +71,7 @@
         android:text="Gnjnefjnwffe few efwkefkwkmkfew efw kfemkfmef ekefwmfkifewikjfie"/>
 
     <TextView
+        android:textColor="@color/menu_btn_text"
         android:id="@+id/textViewFullComment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
