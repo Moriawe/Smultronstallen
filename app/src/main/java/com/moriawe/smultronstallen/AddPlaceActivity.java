@@ -178,7 +178,6 @@ public class AddPlaceActivity extends Activity {
         latitude = latLngArr.get(0);
         longitude = latLngArr.get(1);
         geoAddress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
-
         smultronstalle.setGeoAddress(geoAddress); // set the geoaddress from the intent info
         nyttStalle.setText(smultronstalle.getAddressFromGeo(this)); // gets the streetaddress from the coordinates and returns as string
 
