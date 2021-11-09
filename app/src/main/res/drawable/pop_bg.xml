@@ -4,9 +4,9 @@
     <!-- Colorset for the popup window -->
 
     <gradient
-        android:startColor="#f0dbea"
-        android:endColor="@color/pink_primary"
-        android:angle="270"
+        android:startColor="@color/pink_primary_gradient_pink_white"
+        android:endColor="@color/pink_primary_light"
+        android:angle="380"
         />
 
 
