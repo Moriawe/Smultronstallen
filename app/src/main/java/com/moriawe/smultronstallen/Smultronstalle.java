@@ -13,7 +13,7 @@ import java.util.Locale;
 
 public class Smultronstalle {
 
-    private static final DecimalFormat df = new DecimalFormat("0.00");
+    private static final DecimalFormat df = new DecimalFormat("0.0000");
 
     private GeoPoint geoAddress;
 
