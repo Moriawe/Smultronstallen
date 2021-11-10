@@ -28,8 +28,6 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -74,19 +72,16 @@ public class AddPlaceActivity extends Activity {
     EditText commentsView;
     Button submitButton;
     Switch shareSwitch;
-    ImageView addPicture;
+    ImageView addPictureView;
     Button buttonGallery;
 
     // Add picture
-    public Uri pictureUri;
-    private static final int PICK_IMAGE_REQUEST = 1;
-    String pictureStorageUrl;
-
-    // Firebase storage
     private StorageReference storageRef;
-    private DatabaseReference databaseRef;
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private String pictureStorageUrl;
+    public Uri pictureDeviceUri;
 
-    @SuppressLint("ClickableViewAccessibility") //Has to do with visual impairment
+    @SuppressLint("ClickableViewAccessibility") //Ignore adaption to visual impairment
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,7 +111,6 @@ public class AddPlaceActivity extends Activity {
 
         // Firebase Storage
         storageRef = FirebaseStorage.getInstance().getReference("images_stalle/");
-        databaseRef = FirebaseDatabase.getInstance().getReference("images_stalle");
 
         // Makes an instance of Date&Time class
         dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
@@ -131,7 +125,7 @@ public class AddPlaceActivity extends Activity {
         commentsView = (EditText) findViewById(R.id.commentsOfPlaceET);
         submitButton = (Button) findViewById(R.id.submitButton);
         shareSwitch = (Switch) findViewById(R.id.share_switch);
-        addPicture = (ImageView) findViewById(R.id.new_place_image);
+        addPictureView = (ImageView) findViewById(R.id.new_place_image);
         buttonGallery = (Button) findViewById(R.id.gallery_btn);
 
 
@@ -153,7 +147,7 @@ public class AddPlaceActivity extends Activity {
         getAddress();
 
         // Sets default image to logo
-        addPicture.setImageResource(R.drawable.ic_logo_text);
+        addPictureView.setImageResource(R.drawable.ic_logo_text);
 
         // Launch gallery and run choosePicture() - go to gallery
         buttonGallery.setOnClickListener(view -> choosePicture());
@@ -304,19 +298,18 @@ public class AddPlaceActivity extends Activity {
     }
 
 
-    // Pick an image from gallery and put it into image view
+    // Pick an image from gallery and put it into the image view
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         //Checks if user clicks an image, and not cancelling action.
         if((requestCode == PICK_IMAGE_REQUEST) && (resultCode == RESULT_OK) && (data !=null)) {
-            pictureUri = data.getData();
-            addPicture.setImageURI(pictureUri);
+            pictureDeviceUri = data.getData();
+            addPictureView.setImageURI(pictureDeviceUri);
             uploadPicture();
         }
     }
-
 
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getContentResolver();
@@ -325,18 +318,23 @@ public class AddPlaceActivity extends Activity {
     }
 
 
-    // Gives picture a unique name.
-    // Uploads Picture to Firebase Storage in folder "ImagesStalle".
+    // Uploads Picture to Firebase Storage.
     //TODO: Add a progressbar [Pernilla]
     private void uploadPicture() {
-        if(pictureUri !=null) {
+        if(pictureDeviceUri !=null) {
+
+            // Gives picture a unique name
             StorageReference fileReference = storageRef.child(System.currentTimeMillis()
-            + "." + getFileExtension(pictureUri));
-            UploadTask uploadTask = fileReference.putFile(pictureUri);
+            + "." + getFileExtension(pictureDeviceUri));
+
+            // Upload picture to Storage
+            UploadTask uploadTask = fileReference.putFile(pictureDeviceUri);
                     uploadTask.addOnSuccessListener((new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Toast.makeText(AddPlaceActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
+
+                            // Fetches the url given to picture in Storage, and puts it in variable for upload to Firestore
                             fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
@@ -346,6 +344,7 @@ public class AddPlaceActivity extends Activity {
                             });
                         }
                     }))
+
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
