@@ -9,12 +9,12 @@
         <layer-list>
             <item>
                 <shape>
-                    <solid android:color="@color/pink_primary" />
+                    <solid android:color="@color/pink_primary_gradient_light" />
 
                 </shape>
             </item>
             <!-- CONTENT LAYER -->
-            <item android:bottom="3dp" >
+            <item android:bottom="2dp" >
                 <shape>
                     <solid android:color="#FFFFFF" />
                 </shape>
@@ -36,7 +36,7 @@
                 </shape>
             </item>
             <!-- CONTENT LAYER -->
-            <item android:bottom="3dp" >
+            <item android:bottom="2dp" >
                 <shape>
                     <solid android:color="#FFFFFF" />
                 </shape>

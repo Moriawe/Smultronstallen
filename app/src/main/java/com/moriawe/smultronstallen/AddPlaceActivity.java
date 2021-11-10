@@ -94,13 +94,16 @@ public class AddPlaceActivity extends Activity {
         int height = dm.heightPixels;
 
         // Sets size for pop-up window
-        getWindow().setLayout((int)(width*.9), (int)(height*.75));
+        getWindow().setLayout((int)(width*.9), (int)(height*.83));
+        getWindow().setBackgroundDrawableResource(R.drawable.transparent);
 
         // set's window in the center of the screen
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.CENTER;
         params.x = 0;
-        params.y = -20;
+        params.y = -40;
+        params.dimAmount = 0.19f;
+        params.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         getWindow().setAttributes(params);
 
         // Initialize Firebase Auth
@@ -166,7 +169,6 @@ public class AddPlaceActivity extends Activity {
         latitude = latLngArr.get(0);
         longitude = latLngArr.get(1);
         geoAddress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
-
         smultronstalle.setGeoAddress(geoAddress); // set the geoaddress from the intent info
         nyttStalle.setText(smultronstalle.getAddressFromGeo(this)); // gets the streetaddress from the coordinates and returns as string
 

@@ -7,18 +7,21 @@
         android:id="@+id/action_logout"
         android:orderInCategory="1"
         android:title="@string/action_menu_logout"
+        android:icon="@mipmap/ic_launcher"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_info"
         android:orderInCategory="2"
         android:title="@string/action_menu_info"
+        android:icon="@mipmap/ic_launcher"
         app:showAsAction="never|collapseActionView" />
 
     <item
         android:id="@+id/action_userinfo"
         android:orderInCategory="3"
         android:title="@string/action_menu_userinfo"
+        android:icon="@mipmap/ic_launcher"
         app:showAsAction="never|collapseActionView" />
 
 

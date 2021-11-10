@@ -4,33 +4,41 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/pop_bg"
+    android:background="@drawable/pop_bg_small"
+
     android:padding="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
+            android:fontFamily="sans-serif-medium"
             android:layout_height="wrap_content"
             android:id="@+id/title"
             android:layout_gravity="center_horizontal"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="#000"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:text="Rubrik"/>
 
         <TextView
+            android:maxWidth="320dp"
+            android:orientation="vertical"
+            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/snippet"
             android:ellipsize="end"
             android:maxLines="10"
             android:textSize="12sp"
-            android:textColor="#000"/>
+            android:textColor="@color/white"
+            android:text="Komentaraaaaaaaaaaaaaaaaaaaaaaaaaa"/>
 
     </LinearLayout>
 

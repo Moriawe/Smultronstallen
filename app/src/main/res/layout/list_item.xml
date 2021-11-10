@@ -15,50 +15,50 @@
         android:id="@+id/goToSmultron"
         android:layout_width="@dimen/thumbnail"
         android:layout_height="@dimen/thumbnail"
-        android:layout_marginRight="@dimen/row_padding"
         android:layout_alignParentRight="true"
-        android:src="@drawable/ic_logo_no_text" />
+        android:layout_marginRight="@dimen/row_padding"
+        android:src="@drawable/ic_straw" />
 <!--            android:layout_centerVertical="true"-->
 
     <TextView
-        android:includeFontPadding="false"
-        android:lineSpacingExtra="0dp"
         android:id="@+id/textViewName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="@color/turquoise_primary"
-        android:textSize="@dimen/list_item_title"
-        android:text="Name"
         android:layout_marginBottom="-1dp"
-        />
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0dp"
+        android:text="Name"
+        android:textColor="@color/turquoise_primary"
+        android:textFontWeight="1000"
+        android:textSize="@dimen/list_item_title" />
 
 
     <TextView
         android:id="@+id/textViewAddedBy"
-        android:includeFontPadding="false"
-        android:lineSpacingExtra="0dp"
-        android:fontFamily="sans-serif-medium"
+        android:textFontWeight="1000"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewName"
-        android:textColor="@color/pink_primary"
-        android:textSize="@dimen/list_item_user"
+        android:layout_marginBottom="7dp"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0dp"
+        android:textColor="@color/list_item_grey"
         android:text="Tobias"
-        android:layout_marginBottom="7dp"/>
+
+        android:textSize="@dimen/list_item_user" />
 
     <TextView
         android:id="@+id/textViewDate"
-        android:includeFontPadding="false"
-        android:lineSpacingExtra="0dp"
-        android:textStyle="italic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/textViewAddedBy"
-        android:textColor="@color/list_item_date"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0dp"
+        android:paddingBottom="11dp"
         android:text="2992 3322 33"
+        android:textColor="@color/list_item_grey"
         android:textSize="@dimen/list_item_date"
-        android:paddingBottom="11dp"/>
+         />
 
 
     <TextView
