@@ -140,13 +140,22 @@
     <string name="comments">Kommentar</string>
     <string name="headline">Rubrik</string>
     <string name="adress">Adress</string>
+    <string name="share">Dela med andra</string>
+
+    <!-- Buttons -->
+    <string name="button_change">Ändra</string>
+    <string name="button_save">Spara</string>
+    <string name="button_delete">Ta bort</string>
 
     <!-- User Settings -->
-    <string name="change">Ändra</string>
+    <string name="user_settings">Användarinställningar</string>
+    <string name="user_name">Användarnamn</string>
+    <string name="email">Email</string>
+    <string name="password">Lösenord</string>
+    <string name="repeat_password">Repetera lösenord</string>
     <string name="add">Lägg till</string>
-    <string name="save">Spara</string>
     <string name="friends">Vänner</string>
-    <string name="gallery_load">Load image \nfrom gallery</string>
+    <string name="gallery_load">Ladda bild \nfrån galleriet</string>
     <string name="headline_helper">Max 35 tecken</string>
 
     <!-- List -->
