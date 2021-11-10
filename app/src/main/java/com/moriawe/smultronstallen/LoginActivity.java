@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,6 +51,8 @@ public class LoginActivity extends AppCompatActivity {
     private TextView CreateNewAccountTV;
     private Button loginBtn;
 
+    LinearLayout over;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +62,8 @@ public class LoginActivity extends AppCompatActivity {
         actionBar.setElevation(0);
 
         setContentView(R.layout.activity_login);
+
+        over = (LinearLayout) findViewById(R.id.over);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -107,6 +112,7 @@ public class LoginActivity extends AppCompatActivity {
         if (firebaseUser != null) {
             getCurrentUser();
         } else {
+            over.setVisibility(View.INVISIBLE);
             Log.w(TAG, "No user logged in");
         //Toast.makeText(this, "No user logged in", Toast.LENGTH_SHORT).show();
         }

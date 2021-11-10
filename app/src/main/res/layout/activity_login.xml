@@ -30,7 +30,9 @@
         app:layout_constraintTop_toBottomOf="@+id/userEmailET"
         app:layout_constraintVertical_bias="0.079" />
 
+
     <Button
+        android:stateListAnimator="@null"
         android:id="@+id/loginBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,6 +44,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newPasswordET"
         app:layout_constraintVertical_bias="0.136" />
+
+
 
     <TextView
         android:id="@+id/CreateNewAccountTV"
@@ -55,4 +59,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginBtn"
         app:layout_constraintVertical_bias="0.09" />
+
+    <LinearLayout
+        android:visibility="visible"
+        android:orientation="horizontal"
+        android:id="@+id/over"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/turquoise_primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.437"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.148">
+
+        <ProgressBar
+            android:id="@+id/progressBar1"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true" />
+    </LinearLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
