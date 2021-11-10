@@ -7,8 +7,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
-import android.location.Geocoder;
-import android.location.Address;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -27,11 +25,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -44,13 +39,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
 
 public class AddPlaceActivity extends Activity {
 
@@ -89,7 +80,7 @@ public class AddPlaceActivity extends Activity {
     // Add picture
     public Uri pictureUri;
     private static final int PICK_IMAGE_REQUEST = 1;
-    String namePicture;
+    String pictureStorageUrl;
 
     // Firebase storage
     private StorageReference storageRef;
@@ -218,7 +209,7 @@ public class AddPlaceActivity extends Activity {
         smultronstalle.setComment(commentsText);
         smultronstalle.setAddress(addressText);
         smultronstalle.setGeoAddress(geoAddress); // set the geoaddress from the intent info
-        smultronstalle.setPicture(namePicture);
+        smultronstalle.setPicture(pictureStorageUrl);
 
         smultronstalle.setDateCreated(dtf.format(now));
         smultronstalle.setAddedBy(addedBy);
@@ -342,46 +333,26 @@ public class AddPlaceActivity extends Activity {
             StorageReference fileReference = storageRef.child(System.currentTimeMillis()
             + "." + getFileExtension(pictureUri));
             UploadTask uploadTask = fileReference.putFile(pictureUri);
-
-
                     uploadTask.addOnSuccessListener((new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Toast.makeText(AddPlaceActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
-                            //namePicture = taskSnapshot.getUploadSessionUri().toString();
-
-                            //String uploadId = databaseRef.push().getKey();
-                            //namePicture = storageRef.child(uploadId).toString();
+                            fileReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                pictureStorageUrl = uri.toString();
+                                System.out.print(pictureStorageUrl);
+                                }
+                            });
                         }
                     }))
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+
                             Toast.makeText(AddPlaceActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
-
-            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                @Override
-                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                    if (!task.isSuccessful()) {
-                        throw task.getException();
-                    }
-                    return storageRef.getDownloadUrl();
-                }
-            })
-                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Uri> task) {
-                            if (task.isSuccessful()) {
-                                Uri downloadUri = task.getResult();
-                                namePicture = downloadUri.toString();
-                            }else{
-                                Toast.makeText(AddPlaceActivity.this, "Can't get Url", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-
         }else{
             Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
         }
