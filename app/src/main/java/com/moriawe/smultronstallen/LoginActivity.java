@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,13 +26,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -51,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView CreateNewAccountTV;
     private Button loginBtn;
 
-    LinearLayout over;
+    RelativeLayout loadingProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-        over = (LinearLayout) findViewById(R.id.over);
+        loadingProgressBar = (RelativeLayout) findViewById(R.id.over);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -112,7 +108,7 @@ public class LoginActivity extends AppCompatActivity {
         if (firebaseUser != null) {
             getCurrentUser();
         } else {
-            over.setVisibility(View.INVISIBLE);
+            loadingProgressBar.setVisibility(View.INVISIBLE);
             Log.w(TAG, "No user logged in");
         //Toast.makeText(this, "No user logged in", Toast.LENGTH_SHORT).show();
         }
