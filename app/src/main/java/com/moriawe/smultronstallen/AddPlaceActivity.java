@@ -7,6 +7,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Geocoder;
 import android.location.Address;
 import android.net.Uri;
@@ -105,13 +107,16 @@ public class AddPlaceActivity extends Activity {
         int height = dm.heightPixels;
 
         // Sets size for pop-up window
-        getWindow().setLayout((int)(width*.9), (int)(height*.75));
+        getWindow().setLayout((int)(width*.9), (int)(height*.83));
+        getWindow().setBackgroundDrawableResource(R.drawable.transparent);
 
         // set's window in the center of the screen
         WindowManager.LayoutParams params = getWindow().getAttributes();
         params.gravity = Gravity.CENTER;
         params.x = 0;
-        params.y = -20;
+        params.y = -40;
+        params.dimAmount = 0.19f;
+        params.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         getWindow().setAttributes(params);
 
         // Initialize Firebase Auth

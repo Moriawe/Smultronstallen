@@ -18,31 +18,31 @@
     <!--    Map Search bar-->
     <androidx.appcompat.widget.SearchView
         android:id="@+id/map_search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="55dp"
-        android:layout_marginTop="5dp"
+        android:layout_width="250dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/smultron_search_bar"
+        android:alpha=".8"
         app:iconifiedByDefault="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/menuFragment"
         app:layout_constraintStart_toStartOf="@+id/menuFragment"
         app:layout_constraintTop_toBottomOf="@+id/menuFragment"
         app:layout_constraintVertical_bias="0.0"
-        app:queryHint="@string/map_search_hint" />
+         />
 
     <ImageView
+        android:alpha="0.9"
         android:id="@+id/map_location_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginRight="8dp"
         android:background="@drawable/smultron_search_bar"
         android:src="@drawable/icon_gps"
-        app:layout_constraintBottom_toBottomOf="@+id/map_search_bar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/map_search_bar"
-        app:layout_constraintTop_toTopOf="@+id/map_search_bar" />
+        android:layout_marginBottom="35dp"
+        android:layout_marginLeft="23dp"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/listFragment"
@@ -54,8 +54,8 @@
         app:layout_constraintEnd_toEndOf="@+id/menuFragment"
         app:layout_constraintStart_toStartOf="@+id/menuFragment"
         app:layout_constraintTop_toBottomOf="@+id/menuFragment"
-        tools:layout="@layout/fragment_list"
         app:layout_constraintVertical_bias="0.0" />
+<!--    tools:layout="@layout/fragment_list"-->
 
 <!--    Menu with buttons-->
     <androidx.fragment.app.FragmentContainerView

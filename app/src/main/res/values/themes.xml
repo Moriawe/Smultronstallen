@@ -2,6 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.Smultronstallen" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
+
         <item name="colorPrimary">@color/pink_primary</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
@@ -12,6 +13,9 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+        <item name="android:textColor">@color/menu_btn_text</item>
+        <item name="android:fontFamily">@font/nunito_semibold</item>
 
 
     </style>

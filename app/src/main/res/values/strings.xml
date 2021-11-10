@@ -123,9 +123,10 @@
     <string name="map_search_hint">Sök gata, Adress,Område</string>
 
     <!-- Menu Buttons -->
-    <string name="all_locations">ALLA</string>
-    <string name="friends_locations">VÄNNER</string>
-    <string name="private_locations">PRIVAT</string>
+    <string name="all_locations">alla</string>
+    <string name="friends_locations">vänner</string>
+    <string name="private_locations">privat</string>
+    <string name="new_locations">nya</string>
     <string name="arrow_down_show_list">▼</string>
     <string name="arrow_up_hide_list">▲</string>
     <string name="logga_ut">Logga ut</string>

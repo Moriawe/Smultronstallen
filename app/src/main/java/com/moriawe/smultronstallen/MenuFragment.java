@@ -2,6 +2,7 @@ package com.moriawe.smultronstallen;
 
 import android.app.Notification;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,9 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MenuFragment extends Fragment implements View.OnClickListener{
     MenuViewModel menuViewModel;
     public ToggleButton showHideBtn;
+    List<RadioButton> radioBtns;
 
 
 
@@ -26,11 +31,11 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_menu, container, false);
 
-
         //MenuViewModel enables us to send data between activities/fragments,
         //livedata with observer-functionality(update UI in activities/fragments when value is changed)
         menuViewModel = new ViewModelProvider(requireActivity()).get(MenuViewModel.class);
 
+        radioBtns = new ArrayList<>();
 
         //Radiobuttons, enables you to see which button(choices Alla, Egna, Privata) is highlighted/clicked
         RadioButton completeListBtn = (RadioButton) view.findViewById(R.id.completeListBtn);
@@ -39,10 +44,8 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
         RadioButton friendsListBtn = (RadioButton) view.findViewById(R.id.friendsListBtn);
         friendsListBtn.setOnClickListener(this);
 
-
         RadioButton personalListBtn = (RadioButton) view.findViewById(R.id.personalListBtn);
         personalListBtn.setOnClickListener(this);
-
 
         RadioButton notificationsListBtn = (RadioButton) view.findViewById(R.id.notificationsListBtn);
         notificationsListBtn.setOnClickListener(this);
@@ -50,12 +53,22 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
             if (notificationCount >= 1) {
                 notificationsListBtn.setTextColor(Color.parseColor("#6EC6D9"));
             } else {
-                notificationsListBtn.setTextColor(Color.parseColor("#FF5D5D5D"));
+                if (notificationsListBtn.isChecked()) {
+                    notificationsListBtn.setTextColor(Color.parseColor("#5D5D5D"));
+                } else {
+                    notificationsListBtn.setTextColor(Color.parseColor("#8c8c8c"));
+                }
+
             }
-            notificationsListBtn.setText("NYA: " + notificationCount);
+            notificationsListBtn.setText("nya: " + notificationCount);
         });
 
+        radioBtns.add(completeListBtn);
+        radioBtns.add(friendsListBtn);
+        radioBtns.add(personalListBtn);
+        radioBtns.add(notificationsListBtn);
 
+        changeTextColor();
 
         //ToggleButton, open or close LocationList
         showHideBtn = (ToggleButton) view.findViewById(R.id.showHideBtn);
@@ -85,61 +98,35 @@ public class MenuFragment extends Fragment implements View.OnClickListener{
             case R.id.completeListBtn:
                 if (checked)
                     menuViewModel.setSelectedMenuBtnValue(Constants.MENU_BTN_CHOICE_ALL_LOCATIONS);
+                    changeTextColor();
                 break;
             case R.id.friendsListBtn:
                 if (checked)
                     menuViewModel.setSelectedMenuBtnValue(Constants.MENU_BTN_CHOICE_FRIENDS_LOCATIONS);
+                    changeTextColor();
                 break;
             case R.id.personalListBtn:
                 if (checked)
                     menuViewModel.setSelectedMenuBtnValue(Constants.MENU_BTN_CHOICE_PRIVATE_LOCATIONS);
+                    changeTextColor();
                 break;
             case R.id.notificationsListBtn:
                 if (checked)
                     menuViewModel.setSelectedMenuBtnValue(Constants.MENU_BTN_NOTIFICATIONS);
+                    changeTextColor();
                 break;
+        }
+    }
+
+    public void changeTextColor() {
+        for (RadioButton rb : radioBtns) {
+            if (rb.isChecked()) {
+                rb.setTextColor(Color.parseColor("#5D5D5D"));
+            } else {
+                rb.setTextColor(Color.parseColor("#8c8c8c"));
+            }
         }
     }
 
 }
 
-//Generated code from Android studio when Fragment was created
-//    // TODO: Rename parameter arguments, choose names that match
-//    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//    private static final String ARG_PARAM1 = "param1";
-//    private static final String ARG_PARAM2 = "param2";
-//
-//    // TODO: Rename and change types of parameters
-//    private String mParam1;
-//    private String mParam2;
-//
-//    public MenuFragment() {
-//        // Required empty public constructor
-//    }
-//
-//    /**
-//     * Use this factory method to create a new instance of
-//     * this fragment using the provided parameters.
-//     *
-//     * @param param1 Parameter 1.
-//     * @param param2 Parameter 2.
-//     * @return A new instance of fragment MenuFragment.
-//     */
-//    // TODO: Rename and change types and number of parameters
-//    public static MenuFragment newInstance(String param1, String param2) {
-//        MenuFragment fragment = new MenuFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-//
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
-//    }

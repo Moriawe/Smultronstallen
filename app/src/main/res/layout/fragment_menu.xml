@@ -10,12 +10,13 @@
         android:id="@+id/radioGroup"
         android:background="@drawable/custom_menu_bg"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="35dp"
         android:layout_marginBottom="1dp"
         android:orientation="horizontal">
 
         <RadioButton android:id="@+id/completeListBtn"
-            android:textColor="@color/menu_btn_text"
+            android:textColor="@color/list_item_grey"
+            android:textFontWeight="800"
             android:text="@string/all_locations"
             android:background="@drawable/custom_menu_button"
             android:button="@android:color/transparent"
@@ -28,7 +29,8 @@
             />
 
         <RadioButton android:id="@+id/friendsListBtn"
-            android:textColor="@color/menu_btn_text"
+            android:textColor="@color/list_item_grey"
+            android:textFontWeight="800"
             android:text="@string/friends_locations"
             android:background="@drawable/custom_menu_button"
             android:button="@android:color/transparent"
@@ -40,7 +42,8 @@
             android:onClick="onRadioButtonClicked"/>
 
         <RadioButton android:id="@+id/personalListBtn"
-            android:textColor="@color/menu_btn_text"
+            android:textColor="@color/list_item_grey"
+            android:textFontWeight="800"
             android:text="@string/private_locations"
             android:background="@drawable/custom_menu_button"
             android:button="@android:color/transparent"
@@ -52,8 +55,9 @@
             android:onClick="onRadioButtonClicked"/>
 
         <RadioButton android:id="@+id/notificationsListBtn"
-            android:textColor="@color/menu_btn_text"
-            android:text="NYA"
+            android:textColor="@color/list_item_grey"
+            android:textFontWeight="800"
+            android:text="@string/new_locations"
             android:background="@drawable/custom_menu_button"
             android:button="@android:color/transparent"
             android:checked="false"
@@ -64,7 +68,7 @@
             android:onClick="onRadioButtonClicked"/>
 
         <ToggleButton android:id="@+id/showHideBtn"
-            android:textColor="@color/turquoise_primary"
+            android:textColor="@color/pink_primary"
             android:textOff="@string/arrow_down_show_list"
             android:textOn="@string/arrow_up_hide_list"
             android:background="@drawable/custom_menu_toggle_button"
@@ -75,7 +79,5 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:textSize="20dp" />
-
-
     </RadioGroup>
 </LinearLayout>

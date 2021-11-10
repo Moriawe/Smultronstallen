@@ -146,23 +146,6 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
         return filteredAndSortedList;
     }
 
-//    public List<LocationsProvider.LocationClass> getSharedFriends (List<LocationsProvider.LocationClass> list) {
-//        List<LocationsProvider.LocationClass> filteredList = new ArrayList<>();
-//        for (LocationsProvider.LocationClass item : list) {
-////            if (!item.getCreatorsUserID().equals(currentUserID)) {
-//                filteredList.add(item);
-////            }
-//        }
-//        return filteredList;
-//    }
-
-
-//    private void createListAdaptedToRecyclerView(List<LocationsProvider.LocationClass> locations) {
-//        locationsList = new ArrayList<>();
-//        for (LocationsProvider.LocationClass location : locations) {
-//            locationsList.add(new ListItem(location.getName(), location.getDateCreated(), location.getPicture(), location.geoAddress()));
-//        }
-//    }
 
     private void buildRecyclerView() {
         listRecyclerView = view.findViewById(R.id.recycler_view);
@@ -186,7 +169,6 @@ public class ListFragment extends Fragment implements ListAdapter.OnClickListIte
 //        Toast.makeText(getActivity(), "Show/hide list", Toast.LENGTH_SHORT).show();
 //        menuChoiceViewModel.setShowHideListValueFromListFragment(false);
 //        menuChoiceViewModel.setSelectLocationFromList(item.getGeoAddress());
-
     }
 
     @Override
