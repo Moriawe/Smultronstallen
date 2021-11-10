@@ -250,21 +250,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         //Add markers to separate list
                         markersList.add(mMap.addMarker(markerOption));
                     }
-                    //ListFragment-listener, selecting and move camera on map to clicked Location from ListFragment
-                    menuChoiceViewModel.getSelectLocationFromList().observe(this, geoPoint -> {
-                        if(geoPoint != null) {
-                            LatLng fromList = convertGeoToLatLng(geoPoint);
-                            for (Marker marker : markersList) {
-                                if(marker.getPosition().equals(fromList)) {
-                                    marker.showInfoWindow();
-                                    moveCamera(fromList, 15f);
-                                }
-                            }
-                        }
-                    });
-
                 });
-            });//end menuChoiceViewModel
+            });
+
+            //ListFragment-listener, selecting and move camera on map to clicked Location from ListFragment
+            menuChoiceViewModel.getSelectLocationFromList().observe(this, geoPoint -> {
+                if(geoPoint != null) {
+                    LatLng fromList = convertGeoToLatLng(geoPoint);
+                    for (Marker marker : markersList) {
+                        if(marker.getPosition().equals(fromList)) {
+                            marker.showInfoWindow();
+                            moveCamera(fromList, 15f);
+                        }
+                    }
+                }
+            });
+
         });//end LocationsProvider
 
         // OnClickListener for InfoWindow
