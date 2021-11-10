@@ -7,10 +7,13 @@ import android.location.Geocoder;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
 public class Smultronstalle {
+
+    private static final DecimalFormat df = new DecimalFormat("0.0000");
 
     private GeoPoint geoAddress;
 
@@ -48,6 +51,10 @@ public class Smultronstalle {
         double latitude = geoAddress.getLatitude();
         double longitude = geoAddress.getLongitude();
 
+        // turns doubles into string and formats them to "0.00" (two decimals)
+        String latString = df.format(latitude);
+        String lonString = df.format(longitude);
+
         List<Address> addresses;
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
 
@@ -61,11 +68,15 @@ public class Smultronstalle {
             String street = addresses.get(0).getThoroughfare();
             String streetNum = addresses.get(0).getSubThoroughfare();
 
-            placeAdress = street + " " + streetNum;
+            if (street == null || street.isEmpty() || streetNum == null ||streetNum.isEmpty()) {
+                  placeAdress = "Lat: " + latString + " / Long: " + lonString;
+            } else {
+                placeAdress = street + " " + streetNum;
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
-            placeAdress = Double.toString(latitude) + Double.toString(longitude);
+            placeAdress = latString + lonString;
         }
 
         return placeAdress;

@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,10 +18,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -28,34 +33,39 @@ import java.util.ArrayList;
 
 public class ShowPlaceActivity extends AppCompatActivity {
 
-    String TAG = "Error in ShowPlaceActivity";
+    private String TAG = "ShowPlaceActivity";
 
     // Instances
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    DateTimeFormatter dtf;
-    LocalDateTime now;
+    private DateTimeFormatter dtf;
+    private LocalDateTime now;
 
     // Objects
-    Smultronstalle smultronstalle;
+    private Smultronstalle smultronstalle;
 
     //GeoPoint testGeoFromMapActivity;
-    GeoPoint geoAddress;
+    private GeoPoint geoAddress;
     // Lat/long to use in getAdress method.
-    double latitude;
-    double longitude;
+    private double latitude;
+    private double longitude;
 
-    String documentID;
+    private String documentID;
 
-    TextView titleTV;
-    TextView addressTV;
-    TextView commentsTV;
+    private TextView titleTV;
+    private TextView addressTV;
+    private TextView commentsTV;
 
-    ImageView icon;
-    ImageView kryss;
+    private EditText titleET;
+    private EditText addressET;
+    private EditText commentsET;
 
-    Button changeInfo;
-    Button deletePlace;
+    private ImageView icon;
+    private ImageView kryss;
+
+    private Button changeInfo;
+    private Button saveInfo;
+    private Button deletePlace;
 
 
     @Override
@@ -75,15 +85,21 @@ public class ShowPlaceActivity extends AppCompatActivity {
         //smultronstalle = new Smultronstalle();
 
 
-        titleTV = findViewById(R.id.headlineTV);
-        addressTV = findViewById(R.id.addressTV);
-        commentsTV = findViewById(R.id.commentsTV);
+        titleTV = (TextView) findViewById(R.id.headlineTV);
+        addressTV = (TextView) findViewById(R.id.addressTV);
+        commentsTV = (TextView) findViewById(R.id.commentsTV);
 
-        icon = findViewById(R.id.iconIV);
-        kryss = findViewById(R.id.closeIV);
+        titleET = (EditText) findViewById(R.id.headlineET);
+        addressET = (EditText) findViewById(R.id.addressET);
+        commentsET = (EditText) findViewById(R.id.commentsET);
 
-        changeInfo = findViewById(R.id.change_button);
-        deletePlace = findViewById(R.id.delete_button);
+
+        icon = (ImageView) findViewById(R.id.iconIV);
+        kryss = (ImageView) findViewById(R.id.closeIV);
+
+        changeInfo = (Button) findViewById(R.id.change_button);
+        saveInfo = (Button) findViewById(R.id.save_button);
+        deletePlace = (Button) findViewById(R.id.delete_button);
 
         Intent intent = getIntent();
         //Getting LatLng values from putextas as a ArrayList<Double>
@@ -93,8 +109,38 @@ public class ShowPlaceActivity extends AppCompatActivity {
         longitude = latLngArr.get(1);
         geoAddress = new GeoPoint(latLngArr.get(0),latLngArr.get(1));
 
-
+        textModeVisible();
         findInfo();
+
+    }
+
+    private void textModeVisible() {
+
+        titleTV.setVisibility(View.VISIBLE);
+        addressTV.setVisibility(View.VISIBLE);
+        commentsTV.setVisibility(View.VISIBLE);
+
+        titleET.setVisibility(View.INVISIBLE);
+        addressET.setVisibility(View.INVISIBLE);
+        commentsET.setVisibility(View.INVISIBLE);
+
+        changeInfo.setVisibility(View.VISIBLE);
+        saveInfo.setVisibility(View.INVISIBLE);
+
+    }
+
+    private void editModeVisible() {
+
+        titleTV.setVisibility(View.INVISIBLE);
+        addressTV.setVisibility(View.INVISIBLE);
+        commentsTV.setVisibility(View.INVISIBLE);
+
+        titleET.setVisibility(View.VISIBLE);
+        addressET.setVisibility(View.VISIBLE);
+        commentsET.setVisibility(View.VISIBLE);
+
+        changeInfo.setVisibility(View.INVISIBLE);
+        saveInfo.setVisibility(View.VISIBLE);
 
     }
 
@@ -126,8 +172,11 @@ public class ShowPlaceActivity extends AppCompatActivity {
     private void setText() {
 
         titleTV.setText(smultronstalle.getName());
+        titleET.setText(smultronstalle.getName());
         addressTV.setText(smultronstalle.getAddress());
+        addressET.setText(smultronstalle.getAddress());
         commentsTV.setText(smultronstalle.getComment());
+        commentsET.setText(smultronstalle.getComment());
 
     }
 
@@ -145,8 +194,6 @@ public class ShowPlaceActivity extends AppCompatActivity {
             deletePlace.setVisibility(View.GONE);
         }
 
-
-
     }
 
 
@@ -158,6 +205,63 @@ public class ShowPlaceActivity extends AppCompatActivity {
 
 
     public void changeInfo(View view) {
+
+        editModeVisible();
+
+    }
+
+    public void saveInfo(View view) {
+
+        String newTitle = titleET.getText().toString();
+        String newAddress = addressET.getText().toString();
+        String newComments = commentsET.getText().toString();
+
+        if (TextUtils.isEmpty(newTitle)) {
+            titleET.setError("Required.");
+        } else if (TextUtils.isEmpty(newAddress)) {
+            addressET.setError("Required.");
+        } else if (TextUtils.isEmpty(newComments)) {
+            commentsET.setError("Required.");
+        } else {
+
+            smultronstalle.setName(newTitle);
+            smultronstalle.setAddress(newAddress);
+            smultronstalle.setComment(newComments);
+
+            // Updates the document in database
+
+            // Get a new write batch
+            WriteBatch batch = db.batch();
+
+            DocumentReference smultronNameRef = db.collection("Smultronstalle").document(documentID);
+            batch.update(smultronNameRef, "name", newTitle);
+
+            DocumentReference smultronAddressRef = db.collection("Smultronstalle").document(documentID);
+            batch.update(smultronAddressRef, "address", newAddress);
+
+            DocumentReference smultronCommentRef = db.collection("Smultronstalle").document(documentID);
+            batch.update(smultronCommentRef, "comment", newComments);
+
+            // Commit the batch
+            batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Log.d(TAG, "Smultronstalle was successfully updated", task.getException());
+                    } else {
+                        Log.d(TAG, "Smultronstalle wasn't updated", task.getException());
+                    }
+
+                }
+
+
+            });
+
+            setText();
+            textModeVisible();
+
+        }
+
     }
 
 
@@ -180,4 +284,6 @@ public class ShowPlaceActivity extends AppCompatActivity {
                 });
 
     }
+
+
 }
