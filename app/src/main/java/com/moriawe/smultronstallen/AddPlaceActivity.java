@@ -27,6 +27,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -339,9 +341,10 @@ public class AddPlaceActivity extends Activity {
         if(pictureUri !=null) {
             StorageReference fileReference = storageRef.child(System.currentTimeMillis()
             + "." + getFileExtension(pictureUri));
+            UploadTask uploadTask = fileReference.putFile(pictureUri);
 
-            fileReference.putFile(pictureUri)
-                    .addOnSuccessListener((new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+                    uploadTask.addOnSuccessListener((new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Toast.makeText(AddPlaceActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
@@ -349,7 +352,6 @@ public class AddPlaceActivity extends Activity {
 
                             //String uploadId = databaseRef.push().getKey();
                             //namePicture = storageRef.child(uploadId).toString();
-                            Task<Uri> task = storageRef.getDownloadUrl();
                         }
                     }))
                     .addOnFailureListener(new OnFailureListener() {
@@ -358,10 +360,32 @@ public class AddPlaceActivity extends Activity {
                             Toast.makeText(AddPlaceActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
+
+            Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    return storageRef.getDownloadUrl();
+                }
+            })
+                    .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if (task.isSuccessful()) {
+                                Uri downloadUri = task.getResult();
+                                namePicture = downloadUri.toString();
+                            }else{
+                                Toast.makeText(AddPlaceActivity.this, "Can't get Url", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
         }else{
             Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show();
         }
-    }
 
+    }
 
 }
