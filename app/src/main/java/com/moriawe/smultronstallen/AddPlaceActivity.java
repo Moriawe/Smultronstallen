@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -344,10 +345,11 @@ public class AddPlaceActivity extends Activity {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Toast.makeText(AddPlaceActivity.this, "Upload successful", Toast.LENGTH_SHORT).show();
-                            namePicture = taskSnapshot.getUploadSessionUri().toString();
+                            //namePicture = taskSnapshot.getUploadSessionUri().toString();
 
-                            String uploadId = databaseRef.push().getKey();
-                            databaseRef.child(uploadId).setValue(smultronstalle);
+                            //String uploadId = databaseRef.push().getKey();
+                            //namePicture = storageRef.child(uploadId).toString();
+                            Task<Uri> task = storageRef.getDownloadUrl();
                         }
                     }))
                     .addOnFailureListener(new OnFailureListener() {

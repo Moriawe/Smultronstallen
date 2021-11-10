@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -20,6 +24,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -36,6 +42,11 @@ public class ShowPlaceActivity extends AppCompatActivity {
     DateTimeFormatter dtf;
     LocalDateTime now;
 
+    // Download picture
+    StorageReference storageReference;
+
+    //Test download picture
+    String image = "https://res.cloudinary.com/demo/image/upload/w_500/sample.jpg";
     // Objects
     Smultronstalle smultronstalle;
 
@@ -70,6 +81,9 @@ public class ShowPlaceActivity extends AppCompatActivity {
         // Makes an instance of Date&Time class
         dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         now = LocalDateTime.now();
+
+        // Download picture
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         // New object - Smultronstalle
         //smultronstalle = new Smultronstalle();
@@ -113,6 +127,7 @@ public class ShowPlaceActivity extends AppCompatActivity {
                                 smultronstalle = document.toObject(Smultronstalle.class);
                                 setText();
                                 checkUser();
+                                downloadPicture();
                             }
                         } else {
                             Log.d(TAG, "Error getting documents: ", task.getException());
@@ -149,6 +164,13 @@ public class ShowPlaceActivity extends AppCompatActivity {
 
     }
 
+    // Download picture
+    public void downloadPicture() {
+        Glide.with(this)
+                .load(smultronstalle.getPicture())
+                .into(icon);
+    }
+
 
     //ON CLICK METHODS
 
@@ -180,4 +202,5 @@ public class ShowPlaceActivity extends AppCompatActivity {
                 });
 
     }
+
 }
