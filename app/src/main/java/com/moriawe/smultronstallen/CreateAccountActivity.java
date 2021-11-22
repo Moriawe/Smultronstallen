@@ -205,7 +205,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         boolean valid = true;
 
         nickName = userEmailET.getText().toString();
-        if (TextUtils.isEmpty(email)) {
+        if (TextUtils.isEmpty(nickName)) {
             userEmailET.setError("Required.");
             valid = false;
         } else {
