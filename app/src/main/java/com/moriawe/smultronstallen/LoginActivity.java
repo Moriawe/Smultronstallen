@@ -1,51 +1,73 @@
 package com.moriawe.smultronstallen;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class LoginActivity extends AppCompatActivity {
 
+    String TAG = "LoginActivity";
+
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+    DateTimeFormatter dtf;
+    LocalDateTime now;
+
+    AppUser loginUser;
+    String userID;
 
     private EditText userEmailET;
     private EditText userPasswordET;
     private TextView CreateNewAccountTV;
     private Button loginBtn;
 
-    static String USERNAME = "Kalle"; //TODO Bara för att testskicka något vidare till MapActivity
+    RelativeLayout loadingProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.action_bar_gradient));
+        actionBar.setElevation(0);
+
         setContentView(R.layout.activity_login);
 
-        //Get the intent that started this activity(MainActivity) and extract the teststring(from editText in MainActivity)
-        Intent intent = getIntent();
-        String messageFromMainActivity = intent.getStringExtra(MainActivity.EXTRA_MESSAGE_KEY_FROM_MAIN_ACTIVITY);
-
-        //Capture LoginActivity's(this activity) TextView and set the string from MainActivity into the TextView in LoginActivity(this activity)
-        TextView textView = findViewById(R.id.textView);
-        textView.setText(messageFromMainActivity);
-
+        loadingProgressBar = (RelativeLayout) findViewById(R.id.over);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
+        // Imports a date&Time class
+        dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        now = LocalDateTime.now();
 
         loginBtn = findViewById(R.id.loginBtn);
         userEmailET = findViewById(R.id.userEmailET);
@@ -53,20 +75,49 @@ public class LoginActivity extends AppCompatActivity {
         CreateNewAccountTV = findViewById(R.id.CreateNewAccountTV);
 
 
+
     }
 
-    /* //Checks if the user is already logged in! Should be in main activity [Jennie]
+    //Actionbar Overflow menu Inflate
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        menu.findItem(R.id.action_logout).setVisible(false);
+
+        return true;
+    }
+
+    //Actionbar Overflow menu Click method
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.action_info:
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public void onStart() {
-    super.onStart();
-    // Check if user is signed in (non-null) and update UI accordingly.
-    FirebaseUser currentUser = mAuth.getCurrentUser();
-    updateUI(currentUser);
-     */
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
 
+        if (firebaseUser != null) {
+            getCurrentUser();
+        } else {
+            loadingProgressBar.setVisibility(View.INVISIBLE);
+            Log.w(TAG, "No user logged in");
+        //Toast.makeText(this, "No user logged in", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    // When user needs to Sign in with email and password and press SignIn button
     public void signIn(View view) {
 
-        String TAG = "Error in SignIn";
         String email = userEmailET.getText().toString();
         String password = userPasswordET.getText().toString();
 
@@ -75,12 +126,7 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        /* //TESTVIEW
-        TextView mailTest = (TextView) findViewById(R.id.TVEmailTest);
-        TextView losenTest = (TextView) findViewById(R.id.TVPasswordTest);
-        mailTest.setText(email);
-        losenTest.setText(password); */
-
+        // Sends the email and password to auth to check.
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -88,13 +134,12 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            sendUserToMap(user);
+                            //FirebaseUser user = mAuth.getCurrentUser(); //TODO What does this do?! [Jennie]
+                            getCurrentUser();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                            sendUserToMap(null);
                         }
 
                     }
@@ -102,32 +147,49 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void getCurrentUser() {
 
-    private void sendUserToMap(FirebaseUser user) {
+        userID = mAuth.getUid(); // Retrieves the userID from the current user.
 
-        if (user != null) {
+        db.collection("AppUsers").document(userID)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        loginUser = documentSnapshot.toObject(AppUser.class);
+                        updateLogIn();
+                    }
+                });
 
-            Intent goToMapActivityIntent = new Intent(this, MapActivity.class);
-
-            //TODO Skicka med username or nickname
-            /* EditText userName = (EditText) findViewById(R.id.userEmailET);
-            String userNameStringToMapActivity = userName.getText().toString();
-            goToMapActivityIntent.putExtra(USERNAME,userNameStringToMapActivity); */
-
-            startActivity(goToMapActivityIntent);
-
-        } else {
-
-            Toast.makeText(this, "No such user", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void createAccount(View view) {
-        Intent intent = new Intent(getApplicationContext(), CreateAccountActivity.class);
-        startActivity(intent);
     }
 
 
+    // Updates the users LastLoggedIn information
+    private void updateLogIn() {
+
+        // Updates the AppUser/userID document with a new lastLoggedIn
+        db.collection("AppUsers").document(userID)
+                .update("lastLoggedIn", dtf.format(now))
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.w(TAG, "New logintime logged in database");
+                        //Toast.makeText(LoginActivity.this, "Time logged.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //Toast.makeText(LoginActivity.this, "ERROR! Time not logged.", Toast.LENGTH_SHORT).show();
+                        Log.w(TAG, "New logintime not logged / " + e.toString());
+                    }
+                });
+
+        sendUserToMap(loginUser);
+    }
+
+
+    // Checks so that no fields are empty when trying to login.
     private boolean validateForm() {
         boolean valid = true;
 
@@ -149,5 +211,21 @@ public class LoginActivity extends AppCompatActivity {
 
         return valid;
     }
+
+
+    // If the user is correctly logged in they are sent to MapActivity, otherwise there will be an error toast.
+    private void sendUserToMap(AppUser user) {
+        Intent goToMapActivityIntent = new Intent(this, MapActivity.class);
+        goToMapActivityIntent.putExtra("CurrentUser", user);
+        startActivity(goToMapActivityIntent);
+    }
+
+
+    // Sends user to the create account activity
+    public void createAccount(View view) {
+        Intent intent = new Intent(getApplicationContext(), CreateAccountActivity.class);
+        startActivity(intent);
+    }
+
 
 }

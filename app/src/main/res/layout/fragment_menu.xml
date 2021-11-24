@@ -3,58 +3,81 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/custom_menu_bg"
     tools:context=".MenuFragment">
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_weight="1"></View>
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/radioGroup"
+        android:background="@drawable/custom_menu_bg"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginBottom="1dp"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/completeListBtn"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:text="ALLA"
-        android:textSize="10dp" />
+        <RadioButton android:id="@+id/completeListBtn"
+            android:textColor="@color/list_item_grey"
+            android:textFontWeight="800"
+            android:text="@string/all_locations"
+            android:background="@drawable/custom_menu_button"
+            android:button="@android:color/transparent"
+            android:checked="true"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:onClick="onRadioButtonClicked"
+            />
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_weight="1"></View>
+        <RadioButton android:id="@+id/friendsListBtn"
+            android:textColor="@color/list_item_grey"
+            android:textFontWeight="800"
+            android:text="@string/friends_locations"
+            android:background="@drawable/custom_menu_button"
+            android:button="@android:color/transparent"
+            android:checked="false"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:onClick="onRadioButtonClicked"/>
 
-    <Button
-        android:id="@+id/friendsListBtn"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:text="VÄNNER"
-        android:textSize="10dp" />
+        <RadioButton android:id="@+id/personalListBtn"
+            android:textColor="@color/list_item_grey"
+            android:textFontWeight="800"
+            android:text="@string/private_locations"
+            android:background="@drawable/custom_menu_button"
+            android:button="@android:color/transparent"
+            android:checked="false"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:onClick="onRadioButtonClicked"/>
 
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_weight="1"></View>
+        <RadioButton android:id="@+id/notificationsListBtn"
+            android:textColor="@color/list_item_grey"
+            android:textFontWeight="800"
+            android:text="@string/new_locations"
+            android:background="@drawable/custom_menu_button"
+            android:button="@android:color/transparent"
+            android:checked="false"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:onClick="onRadioButtonClicked"/>
 
-    <Button
-        android:id="@+id/personalListBtn"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:text="EGNA"
-        android:textSize="10dp" />
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_weight="1"></View>
-
-    <Button
-        android:id="@+id/showHideBtnn"
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:text="OPEN"
-        android:textSize="10dp" />
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_weight="1"></View>
+        <ToggleButton android:id="@+id/showHideBtn"
+            android:textColor="@color/pink_primary"
+            android:textOff="@string/arrow_down_show_list"
+            android:textOn="@string/arrow_up_hide_list"
+            android:background="@drawable/custom_menu_toggle_button"
+            android:button="@android:color/transparent"
+            android:checked="false"
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:textSize="20dp" />
+    </RadioGroup>
 </LinearLayout>

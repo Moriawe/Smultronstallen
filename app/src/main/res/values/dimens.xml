@@ -1,3 +1,13 @@
 <resources>
     <dimen name="text_margin">16dp</dimen>
+
+    <!-- Dimens List-item  -->
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="activity_margin">16dp</dimen>
+    <dimen name="thumbnail">40dp</dimen>
+    <dimen name="row_padding">10dp</dimen>
+    <dimen name="list_item_title">19sp</dimen>
+    <dimen name="list_item_user">16sp</dimen>
+    <dimen name="list_item_date">12sp</dimen>
+    <dimen name="list_item_comment">14sp</dimen>
 </resources>

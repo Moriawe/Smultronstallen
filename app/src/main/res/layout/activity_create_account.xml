@@ -7,13 +7,24 @@
     tools:context=".CreateAccountActivity">
 
 
+    <EditText
+        android:id="@+id/userNickNameET"
+        android:layout_width="207dp"
+        android:layout_height="42dp"
+        android:inputType="textPersonName"
+        android:hint="Nickname"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.178" />
 
     <EditText
         android:id="@+id/userEmailET"
         android:layout_width="207dp"
         android:layout_height="42dp"
+        android:inputType="textEmailAddress"
         android:hint="Email"
-        android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +37,6 @@
         android:layout_height="42dp"
         android:inputType="textPassword"
         android:hint="password"
-        android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +49,6 @@
         android:layout_height="42dp"
         android:hint="confirm password"
         android:inputType="textPassword"
-        android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

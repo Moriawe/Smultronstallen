@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/layout_bg_listlocation"
+    android:animateLayoutChanges="true"
+    android:clickable="true"
+    android:paddingBottom="@dimen/row_padding"
+    android:paddingLeft="@dimen/activity_margin"
+    android:paddingRight="@dimen/activity_margin"
+    android:paddingTop="@dimen/row_padding"
+    >
+
+    <ImageView
+        android:id="@+id/goToSmultron"
+        android:layout_width="@dimen/thumbnail"
+        android:layout_height="@dimen/thumbnail"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/row_padding"
+        android:src="@drawable/ic_straw" />
+<!--            android:layout_centerVertical="true"-->
+
+    <TextView
+        android:id="@+id/textViewName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="-1dp"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0dp"
+        android:text="Name"
+        android:textColor="@color/turquoise_primary"
+        android:textFontWeight="1000"
+        android:textSize="@dimen/list_item_title" />
+
+
+    <TextView
+        android:id="@+id/textViewAddedBy"
+        android:textFontWeight="1000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewName"
+        android:layout_marginBottom="7dp"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0dp"
+        android:textColor="@color/list_item_grey"
+        android:text="Tobias"
+
+        android:textSize="@dimen/list_item_user" />
+
+    <TextView
+        android:id="@+id/textViewDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewAddedBy"
+        android:includeFontPadding="false"
+        android:lineSpacingExtra="0dp"
+        android:paddingBottom="11dp"
+        android:text="2992 3322 33"
+        android:textColor="@color/list_item_grey"
+        android:textSize="@dimen/list_item_date"
+         />
+
+
+    <TextView
+        android:textColor="@color/menu_btn_text"
+        android:id="@+id/textViewLimitedComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewDate"
+        android:textSize="@dimen/list_item_date"
+        android:text="Gnjnefjnwffe few efwkefkwkmkfew efw kfemkfmef ekefwmfkifewikjfie"/>
+
+    <TextView
+        android:textColor="@color/menu_btn_text"
+        android:id="@+id/textViewFullComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewLimitedComment"
+        android:textSize="@dimen/list_item_date"
+        android:visibility="gone" />
+
+
+</RelativeLayout>
