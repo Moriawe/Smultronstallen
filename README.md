@@ -1,5 +1,8 @@
 # Smultronstallen
 
+Android development - Group-project (2/2 - 2022)
+
+
 This is a project by 3 students on ITHS-Göteborg during the second month of a 2 year education to become appdevelopers. 
 
 Smultronstallen will require the user to login/create an account and get authorized against Firebase Auth. 
